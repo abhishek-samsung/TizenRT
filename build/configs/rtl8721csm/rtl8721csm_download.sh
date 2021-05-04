@@ -18,47 +18,40 @@
 ###########################################################################
 # rtl8721csm_download.sh
 
-## For manual port selection, set $3 as the portname, eg. make download ALL x ttyUSB2
-if [ -n "$3" ]; then
-	PORT="$3"
-else
-	PORT="ttyUSB1"
-fi
 
-WARNING="\n Port $PORT is selected\n\n
-	############################################\n
-	WARNINGS:\n
-	1. Make sure the board is in DOWNLOAD MODE.\n
-	2. Make sure NO other application like putty,\n
-	is occupying $PORT.\n
-	############################################\n"
-
-echo -e $WARNING
 
 CURDIR=$(readlink -f "$0")
 CUR_PATH=$(dirname "$CURDIR")
-TOOL_PATH=${CUR_PATH}/../../tools/amebad
-IMG_TOOL_PATH=${TOOL_PATH}/image_tool
 BIN_PATH=${CUR_PATH}/../../output/bin
 TOP_PATH=${CUR_PATH}/../../..
 OS_PATH=${TOP_PATH}/os
-SMARTFS_BIN_PATH=${BIN_PATH}/rtl8721csm_smartfs.bin
-FLASH_START_ADDR=0x08000000
+
+source ${TOP_PATH}/build/configs/rtl8721csm/board_specific.sh
+
+WARNING="\n Port $PORT is selected\n\n
+        ############################################\n
+        WARNINGS:\n
+        1. Make sure the board is in DOWNLOAD MODE.\n
+        2. Make sure NO other application like putty,\n
+        is occupying $PORT.\n
+        ############################################\n"
+
+echo -e $WARNING
 
 TTYDEV="/dev/${PORT}"
 CONFIG=${OS_PATH}/.config
 source ${CONFIG}
 
 ##Utility function for sanity check##
-function rtl8721csm_sanity_check()
+function sanity_check()
 {
 	if [ ! -f ${CONFIG} ];then
 		echo "No .config file"
 		exit 1
 	fi
 
-	if [[ "${CONFIG_ARCH_BOARD_RTL8721CSM}" != "y" ]];then
-		echo "Target is NOT RTL8721CSM"
+	if [[ "${CONFIG_ARCH_BOARD_${BOARD_NAME}}" != "y" ]];then
+		echo "Target is NOT ${BOARD_NAME}"
 		exit 1
 	fi
 
@@ -68,18 +61,6 @@ function rtl8721csm_sanity_check()
 	fi
 }
 
-##Utility function to match partition name to binary name##
-function get_executable_name()
-{
-	case $1 in
-		km0_bl) echo "km0_boot_all.bin";;
-		km4_bl) echo "km4_boot_all.bin";;
-		kernel|ota) echo "km0_km4_image2.bin";;
-		userfs) echo "rtl8721csm_smartfs.bin";;
-		*) echo "No Binary Match"
-		exit 1
-	esac
-}
 flash_ota=false
 ##Utility function to get partition index ##
 function get_partition_index()
@@ -99,7 +80,7 @@ function get_partition_index()
 }
 
 ##Help utility##
-function rtl8721csm_dwld_help()
+function dwld_help()
 {
         cat <<EOF
 	HELP:
@@ -154,14 +135,9 @@ function get_partition_sizes()
 
 # Start here
 
-cp -p ${BIN_PATH}/km0_boot_all.bin ${IMG_TOOL_PATH}/km0_boot_all.bin
-cp -p ${BIN_PATH}/km4_boot_all.bin ${IMG_TOOL_PATH}/km4_boot_all.bin
-cp -p ${BIN_PATH}/km0_km4_image2.bin ${IMG_TOOL_PATH}/km0_km4_image2.bin
-if test -f "${SMARTFS_BIN_PATH}"; then
-	cp -p ${BIN_PATH}/rtl8721csm_smartfs.bin ${IMG_TOOL_PATH}/rtl8721csm_smartfs.bin
-fi
+board_specific_initialization;
 
-rtl8721csm_sanity_check;
+sanity_check;
 
 parts=$(get_configured_partitions)
 IFS=',' read -ra parts <<< "$parts"
@@ -215,7 +191,7 @@ for i in ${cmd_args[@]};do
 
 	if [[ "$result" != "yes" ]];then
 		echo "FAIL!! Given \"${i}\" partition is not available. Refer \"PARTITION NAMES\" above."
-		rtl8721csm_dwld_help
+		dwld_help
 		exit 1
 	fi
 	result=no
@@ -223,7 +199,6 @@ done
 
 download_specific_partition()
 {
-	cd ${IMG_TOOL_PATH}
 	TARGET=$1
 	if [[ ${TARGET} == "ota" || ${TARGET} == "OTA" ]];then
 		TARGET="kernel"
@@ -246,7 +221,7 @@ download_specific_partition()
 	fi
 	echo "============================="
 	exe_name=$(get_executable_name ${parts[$partidx]})
-	./amebad_image_tool "download" $TTYDEV 1 ${offsets[$partidx]} ${exe_name}
+	board_download $TTYDEV ${offsets[$partidx]} ${exe_name}
 
 	echo ""
 	echo "Download $exe_name COMPLETE!"
@@ -281,7 +256,7 @@ download_all()
 		echo "Downloading ${parts[$partidx]} binary"
 		echo "=========================="
 
-		./amebad_image_tool "download" $TTYDEV 1 ${offsets[$partidx]} ${exe_name}
+		board_download $TTYDEV ${offsets[$partidx]} ${exe_name}
 	done
 	echo ""
 	echo "Download COMPLETE!"
@@ -289,7 +264,6 @@ download_all()
 
 erase()
 {
-	cd ${IMG_TOOL_PATH}
 	echo "Starting Erase..."
 	ota_addr=$(($FLASH_START_ADDR + $CONFIG_AMEBAD_FLASH_CAPACITY))
 	if [[ $2 == "all" || $2 == "ALL" ]];then
@@ -311,7 +285,7 @@ erase()
 				echo "=========================="
 			fi
 
-			./amebad_image_tool "erase" $TTYDEV 1 ${offsets[$partidx]} 0 ${sizes[partidx]}
+			board_erase $TTYDEV ${offsets[$partidx]} ${sizes[partidx]}
 		done
 	else
 		for partidx in ${!parts[@]}; do
@@ -343,7 +317,7 @@ erase()
 				fi
 			else
 				printf "\n## Invalid Option ##\n\n"
-				rtl8721csm_dwld_help
+				dwld_help
 				break
 			fi
 
@@ -351,7 +325,7 @@ erase()
 			echo "=========================="
 			echo "Erasing ${parts[$partidx]} partition"
 			echo "=========================="
-			./amebad_image_tool "erase" $TTYDEV 1 ${offsets[$partidx]} 0 ${sizes[partidx]}
+			board_erase $TTYDEV ${offsets[$partidx]} ${sizes[partidx]}
 		done
 	fi
 	echo ""
