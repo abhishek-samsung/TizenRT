@@ -52,6 +52,15 @@
 -include $(TOPDIR)/.config
 -include $(TOPDIR)/Make.defs
 
+ifeq ($(DIRLINK),)
+DIRLINK = $(TOPDIR)/tools/link.sh
+DIRUNLINK = $(TOPDIR)/tools/unlink.sh
+endif
+
+ARCH_DIR = arch/$(CONFIG_ARCH)
+ARCH_SRC = $(ARCH_DIR)/src
+ARCH_INC = $(ARCH_DIR)/include
+
 BUILDIRS   := $(dir $(wildcard */Make.defs))
 OUTPUT_BIN_DIR = $(TOPDIR)/../build/output/bin
 CONFIGURED =
@@ -75,12 +84,12 @@ ifeq ($(CONFIG_APP_BINARY_SEPARATION),y)
 $(foreach BDIR, $(CONFIGURED), $(eval $(call DIR_template,$(BDIR),verify)))
 $(foreach BDIR, $(CONFIGURED), $(eval $(call DIR_template,$(BDIR),install)))
 
-all: build verify install
+all: include/tinyara/config.h include/arch include/arch/chip build verify install
 .PHONY: all build clean install distclean depend verify preconfig
 
 install: $(foreach BDIR, $(CONFIGURED), $(BDIR)_install)
-	$(Q) ./../tools/nxfuse/mknxfuse.sh
-	$(Q) ./../tools/nxfuse/mksmartfsimg.sh
+#$(Q) ./../tools/nxfuse/mknxfuse.sh
+#$(Q) ./../tools/nxfuse/mksmartfsimg.sh
 
 verify: $(foreach BDIR, $(CONFIGURED), $(BDIR)_verify)
 else # !CONFIG_APP_BINARY_SEPARATION
@@ -99,5 +108,21 @@ preconfig: $(foreach BDIR, $(BUILDIRS), $(BDIR)_preconfig)
 clean: $(foreach CDIR, $(BUILDIRS), $(CDIR)_clean)
 
 distclean: $(foreach CDIR, $(BUILDIRS), $(CDIR)_distclean)
+
+include/arch: ../os/Make.defs
+	@echo "LN: include/arch to $(ARCH_DIR)/include"
+	$(Q) $(DIRLINK) $(TOPDIR)/$(ARCH_DIR)/include ../os/include/arch
+
+include/arch/chip: include/arch ../os/Make.defs
+ifneq ($(CONFIG_ARCH_CHIP),)
+	@echo "LN: include/arch/chip to $(ARCH_INC)/$(CONFIG_ARCH_CHIP)"
+	$(Q) $(DIRLINK) $(TOPDIR)/$(ARCH_INC)/$(CONFIG_ARCH_CHIP) ../os/include/arch/chip
+endif
+
+tools/mkconfig$(HOSTEXEEXT):
+	$(Q) $(MAKE) -C ../os/tools -f Makefile.host TOPDIR="$(TOPDIR)"  mkconfig$(HOSTEXEEXT)
+
+include/tinyara/config.h: $(TOPDIR)/.config tools/mkconfig$(HOSTEXEEXT)
+	$(Q) ../os/tools/mkconfig $(TOPDIR) > ../os/include/tinyara/config.h
 
 -include Make.dep
