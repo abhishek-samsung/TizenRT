@@ -1,0 +1,58 @@
+#
+# For a description of the syntax of this configuration file,
+# see kconfig-language at https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt
+
+choice LWNL80211_DRV
+	prompt"Driver selelction"
+	default LWNL80211_VIRTUAL
+
+config LWNL80211_VIRTUAL
+	bool "Virtual driver"
+	depends on SELECT_WLAN_VIRTUAL
+	---help---
+		Virtual WiFi driver
+
+config LWNL80211_SLSI
+	bool "SLSI driver"
+	depends on SELECT_SCSC_WLAN
+	---help---
+		Samsung Artik WiFi driver
+
+config LWNL80211_RTK
+	bool "Realtek driver"
+	depends on SELECT_RTK_WLAN
+	---help---
+		Realtek WiFi driver
+
+config LWNL80211_ETHERNET
+	bool "Ethernet driver"
+	---help---
+		Ethernet driver
+endchoice
+
+config DEBUG_LWNL80211_ERROR
+	bool "LWNL80211 ERROR DEBUG"
+	default n
+	---help---
+		Enable LWNL80211 ERROR DEBUG
+
+config DEBUG_LWNL80211_INFO
+	bool "LWNL80211 INFO DEBUG"
+	default n
+	depends on DEBUG_VERBOSE
+	---help---
+		Enable LWNL80211 INFO DEBUG
+
+config DEBUG_LWNL80211_VENDOR_DRV_ERROR
+	bool "Vendor-specific driver interface ERROR DEBUG"
+	default n
+	depends on DEBUG_ERROR
+	---help---
+		Enable Vendor-Specific Driver ERROR Debug
+
+config DEBUG_LWNL80211_VENDOR_DRV_INFO
+	bool "Vendor-specific driver interface INFO DEBUG"
+	default n
+	depends on DEBUG_VERBOSE
+	---help---
+		Enable Vendor-Specific Driver INFO Debug

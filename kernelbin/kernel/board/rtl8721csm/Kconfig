@@ -1,0 +1,38 @@
+#
+# For a description of the syntax of this configuration file,
+# see kconfig-language at https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt
+#
+
+if ARCH_BOARD_RTL8721CSM
+
+menu "SPI Flash driver"
+
+config AMEBAD_FLASH_BASE
+    hex "Start address for user filesystem"
+    default 0x180000
+    help
+        Setting this vaule to configure flash start address for user filesystem,
+        such as smartfs, romfs.
+
+config AMEBAD_FLASH_CAPACITY
+    hex "Size for user filesystem"
+    default 0x80000
+    help
+        Setting this vaule to configure flash size  for user filesystem,
+        such as smartfs, romfs.
+
+config AMEBAD_FLASH_PAGE_SIZE
+    int "Read/write unit size of SPI flash"
+    default 256
+    help
+        Setting this vaule to configure read/write unit size of esp32 SPI flash.
+
+config AMEBAD_FLASH_BLOCK_SIZE
+    int "Erase unit size of SPI flash"
+    default 4096
+    help
+        Setting this vaule to configure erase unit size of esp32 SPI flash.
+	
+endmenu
+endif
+
