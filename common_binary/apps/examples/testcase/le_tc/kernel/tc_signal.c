@@ -31,7 +31,7 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <tinyara/os_api_test_drv.h>
-#include "../../os/kernel/signal/signal.h"
+#include <kernel/signal.h>
 #include "tc_internal.h"
 
 #define SIGHUP 1

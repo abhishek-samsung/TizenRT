@@ -16,7 +16,7 @@
 #
 ###########################################################################
 
-BT_CAPI_DIR = $(TOPDIR)/../framework/src/bluetooth
+BT_CAPI_DIR = $(TOPDIR)/../common_binary/framework/src/bluetooth
 include $(BT_CAPI_DIR)/src/Make.defs
 include $(BT_CAPI_DIR)/adaptation/Make.defs
 

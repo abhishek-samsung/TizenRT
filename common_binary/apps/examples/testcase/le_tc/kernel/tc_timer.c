@@ -23,7 +23,7 @@
 #include <errno.h>
 #include <sys/ioctl.h>
 #include <tinyara/os_api_test_drv.h>
-#include "../../os/kernel/timer/timer.h"
+#include <kernel/timer.h>
 #include "tc_internal.h"
 
 #define USECINT 10000000
