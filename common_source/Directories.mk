@@ -140,15 +140,15 @@ endif
 #   be cleaned to prevent garbage from collecting in them when changing
 #   configurations.
 
-NONFSDIRS = kernel $(ARCH_SRC) $(TINYARA_ADDONS)
-FSDIRS = fs drivers
+NONFSDIRS = ../kernel/kernel $(ARCH_SRC) $(TINYARA_ADDONS)
+FSDIRS = ../kernel/fs ../kernel/drivers
 ifeq ($(CONFIG_BINFMT_ENABLE),y)
-FSDIRS += binfmt
+FSDIRS += ../kernel/binfmt
 endif
 CONTEXTDIRS = $(APPDIR)
 CONTEXTDIRS += $(TOOLSDIR)
-CONTEXTDIRS += mm
-CONTEXTDIRS += wqueue
+CONTEXTDIRS += ../common_source/mm
+CONTEXTDIRS += ../common_source/wqueue
 #ifeq ($(CONFIG_ENABLE_IOTIVITY),y)
 #CONTEXTDIRS += $(EXTDIR)$(DELIM)iotivity
 #endif
@@ -187,11 +187,11 @@ endif
 endif
 
 ifeq ($(CONFIG_LIB_SYSCALL),y)
-NONFSDIRS += syscall
-CONTEXTDIRS += syscall
-USERDIRS += syscall
+NONFSDIRS += ../common_source/syscall
+CONTEXTDIRS += ../common_source/syscall
+USERDIRS += ../common_source/syscall
 else
-OTHERDIRS += syscall
+OTHERDIRS += ../common_source/syscall
 endif
 
 ifeq ($(CONFIG_LIBC_DOWNLOAD_ZONEINFO),y)
@@ -219,9 +219,9 @@ USERDEPDIRS = $(USERDIRS)
 ifeq ($(CONFIG_NFILE_DESCRIPTORS),0)
 ifeq ($(CONFIG_NET),y)
 ifneq ($(CONFIG_NSOCKET_DESCRIPTORS),0)
-KERNDEPDIRS += fs
+KERNDEPDIRS += ../kernel/fs
 endif
-KERNDEPDIRS += drivers
+KERNDEPDIRS += ../kernel/drivers
 endif
 else
 KERNDEPDIRS += $(FSDIRS)
@@ -230,47 +230,47 @@ endif
 # Add Audio Module
 
 ifeq ($(CONFIG_AUDIO),y)
-KERNDEPDIRS += audio
+KERNDEPDIRS += ../kernel/audio
 endif
-CLEANDIRS += audio
+CLEANDIRS += ../kernel/audio
 
 # Add Compression Module
 
 ifeq ($(CONFIG_COMPRESSED_BINARY),y)
-KERNDEPDIRS += compression
+KERNDEPDIRS += ../kernel/compression
 endif
-CLEANDIRS += compression tools/compression
+CLEANDIRS += ../kernel/compression ../common_source/tools/compression
 
 # Add Crypto Module
 
 ifeq ($(CONFIG_CRYPTO),y)
-KERNDEPDIRS += crypto
+KERNDEPDIRS += ../kernel/crypto
 endif
-CLEANDIRS += crypto
+CLEANDIRS += ../kernel/crypto
 
 # Add networking directories to KERNDEPDIRS and CLEANDIRS
 
 ifeq ($(CONFIG_NET),y)
-KERNDEPDIRS += net
+KERNDEPDIRS += ../kernel/net
 endif
-CLEANDIRS += net
+CLEANDIRS += ../kernel/net
 
 # Add Power Managment Module
 
 ifeq ($(CONFIG_PM),y)
-KERNDEPDIRS += pm
+KERNDEPDIRS += ../kernel/pm
 endif
-CLEANDIRS += pm
+CLEANDIRS += ../kernel/pm
 
 # Add Logger Module
 
 ifeq ($(CONFIG_LOGM),y)
-KERNDEPDIRS += logm
+KERNDEPDIRS += ../kernel/logm
 endif
-CLEANDIRS += logm
+CLEANDIRS += ../kernel/logm
 
 ifeq ($(CONFIG_SE),y)
-KERNDEPDIRS += se
+KERNDEPDIRS += ../kernel/se
 endif
-CLEANDIRS += se
+CLEANDIRS += ../kernel/se
 

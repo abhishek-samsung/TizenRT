@@ -64,25 +64,25 @@ $(LIBRARIES_DIR)$(DELIM)libkc$(LIBEXT): libc$(DELIM)libkc$(LIBEXT)
 	$(Q) install $(LIB_DIR)$(DELIM)libc$(DELIM)libkc$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libkc$(LIBEXT)
 
 mm$(DELIM)libkmm$(LIBEXT): context
-	$(Q) $(MAKE) -C mm TOPDIR="$(TOPDIR)" libkmm$(LIBEXT) KERNEL=y EXTRADEFINES=$(KDEFINE)
+	$(Q) $(MAKE) -C ../common_source/mm TOPDIR="$(TOPDIR)" libkmm$(LIBEXT) KERNEL=y EXTRADEFINES=$(KDEFINE)
 
 $(LIBRARIES_DIR)$(DELIM)libkmm$(LIBEXT): mm$(DELIM)libkmm$(LIBEXT)
-	$(Q) install mm$(DELIM)libkmm$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libkmm$(LIBEXT)
+	$(Q) install ../common_source/mm$(DELIM)libkmm$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libkmm$(LIBEXT)
 
 wqueue$(DELIM)libkwque$(LIBEXT): context
-	$(Q) $(MAKE) -C wqueue TOPDIR="$(TOPDIR)" libkwque$(LIBEXT) KERNEL=y EXTRADEFINES=$(KDEFINE)
+	$(Q) $(MAKE) -C ../common_source/wqueue TOPDIR="$(TOPDIR)" libkwque$(LIBEXT) KERNEL=y EXTRADEFINES=$(KDEFINE)
 
 $(LIBRARIES_DIR)$(DELIM)libkwque$(LIBEXT): wqueue$(DELIM)libkwque$(LIBEXT)
-	$(Q) install wqueue$(DELIM)libkwque$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libkwque$(LIBEXT)
+	$(Q) install ../common_source/wqueue$(DELIM)libkwque$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libkwque$(LIBEXT)
 
 $(ARCH_SRC)$(DELIM)libkarch$(LIBEXT): context
-	$(Q) $(MAKE) -C $(ARCH_SRC) TOPDIR="$(TOPDIR)" libkarch$(LIBEXT) KERNEL=y EXTRADEFINES=$(KDEFINE)
+	$(Q) $(MAKE) -C ../common_source/$(ARCH_SRC) TOPDIR="$(TOPDIR)" libkarch$(LIBEXT) KERNEL=y EXTRADEFINES=$(KDEFINE)
 
 $(LIBRARIES_DIR)$(DELIM)libkarch$(LIBEXT): $(ARCH_SRC)$(DELIM)libkarch$(LIBEXT)
-	$(Q) install $(ARCH_SRC)$(DELIM)libkarch$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libkarch$(LIBEXT)
+	$(Q) install ../common_source/$(ARCH_SRC)$(DELIM)libkarch$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libkarch$(LIBEXT)
 
 kernel$(DELIM)libkernel$(LIBEXT): context
-	$(Q) $(MAKE) -C kernel TOPDIR="$(TOPDIR)" libkernel$(LIBEXT) KERNEL=y EXTRADEFINES=$(KDEFINE)
+	$(Q) $(MAKE) -C kernel/kernel TOPDIR="$(TOPDIR)" libkernel$(LIBEXT) KERNEL=y EXTRADEFINES=$(KDEFINE)
 
 $(LIBRARIES_DIR)$(DELIM)libkernel$(LIBEXT): kernel$(DELIM)libkernel$(LIBEXT)
 	$(Q) install kernel$(DELIM)libkernel$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libkernel$(LIBEXT)
@@ -152,10 +152,10 @@ endif
 # Special case
 
 syscall$(DELIM)libstubs$(LIBEXT): context
-	$(Q) $(MAKE) -C syscall TOPDIR="$(TOPDIR)" libstubs$(LIBEXT) # KERNEL=y EXTRADEFINES=$(KDEFINE)
+	$(Q) $(MAKE) -C ../common_source/syscall TOPDIR="$(TOPDIR)" libstubs$(LIBEXT) # KERNEL=y EXTRADEFINES=$(KDEFINE)
 
 $(LIBRARIES_DIR)$(DELIM)libstubs$(LIBEXT): syscall$(DELIM)libstubs$(LIBEXT)
-	$(Q) install syscall$(DELIM)libstubs$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libstubs$(LIBEXT)
+	$(Q) install ../common_source/syscall$(DELIM)libstubs$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libstubs$(LIBEXT)
 
 # Possible user-mode builds
 
@@ -166,22 +166,22 @@ $(LIBRARIES_DIR)$(DELIM)libuc$(LIBEXT): libc$(DELIM)libuc$(LIBEXT)
 	$(Q) install $(LIB_DIR)$(DELIM)libc$(DELIM)libuc$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libuc$(LIBEXT)
 
 mm$(DELIM)libumm$(LIBEXT): context
-	$(Q) $(MAKE) -C mm TOPDIR="$(TOPDIR)" libumm$(LIBEXT) KERNEL=n
+	$(Q) $(MAKE) -C ../common_source/mm TOPDIR="$(TOPDIR)" libumm$(LIBEXT) KERNEL=n
 
 $(LIBRARIES_DIR)$(DELIM)libumm$(LIBEXT): mm$(DELIM)libumm$(LIBEXT)
-	$(Q) install mm$(DELIM)libumm$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libumm$(LIBEXT)
+	$(Q) install ../common_source/mm$(DELIM)libumm$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libumm$(LIBEXT)
 
 wqueue$(DELIM)libuwque$(LIBEXT): context
-	$(Q) $(MAKE) -C wqueue TOPDIR="$(TOPDIR)" libuwque$(LIBEXT) KERNEL=n
+	$(Q) $(MAKE) -C ../common_source/wqueue TOPDIR="$(TOPDIR)" libuwque$(LIBEXT) KERNEL=n
 
 $(LIBRARIES_DIR)$(DELIM)libuwque$(LIBEXT): wqueue$(DELIM)libuwque$(LIBEXT)
-	$(Q) install wqueue$(DELIM)libuwque$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libuwque$(LIBEXT)
+	$(Q) install ../common_source/wqueue$(DELIM)libuwque$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libuwque$(LIBEXT)
 
 $(ARCH_SRC)$(DELIM)libuarch$(LIBEXT): context
-	$(Q) $(MAKE) -C $(ARCH_SRC) TOPDIR="$(TOPDIR)" libuarch$(LIBEXT) KERNEL=n
+	$(Q) $(MAKE) -C ../common_source/$(ARCH_SRC) TOPDIR="$(TOPDIR)" libuarch$(LIBEXT) KERNEL=n
 
 $(LIBRARIES_DIR)$(DELIM)libuarch$(LIBEXT): $(ARCH_SRC)$(DELIM)libuarch$(LIBEXT)
-	$(Q) install $(ARCH_SRC)$(DELIM)libuarch$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libuarch$(LIBEXT)
+	$(Q) install ../common_source/$(ARCH_SRC)$(DELIM)libuarch$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libuarch$(LIBEXT)
 
 libxx$(DELIM)libcxx$(LIBEXT): context
 	$(Q) $(MAKE) -C $(LIB_DIR)$(DELIM)libxx TOPDIR="$(TOPDIR)" libcxx$(LIBEXT) KERNEL=n
@@ -199,10 +199,10 @@ $(LIBRARIES_DIR)$(DELIM)libapps$(LIBEXT): $(APPDIR)$(DELIM)libapps$(LIBEXT)
 	$(Q) install $(APPDIR)$(DELIM)libapps$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libapps$(LIBEXT)
 
 syscall$(DELIM)libproxies$(LIBEXT): context
-	$(Q) $(MAKE) -C syscall TOPDIR="$(TOPDIR)" libproxies$(LIBEXT) KERNEL=n
+	$(Q) $(MAKE) -C ../common_source/syscall TOPDIR="$(TOPDIR)" libproxies$(LIBEXT) KERNEL=n
 
 $(LIBRARIES_DIR)$(DELIM)libproxies$(LIBEXT): syscall$(DELIM)libproxies$(LIBEXT)
-	$(Q) install syscall$(DELIM)libproxies$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libproxies$(LIBEXT)
+	$(Q) install ../common_source/syscall$(DELIM)libproxies$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)libproxies$(LIBEXT)
 
 $(FRAMEWORK_LIB_DIR)$(DELIM)libframework$(LIBEXT): context
 	$(Q) $(MAKE) -C $(FRAMEWORK_LIB_DIR) TOPDIR="$(TOPDIR)" libframework$(LIBEXT) KERNEL=n
@@ -282,22 +282,22 @@ endif
 
 ifeq ($(CONFIG_RTK_WLAN),y)
 $(LIBRARIES_DIR)$(DELIM)librtl$(LIBEXT): $(TOPDIR)$(DELIM)drivers$(DELIM)wireless$(DELIM)realtek$(DELIM)librtl$(LIBEXT)
-	$(Q) install $(TOPDIR)$(DELIM)drivers$(DELIM)wireless$(DELIM)realtek$(DELIM)librtl$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)librtl$(LIBEXT)
+	$(Q) install $(TOPDIR)$(DELIM)../kernel/drivers$(DELIM)wireless$(DELIM)realtek$(DELIM)librtl$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)librtl$(LIBEXT)
 endif
 
 ifeq ($(CONFIG_AMEBAD_WIFI),y)
 ifeq ($(CONFIG_ARCH_FPU),y)
 $(LIBRARIES_DIR)$(DELIM)lib_wlan$(LIBEXT): $(TOPDIR)$(DELIM)board$(DELIM)rtl8721csm$(DELIM)src$(DELIM)libs$(DELIM)lib_wlan_fpu$(LIBEXT)
-	$(Q) install $(TOPDIR)$(DELIM)board$(DELIM)rtl8721csm$(DELIM)src$(DELIM)libs$(DELIM)lib_wlan_fpu$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)lib_wlan$(LIBEXT)
+	$(Q) install $(TOPDIR)$(DELIM)../kernel/board$(DELIM)rtl8721csm$(DELIM)src$(DELIM)libs$(DELIM)lib_wlan_fpu$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)lib_wlan$(LIBEXT)
 
 $(LIBRARIES_DIR)$(DELIM)lib_wps$(LIBEXT): $(TOPDIR)$(DELIM)board$(DELIM)rtl8721csm$(DELIM)src$(DELIM)libs$(DELIM)lib_wps_fpu$(LIBEXT)
-	$(Q) install $(TOPDIR)$(DELIM)board$(DELIM)rtl8721csm$(DELIM)src$(DELIM)libs$(DELIM)lib_wps_fpu$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)lib_wps$(LIBEXT)
+	$(Q) install $(TOPDIR)$(DELIM)../kernel/board$(DELIM)rtl8721csm$(DELIM)src$(DELIM)libs$(DELIM)lib_wps_fpu$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)lib_wps$(LIBEXT)
 else
 $(LIBRARIES_DIR)$(DELIM)lib_wlan$(LIBEXT): $(TOPDIR)$(DELIM)board$(DELIM)rtl8721csm$(DELIM)src$(DELIM)libs$(DELIM)lib_wlan$(LIBEXT)
-	$(Q) install $(TOPDIR)$(DELIM)board$(DELIM)rtl8721csm$(DELIM)src$(DELIM)libs$(DELIM)lib_wlan$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)lib_wlan$(LIBEXT)
+	$(Q) install $(TOPDIR)$(DELIM)../kernle/board$(DELIM)rtl8721csm$(DELIM)src$(DELIM)libs$(DELIM)lib_wlan$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)lib_wlan$(LIBEXT)
 
 $(LIBRARIES_DIR)$(DELIM)lib_wps$(LIBEXT): $(TOPDIR)$(DELIM)board$(DELIM)rtl8721csm$(DELIM)src$(DELIM)libs$(DELIM)lib_wps$(LIBEXT)
-	$(Q) install $(TOPDIR)$(DELIM)board$(DELIM)rtl8721csm$(DELIM)src$(DELIM)libs$(DELIM)lib_wps$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)lib_wps$(LIBEXT)
+	$(Q) install $(TOPDIR)$(DELIM)../kernel/board$(DELIM)rtl8721csm$(DELIM)src$(DELIM)libs$(DELIM)lib_wps$(LIBEXT) $(LIBRARIES_DIR)$(DELIM)lib_wps$(LIBEXT)
 endif
 endif
 
