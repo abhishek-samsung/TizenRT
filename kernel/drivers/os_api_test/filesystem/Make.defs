@@ -20,7 +20,7 @@ ifeq ($(CONFIG_EXAMPLES_TESTCASE_FILESYSTEM)$(CONFIG_AUTOMOUNT_USERFS),yy)
 
 CSRCS += test_filesystem.c
 
-CFLAGS += -I $(TOPDIR)/board/common
+CFLAGS += -I $(TOPDIR)/../kernel/board/common
 
 # Include filesystem test driver support
 

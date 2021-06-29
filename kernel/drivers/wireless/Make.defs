@@ -41,5 +41,5 @@ include $(wildcard wireless/*/Make.defs)
 
 DEPPATH += --dep-path wireless
 VPATH += :wireless
-CFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(TOPDIR)$(DELIM)drivers$(DELIM)wireless}
+CFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(TOPDIR)$(DELIM)../kernel/drivers$(DELIM)wireless}
 endif

@@ -19,7 +19,7 @@
 import os
 import sys
 
-TOOL_DIR = os.getcwd() + '/tools/'
+TOOL_DIR = os.getcwd() + '/../common_source/tools/'
 ############################################################################
 #
 # This script generates samsung binary header for kernel.

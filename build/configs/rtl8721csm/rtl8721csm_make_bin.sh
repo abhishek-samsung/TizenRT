@@ -19,7 +19,7 @@
 
 THIS_PATH=`test -d ${0%/*} && cd ${0%/*}; pwd`
 TOP_PATH=${THIS_PATH}/../../..
-CONFIG=${TOP_PATH}/os/.config
+CONFIG=${TOP_PATH}/common_source/.config
 BUILDDIR=${TOP_PATH}/build
 BINDIR=${BUILDDIR}/output/bin
 GNUUTL=${BUILDDIR}/tools/amebad/gnu_utility

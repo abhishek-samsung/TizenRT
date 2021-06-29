@@ -28,7 +28,7 @@ SE_LIB_OBJS	=
 DEPPATH = --dep-path .
 VPATH = .
 
-CFLAGS += -I$(TOPDIR)/../external/include/security/hal/
+CFLAGS += -I$(TOPDIR)/../header_files/external/include/security/hal/
 
 SE_DIRS   := $(dir $(wildcard */Make.defs))
 

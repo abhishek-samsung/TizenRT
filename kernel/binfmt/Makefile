@@ -57,7 +57,7 @@ DELIM ?= $(strip /)
 ifeq ($(WINTOOL),y)
 INCDIROPT = -w
 endif
-CFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" "$(TOPDIR)$(DELIM)kernel"}
+CFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" "$(TOPDIR)$(DELIM)../kernel/kernel"}
 
 # Basic BINFMT source files
 

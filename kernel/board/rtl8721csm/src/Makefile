@@ -55,8 +55,8 @@ DEPPATH = --dep-path .
 VPATH = .
 ASRCS =
 
-DEPPATH += --dep-path $(TOPDIR)/board/common
-VPATH += :$(TOPDIR)/board/common
+DEPPATH += --dep-path $(TOPDIR)/../kernel/board/common
+VPATH += :$(TOPDIR)/../kernel/board/common
 
 ifeq ($(CONFIG_FLASH_PARTITION),y)
 CSRCS += partitions.c
@@ -127,7 +127,7 @@ include component/soc/realtek/amebad/fwlib/usb_otg/device/class/msc/src/Make.def
 endif
 
 ARCH_SRCDIR = 	$(TOPDIR)/arch/$(CONFIG_ARCH)/src
-BOARD_SRCDIR = 	$(TOPDIR)/board
+BOARD_SRCDIR = 	$(TOPDIR)/../kernel/board
 DIR = 		$(BOARD_SRCDIR)/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/app/monitor
 PROJ_DIR = 	$(BOARD_SRCDIR)/$(CONFIG_ARCH_BOARD)/src/project/realtek_amebaD_va0_example
 COMPONENT_DIR =	$(BOARD_SRCDIR)/$(CONFIG_ARCH_BOARD)/src/component
@@ -145,10 +145,10 @@ CFGDIR = 	$(BOARD_SRCDIR)/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/
 DIR_OTG = 	$(BOARD_SRCDIR)/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/fwlib/usb_otg/device
 
 CFLAGS += -I$(DIR)/../include
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/swlib/include
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/swlib/string
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/app/monitor/include
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/app/xmodem
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/swlib/include
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/swlib/string
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/app/monitor/include
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/app/xmodem
 CFLAGS += -I$(TOPDIR)/arch/$(CONFIG_ARCH)/src
 CFLAGS += -I$(TOPDIR)/arch/$(CONFIG_ARCH)/src/armv8-m
 CFLAGS += -I$(PROJ_DIR)/inc/inc_hp
@@ -168,13 +168,13 @@ CFLAGS += -I$(COMPONENT_DIR)/common/drivers/wlan/realtek/src/core/option
 CFLAGS += -I$(COMPONENT_DIR)/common/drivers/wlan/realtek/wlan_ram_map/rom
 CFLAGS += -I$(COMPONENT_DIR)/os/os_dep/include
 CFLAGS += -I$(COMPONENT_DIR)/os/tizenrt
-CFLAGS += -I$(TOPDIR)/net/lwip
+CFLAGS += -I$(TOPDIR)/../kernel/net/lwip
 CFLAGS += -I$(DIR_WIFI)/rtw_wpa_supplicant/src
 CFLAGS += -I$(DIR_WIFI)/rtw_wpa_supplicant/wpa_supplicant
 CFLAGS += -I$(COMPONENT_DIR)/soc/realtek/amebad/misc
 CFALGS += -I$(DIR_CRYPTO)/../include
 CFLAGS += -I$(DIR_FW)/../include
-CFLAGS += -I$(TOPDIR)/net/netmgr
+CFLAGS += -I$(TOPDIR)/../kernel/net/netmgr
 ifeq ($(CONFIG_AMEBAD_BLE),y)
 CFLAGS += -I$(DIR_BT)/inc
 CFLAGS += -I$(DIR_BT)/src/mcu/module/data_uart_cmd

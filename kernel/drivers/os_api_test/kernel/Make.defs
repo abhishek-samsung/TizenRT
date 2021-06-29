@@ -42,7 +42,7 @@ ifeq ($(CONFIG_EXAMPLES_STACK_PROTECTION),y)
 CSRCS += test_kthread_stack_protection.c
 endif
 
-CFLAGS += -I$(TOPDIR)/kernel
+CFLAGS += -I$(TOPDIR)/../kernel/kernel
 
 # Include OS API test driver support
 

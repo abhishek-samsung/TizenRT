@@ -3,7 +3,7 @@
 THIS_PATH=`test -d ${0%/*} && cd ${0%/*}; pwd`
 TOP_PATH=${THIS_PATH}/../../..
 BINDIR=${TOP_PATH}/output/bin
-CONFIG=${TOP_PATH}/../os/.config
+CONFIG=${TOP_PATH}/../common_source/.config
 source ${CONFIG}
 
 if [ "${CONFIG_ARCH_FPU}" == "y" ];then

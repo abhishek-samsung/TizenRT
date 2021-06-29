@@ -27,17 +27,17 @@ SE_CSRCS += security_ameba_wrapper.c
 SE_CSRCS += rtl_security_api_wrapper.c
 endif
 
-CFLAGS += -I$(TOPDIR)/board/rtl8721csm/src/component/common/mbed/hal_ext/
-CFLAGS += -I$(TOPDIR)/board/rtl8721csm/src/component/common/mbed/targets/hal/rtl8721d
-CFLAGS += -I$(TOPDIR)/board/rtl8721csm/src/component/soc/realtek/amebad/cmsis
-CFLAGS += -I$(TOPDIR)/board/rtl8721csm/src/component/soc/realtek/amebad/fwlib/include
-CFLAGS += -I$(TOPDIR)/board/rtl8721csm/src/project/realtek_amebaD_va0_example/inc/inc_hp
-CFLAGS += -I$(TOPDIR)/board/rtl8721csm/src/component/soc/realtek/amebad/swlib/string
-CFLAGS += -I$(TOPDIR)/board/rtl8721csm/src/component/soc/realtek/amebad/app/monitor/include
-CFLAGS += -I$(TOPDIR)/board/rtl8721csm/src/component/soc/realtek/amebad/app/xmodem
+CFLAGS += -I$(TOPDIR)/../kernel/board/rtl8721csm/src/component/common/mbed/hal_ext/
+CFLAGS += -I$(TOPDIR)/../kernel/board/rtl8721csm/src/component/common/mbed/targets/hal/rtl8721d
+CFLAGS += -I$(TOPDIR)/../kernel/board/rtl8721csm/src/component/soc/realtek/amebad/cmsis
+CFLAGS += -I$(TOPDIR)/../kernel/board/rtl8721csm/src/component/soc/realtek/amebad/fwlib/include
+CFLAGS += -I$(TOPDIR)/../kernel/board/rtl8721csm/src/project/realtek_amebaD_va0_example/inc/inc_hp
+CFLAGS += -I$(TOPDIR)/../kernel/board/rtl8721csm/src/component/soc/realtek/amebad/swlib/string
+CFLAGS += -I$(TOPDIR)/../kernel/board/rtl8721csm/src/component/soc/realtek/amebad/app/monitor/include
+CFLAGS += -I$(TOPDIR)/../kernel/board/rtl8721csm/src/component/soc/realtek/amebad/app/xmodem
 CFLAGS += -I$(TOPDIR)/arch/arm/src/armv8-m
 CFLAGS += -I$(TOPDIR)/arch/arm/src/common
-CFLAGS += -I$(TOPDIR)/board/rtl8721csm/src/component/soc/realtek/amebad/misc
-CFLAGS += -I$(TOPDIR)/board/rtl8721csm/src/component/os/os_dep/include
-CFLAGS += -I$(TOPDIR)/board/rtl8721csm/src/component/common/network/ssl/ssl_ram_map/rom
+CFLAGS += -I$(TOPDIR)/../kernel/board/rtl8721csm/src/component/soc/realtek/amebad/misc
+CFLAGS += -I$(TOPDIR)/../kernel/board/rtl8721csm/src/component/os/os_dep/include
+CFLAGS += -I$(TOPDIR)/../kernel/board/rtl8721csm/src/component/common/network/ssl/ssl_ram_map/rom
 endif

@@ -52,7 +52,7 @@ HEAD_ASRC  =
 
 # Common ARM and Cortex-M33 files
 
-CFLAGS += -I$(TOPDIR)/arch/$(CONFIG_ARCH)/include/$(CONFIG_ARCH_CHIP)/
+CFLAGS += -I$(TOPDIR)/../header_files/arch/$(CONFIG_ARCH)/include/$(CONFIG_ARCH_CHIP)/
 
 CMN_ASRCS  = up_saveusercontext.S up_fullcontextrestore.S up_switchcontext.S
 CMN_ASRCS += up_fetchadd.S vfork.S
@@ -136,24 +136,24 @@ ARCH_SRCDIR = $(TOPDIR)/arch/$(CONFIG_ARCH)/src/
 
 CFLAGS+= -mcmse
 
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/fwlib/include
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/app/monitor/include
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/swlib/string
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/app/xmodem
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/os/os_dep/include
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/os/tizenrt
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/common/drivers/wlan/realtek/include
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/common/drivers/wlan/realtek/src/osdep
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/common/api/platform
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/common/api
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/common
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/common/mbed/hal
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/common/mbed/api
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/common/mbed/hal_ext
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/common/mbed/targets/hal/rtl8721d
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/misc
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/project/realtek_amebaD_va0_example/inc/inc_hp
-CFLAGS += -I$(TOPDIR)/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/cmsis
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/fwlib/include
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/app/monitor/include
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/swlib/string
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/app/xmodem
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/os/os_dep/include
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/os/tizenrt
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/common/drivers/wlan/realtek/include
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/common/drivers/wlan/realtek/src/osdep
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/common/api/platform
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/common/api
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/common
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/common/mbed/hal
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/common/mbed/api
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/common/mbed/hal_ext
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/common/mbed/targets/hal/rtl8721d
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/misc
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/project/realtek_amebaD_va0_example/inc/inc_hp
+CFLAGS += -I$(TOPDIR)/../kernel/board/$(CONFIG_ARCH_BOARD)/src/component/soc/realtek/amebad/cmsis
 
 CHIP_ASRCS  =
 CHIP_CSRCS = amebad_start.c
@@ -177,9 +177,9 @@ endif
 
 ifeq ($(CONFIG_AMEBAD_BLE),y)
 ifeq ($(CONFIG_ARCH_FPU),y)
-EXTRA_LIBS += ${TOPDIR}/board/rtl8721csm/src/libs/lib_btgap_fpu.a
+EXTRA_LIBS += ${TOPDIR}/../kernel/board/rtl8721csm/src/libs/lib_btgap_fpu.a
 else
-EXTRA_LIBS += ${TOPDIR}/board/rtl8721csm/src/libs/lib_btgap.a
+EXTRA_LIBS += ${TOPDIR}/../kernel/board/rtl8721csm/src/libs/lib_btgap.a
 endif
 endif
 
@@ -188,8 +188,8 @@ CHIP_CSRCS += amebad_nsc.c
 
 # trustzone library
 ifeq ($(CONFIG_ARCH_FPU),y)
-EXTRA_LIBS += ${TOPDIR}/board/rtl8721csm/src/libs/cmse_implib_fpu.a
+EXTRA_LIBS += ${TOPDIR}/../kernel/board/rtl8721csm/src/libs/cmse_implib_fpu.a
 else
-EXTRA_LIBS += ${TOPDIR}/board/rtl8721csm/src/libs/cmse_implib.a
+EXTRA_LIBS += ${TOPDIR}/../kernel/board/rtl8721csm/src/libs/cmse_implib.a
 endif
 endif
