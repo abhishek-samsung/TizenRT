@@ -49,8 +49,22 @@
 #
 ############################################################################
 
+THISDIR := ${shell pwd | sed -e 's/ /\\ /g'}
+TOPDIR = $(THISDIR)/../common_source
+LOADABLEDIR=../loadable_apps
+KERNEL=n
+
 -include $(TOPDIR)/.config
 -include $(TOPDIR)/Make.defs
+
+ifeq ($(DIRLINK),)
+DIRLINK = $(TOPDIR)/tools/link.sh
+DIRUNLINK = $(TOPDIR)/tools/unlink.sh
+endif
+
+ARCH_DIR = arch/$(CONFIG_ARCH)
+ARCH_SRC = $(ARCH_DIR)/src
+ARCH_INC = $(ARCH_DIR)/include
 
 BUILDIRS   := $(dir $(wildcard */Make.defs))
 OUTPUT_BIN_DIR = $(TOPDIR)/../build/output/bin
@@ -75,14 +89,17 @@ ifeq ($(CONFIG_APP_BINARY_SEPARATION),y)
 $(foreach BDIR, $(CONFIGURED), $(eval $(call DIR_template,$(BDIR),verify)))
 $(foreach BDIR, $(CONFIGURED), $(eval $(call DIR_template,$(BDIR),install)))
 
-all: build verify install
+all: include/tinyara/config.h include/arch include/arch/chip build verify install
 .PHONY: all build clean install distclean depend verify preconfig
 
 install: $(foreach BDIR, $(CONFIGURED), $(BDIR)_install)
-	$(Q) ./../tools/nxfuse/mknxfuse.sh
-	$(Q) ./../tools/nxfuse/mksmartfsimg.sh
+#	$(Q) ./../tools/nxfuse/mknxfuse.sh
+#	$(Q) ./../tools/nxfuse/mksmartfsimg.sh
 
 verify: $(foreach BDIR, $(CONFIGURED), $(BDIR)_verify)
+
+context: include/arch include/arch/chip
+
 else # !CONFIG_APP_BINARY_SEPARATION
 
 all: build
@@ -97,7 +114,28 @@ preconfig: $(foreach BDIR, $(BUILDIRS), $(BDIR)_preconfig)
 	$(Q) $(LOADABLEDIR)/mkkconfig.sh
 
 clean: $(foreach CDIR, $(BUILDIRS), $(CDIR)_clean)
-
+	$(Q) $(DIRUNLINK) ../header_files/include/arch/chip
+	$(Q) $(DIRUNLINK) ../header_files/include/arch
+	
 distclean: $(foreach CDIR, $(BUILDIRS), $(CDIR)_distclean)
+	$(Q) $(DIRUNLINK) ../header_files/include/arch/chip
+	$(Q) $(DIRUNLINK) ../header_files/include/arch
+
+include/arch: ../common_source/Make.defs
+	@echo "LN: include/arch to $(ARCH_DIR)/include"
+	$(Q) $(DIRLINK) $(TOPDIR)/../header_files/$(ARCH_DIR)/include ../header_files/include/arch
+
+include/arch/chip: include/arch ../common_source/Make.defs
+ifneq ($(CONFIG_ARCH_CHIP),)
+	@echo "LN: include/arch/chip to $(ARCH_INC)/$(CONFIG_ARCH_CHIP)"
+	$(Q) $(DIRLINK) $(TOPDIR)/../header_files/$(ARCH_INC)/$(CONFIG_ARCH_CHIP) ../header_files/include/arch/chip
+endif
+
+tools/mkconfig$(HOSTEXEEXT):
+	$(Q) $(MAKE) -C ../common_source/tools -f Makefile.host TOPDIR="$(TOPDIR)"  mkconfig$(HOSTEXEEXT)
+
+include/tinyara/config.h: $(TOPDIR)/.config tools/mkconfig$(HOSTEXEEXT)
+	$(Q) ../common_source/tools/mkconfig $(TOPDIR) > ../header_files/include/tinyara/config.h
+
 
 -include Make.dep

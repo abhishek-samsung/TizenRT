@@ -208,10 +208,10 @@ winappdir=`echo "${appdir}" | sed -e 's/\\//\\\\/g'`
 # If appsdir was provided (or discovered) then make sure that the apps/
 # directory exists
 
-if [ ! -z "${appdir}" -a ! -d "${TOPDIR}/${posappdir}" ]; then
-  echo "Directory \"${TOPDIR}/${posappdir}\" does not exist"
-  exit 7
-fi
+#if [ ! -z "${appdir}" -a ! -d "${TOPDIR}/${posappdir}" ]; then
+#  echo "Directory \"${TOPDIR}/${posappdir}\" does not exist"
+#  exit 7
+#fi
 
 # Okay... Everything looks good.  Setup the configuration
 
