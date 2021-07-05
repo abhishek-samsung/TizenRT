@@ -23,11 +23,11 @@ CUR_PATH=$(dirname "$CURDIR")
 
 #When the location of this script is changed, only TOP_PATH needs to be changed.
 TOP_PATH=${CUR_PATH}/../..
-OS_PATH=${TOP_PATH}/os
+OS_PATH=${TOP_PATH}/kernel
 BIN_PATH=${TOP_PATH}/build/output/bin
 PARTITION_KCONFIG=${OS_PATH}/board/common/Kconfig
 
-CONFIG=${OS_PATH}/.config
+CONFIG=${TOP_PATH}/common_source/.config
 source ${CONFIG}
 SMARTFS_BIN_PATH=${BIN_PATH}/${CONFIG_ARCH_BOARD}_smartfs.bin
 

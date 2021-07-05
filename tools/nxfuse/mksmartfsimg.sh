@@ -24,7 +24,7 @@ NXFUSE_TOOL_PATH=`test -d ${0%/*} && cd ${0%/*}; pwd`
 BASE_DIR=$NXFUSE_TOOL_PATH/../..
 
 #source $BASE_DIR/os/.config
-. $BASE_DIR/os/.config
+. $BASE_DIR/common_source/.config
 
 BOARDNAME=$CONFIG_ARCH_BOARD
 POSTFIX=_smartfs.bin

@@ -50,11 +50,11 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ==========================================================================
 
-.silent:
+#.silent:
 
 -include .config
 
-TINYARADIR	?= ../../os
+TINYARADIR	?= ../kernel
 
 APPNAME		= nxfuse
 
@@ -82,7 +82,7 @@ SRCTMP		=  $(patsubst $(SRCDIR)/%,%,$(SOURCES))
 OBJTMP		=  $(SRCTMP:.c=.o)
 OBJECTS		=  $(patsubst %,$(OBJDIR)/%,$(OBJTMP))
 DEPS		=  $(patsubst $(OBJDIR)/%.o,$(DEPDIR)/%.d,$(OBJECTS))
-CCONFIG		=  include/tinyara/config.h
+CCONFIG		=  ../header_files/include/tinyara/config.h
 CONFIG		=  .config
 
 all: init $(APPNAME)
@@ -120,16 +120,16 @@ $(APPNAME): Makefile $(CONFIG) $(CCONFIG) $(OBJECTS)
 	@echo Linking $@
 	@$(CC) $(LDFLAGS) $(OBJECTS) $(LIBFILES) -o $@
 
-$(CCONFIG): $(TINYARADIR)/include/tinyara/config.h
+$(CCONFIG): ../header_files/include/tinyara/config.h
 	@echo "CP: config.h"
-	@cp $(TINYARADIR)/include/tinyara/config.h include/tinyara
+	@cp ../../header_files/include/tinyara/config.h include/tinyara
 
 # =================================
 # Rule to retrieve the .config file
 # =================================
-$(CONFIG): $(TINYARADIR)/.config
+$(CONFIG): .config
 	@echo "CP: .config"
-	@cp $(TINYARADIR)/.config .
+	@cp .config .
 	@$(MAKE)
 
 # =============================

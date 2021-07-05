@@ -24,13 +24,13 @@ DEPDIR=$NXFUSE_TOOL_PATH/dep
 OBJDIR=$NXFUSE_TOOL_PATH/obj
 SMARTFS_TMPDIR=$SRCDIR/smartfs
 BASE_DIR=$NXFUSE_TOOL_PATH/../..
-SMARTFSDIR=$BASE_DIR/os/fs/smartfs
-BASE_INCLUDE_DIR=$BASE_DIR/os/include
+SMARTFSDIR=$BASE_DIR/kernel/fs/smartfs
+BASE_INCLUDE_DIR=$BASE_DIR/header_files/include
 DEST_INLCUDE_DIR=$NXFUSE_TOOL_PATH/include
 
 APPNAME=nxfuse
 
-. $BASE_DIR/os/.config
+. $BASE_DIR/common_source/.config
 
 echo "==========Copying Smartfs files====================="
 mkdir -p $DEST_INLCUDE_DIR
@@ -43,7 +43,7 @@ ln -sf $SMARTFSDIR/smartfs.h $SMARTFS_TMPDIR/smartfs.h
 ln -sf $SMARTFSDIR/smartfs_utils.c $SMARTFS_TMPDIR/smartfs_utils.c
 ln -sf $SMARTFSDIR/smartfs_smart.c $SMARTFS_TMPDIR/smartfs_smart.c
 ln -sf $SMARTFSDIR/../driver/mtd/smart.c $SMARTFS_TMPDIR/smart.c
-ln -svf $BASE_DIR/lib/libc/queue $SRCDIR/
+ln -svf $BASE_DIR/common_source/lib/libc/queue $SRCDIR/
 
 #Header Files
 ln -sf $BASE_INCLUDE_DIR/crc16.h $DEST_INLCUDE_DIR/crc16.h
@@ -66,9 +66,9 @@ ln -sf $BASE_INCLUDE_DIR/tinyara/fs/ioctl.h $DEST_INLCUDE_DIR/tinyara/fs/ioctl.h
 ln -sf $BASE_INCLUDE_DIR/tinyara/fs/fs.h $DEST_INLCUDE_DIR/tinyara/fs/fs.h
 
 #Source Files
-ln -sf $BASE_DIR/lib/libc/misc/lib_crc16.c $SRCDIR/lib_crc16.c
-ln -sf $BASE_DIR/lib/libc/misc/lib_crc32.c $SRCDIR/lib_crc32.c
-ln -sf $BASE_DIR/lib/libc/misc/lib_crc8.c $SRCDIR/lib_crc8.c
+ln -sf $BASE_DIR/common_source/lib/libc/misc/lib_crc16.c $SRCDIR/lib_crc16.c
+ln -sf $BASE_DIR/common_source/lib/libc/misc/lib_crc32.c $SRCDIR/lib_crc32.c
+ln -sf $BASE_DIR/common_source/lib/libc/misc/lib_crc8.c $SRCDIR/lib_crc8.c
 
 echo "Copying Done"
 
