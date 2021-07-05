@@ -225,7 +225,7 @@ BIN = $(OUTBIN_DIR)/$(BIN_EXE)
 
 memstat: $(BIN) romfs
 
-all: memstat
+all: kernelbin
 .PHONY: context clean_context check_context config oldconfig menuconfig nconfig qconfig gconfig export subdir_clean clean subdir_distclean distclean apps_clean apps_distclean force_build applist appupdate smartfs
 
 # Target used to copy include/tinyara/math.h.  If CONFIG_ARCH_MATH_H is
@@ -391,10 +391,10 @@ context: include/tinyara/config.h include/tinyara/version.h check_context includ
 # and symbolic links created by the context target.
 
 clean_context:
-	$(call DELFILE, include/tinyara/config.h)
-	$(call DELFILE, include/tinyara/version.h)
-	$(call DELFILE, include/math.h)
-	$(call DELFILE, include/stdarg.h)
+	$(call DELFILE, ../header_files/include/tinyara/config.h)
+	$(call DELFILE, ../header_files/include/tinyara/version.h)
+	$(call DELFILE, ../header_files/include/math.h)
+	$(call DELFILE, ../header_files/include/stdarg.h)
 	$(Q) $(DIRUNLINK) include/arch/board
 	$(Q) $(DIRUNLINK) include/arch/chip
 	$(Q) $(DIRUNLINK) include/arch
@@ -641,13 +641,13 @@ ifneq ($(MEMSTATS),)
 endif
 
 distclean: clean subdir_distclean clean_context
-	$(call DELFILE, Make.defs)
-	$(call DELFILE, setenv.sh)
-	$(call DELFILE, setenv.bat)
-	$(call DELFILE, .config)
-	$(call DELFILE, .config.old)
-	$(call DELFILE, .version)
-	$(call DELFILE, .appSpec)
+	$(call DELFILE, ../common_source/Make.defs)
+	$(call DELFILE, ../common_source/setenv.sh)
+	$(call DELFILE, ../common_source/setenv.bat)
+	$(call DELFILE, ../common_source/.config)
+	$(call DELFILE, ../common_source/.config.old)
+	$(call DELFILE, ../common_source/.version)
+	$(call DELFILE, ../common_source/.appSpec)
 
 # Application housekeeping targets.  The APPDIR variable refers to the user
 # application directory.  A sample apps/ directory is included with TinyAra,
