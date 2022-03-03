@@ -303,8 +303,8 @@ static const struct amebad_i2c_config_s amebad_i2c1_config = {
 	//.busy_idle = CONFIG_I2C1_BUSYIDLE,
 	//.filtscl = CONFIG_I2C1_FILTSCL,
 	//.filtsda = CONFIG_I2C1_FILTSDA,
-	.scl_pin = PA_25,
-	.sda_pin = PA_26,
+	.scl_pin = PB_5,
+	.sda_pin = PB_6,
 #ifndef CONFIG_I2C_SLAVE
 	.mode = AMEBAD_I2C_MASTER,
 #else

@@ -50,7 +50,7 @@ static const int TEST_PCM = 1;
 static const int TEST_BUFFER = 2;
 static const int TEST_HTTP = 3;
 
-static char TEST_FILE_PATH[128] = "/rom/44100.pcm";
+static char TEST_FILE_PATH[128] = "/mnt/44100.pcm";
 // We don't provide any song's URL, to avoid license issue.
 // Please fill a valid URL to `TEST_HTTP_URL` for testing!
 static const std::string TEST_HTTP_URL = "";
@@ -104,7 +104,7 @@ bool MyMediaPlayer::init(int test)
 	switch (test) {
 	case TEST_PCM:
 		makeSource = []() {
-			auto source = std::move(unique_ptr<FileInputDataSource>(new FileInputDataSource("/rom/44100.pcm")));
+			auto source = std::move(unique_ptr<FileInputDataSource>(new FileInputDataSource("/mnt/44100.pcm")));
 			source->setSampleRate(44100);
 			source->setChannels(2);
 			source->setPcmFormat(AUDIO_FORMAT_TYPE_S16_LE);
@@ -316,7 +316,7 @@ public:
 	{
 		while (true) {
 			vector<string> sourceList = {"Exit APP", "Test PCM", "Test BUFFER", "Test HTTP"};
-			listDirEntries("/rom", sourceList);
+			listDirEntries("/mnt", sourceList);
 			auto test = view.selectSource(sourceList);
 			if (test == 0) {
 				break;

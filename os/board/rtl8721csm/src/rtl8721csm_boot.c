@@ -340,6 +340,8 @@ void board_initialize(void)
 		}
 	}
 #endif
+	rtl_ub6470_initialize(0);
+
 #ifdef CONFIG_FTL_ENABLED
 	app_ftl_init();
 #endif

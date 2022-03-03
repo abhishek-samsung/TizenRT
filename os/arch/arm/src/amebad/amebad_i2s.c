@@ -382,7 +382,6 @@ static int i2s_tx_start(struct amebad_i2s_s *priv)
 	int pg_idx;
 
 	struct ap_buffer_s *apb;
-	apb = bfcontainer->apb;
 
 	/* Check if the DMA is IDLE */
 	if (!sq_empty(&priv->tx.act)) {
@@ -401,7 +400,7 @@ static int i2s_tx_start(struct amebad_i2s_s *priv)
 	/* Remove the pending TX transfer at the head of the TX pending queue. */
 	bfcontainer = (struct amebad_buffer_s *)sq_remfirst(&priv->tx.pend);
 	if (NULL != bfcontainer && NULL != bfcontainer->apb) {
-
+		apb = bfcontainer->apb;
 		/* Add the container to the list of active DMAs */
 		sq_addlast((sq_entry_t *)bfcontainer, &priv->tx.act);
 
@@ -564,8 +563,8 @@ static uint32_t i2s_txdatawidth(struct i2s_dev_s *dev, int bits)
 	struct amebad_i2s_s *priv = (struct amebad_i2s_s *)dev;
 
 	/* Support 16, 24, 32 bits */
-	DEBUGASSERT(priv && (bits == I2S_BITS_PER_SAMPLE_16BIT /
-				|| bits == I2S_BITS_PER_SAMPLE_32BIT /
+	DEBUGASSERT(priv && (bits == I2S_BITS_PER_SAMPLE_16BIT \
+				|| bits == I2S_BITS_PER_SAMPLE_32BIT \
 				|| bits == I2S_BITS_PER_SAMPLE_24BIT));
 
 	priv->bits_per_sample = bits;
@@ -617,7 +616,7 @@ static int i2s_send(struct i2s_dev_s *dev, struct ap_buffer_s *apb, i2s_callback
 
 	DEBUGASSERT(priv && apb);
 
-	i2sinfo("[I2S TX] apb=%p nbytes=%d arg=%p samp=%p timeout=%d\n", apb, apb->nbytes - apb->curbyte, apb->samp, arg, timeout);
+	i2sinfo("[I2S TX] apb=%p nbytes=%d samp=%p arg=%p timeout=%d\n", apb, apb->nbytes - apb->curbyte, apb->samp, arg, timeout);
 
 	i2s_dump_buffer("Sending", &apb->samp[apb->curbyte], apb->nbytes - apb->curbyte);
 
@@ -744,7 +743,7 @@ static int i2s_rxdma_prep(struct amebad_i2s_s *priv, struct amebad_buffer_s *bfc
 
 static int i2s_rx_start(struct amebad_i2s_s *priv)
 {
-	struct amebad_buffer_s *bfcontainer;
+	struct amebad_buffer_s *bfcontainer = NULL;
 	int ret;
 	irqstate_t flags;
 
@@ -931,8 +930,8 @@ static uint32_t i2s_rxdatawidth(struct i2s_dev_s *dev, int bits)
 	struct amebad_i2s_s *priv = (struct amebad_i2s_s *)dev;
 
 	/* Support 16, 24, 32 bits */
-	DEBUGASSERT(priv && (bits == I2S_BITS_PER_SAMPLE_16BIT /
-				|| bits == I2S_BITS_PER_SAMPLE_32BIT /
+	DEBUGASSERT(priv && (bits == I2S_BITS_PER_SAMPLE_16BIT \
+				|| bits == I2S_BITS_PER_SAMPLE_32BIT \
 				|| bits == I2S_BITS_PER_SAMPLE_24BIT));
 
 	priv->bits_per_sample = bits;
@@ -1630,11 +1629,11 @@ static uint32_t i2s_samplerate(struct i2s_dev_s *dev, uint32_t rate)
 
 static void amebad_i2s_initpins(struct amebad_i2s_s *priv)
 {
-	priv->i2s_sclk_pin = PA_2;
-	priv->i2s_ws_pin = PA_4;
+	priv->i2s_sclk_pin = PB_29;
+	priv->i2s_ws_pin = PB_31;
 	priv->i2s_sd_tx_pin = PB_26;
-	priv->i2s_sd_rx_pin = PA_0;
-	priv->i2s_mck_pin = PA_12;
+	priv->i2s_sd_rx_pin = PB_22;
+	priv->i2s_mck_pin = PB_23;
 }
 
 /****************************************************************************

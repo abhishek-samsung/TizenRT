@@ -266,10 +266,10 @@ static struct amebad_spidev_s g_spi1dev = {
 	.spi_object = {0},
 
 	.spi_idx = MBED_SPI1,
-	.spi_mosi = PB_4,
-	.spi_miso = PB_5,
-	.spi_sclk = PB_6,
-	.spi_cs = PB_7,
+	.spi_mosi = PA_12,
+	.spi_miso = PA_13,
+	.spi_sclk = PA_14,
+	.spi_cs = PA_15,
 	.nbits = 8,
 	.mode = SPIDEV_MODE0,
 	.role = AMEBAD_SPI_MASTER

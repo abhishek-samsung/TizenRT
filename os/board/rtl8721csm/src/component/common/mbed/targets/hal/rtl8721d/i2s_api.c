@@ -134,7 +134,7 @@ void i2s_init(i2s_t *obj, PinName sck, PinName ws, PinName sd_tx, PinName sd_rx,
 	Pinmux_Config(sck, PINMUX_FUNCTION_I2S);
 	Pinmux_Config(ws, PINMUX_FUNCTION_I2S);
 	Pinmux_Config(sd_tx, PINMUX_FUNCTION_I2S);
-	Pinmux_Config(sd_rx, PINMUX_FUNCTION_I2S);
+	//Pinmux_Config(sd_rx, PINMUX_FUNCTION_I2S);
 	Pinmux_Config(mck, PINMUX_FUNCTION_I2S);
 
 	next_tx_complete = 0;

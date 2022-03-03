@@ -440,7 +440,7 @@ void spi_init (spi_t *obj, PinName mosi, PinName miso, PinName sclk, PinName sse
 		Pinmux_Config(mosi, PINMUX_FUNCTION_SPIM);
 		Pinmux_Config(miso, PINMUX_FUNCTION_SPIM);
 		Pinmux_Config(sclk, PINMUX_FUNCTION_SPIM);
-		Pinmux_Config(ssel, PINMUX_FUNCTION_SPIM);
+		//Pinmux_Config(ssel, PINMUX_FUNCTION_SPIM);
 		
 		SSI_InitStruct.SPI_Role=SSI_MASTER;
 		ssi_adapter->Role = SSI_MASTER;

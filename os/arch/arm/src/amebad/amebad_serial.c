@@ -307,8 +307,8 @@ static struct rtl8721d_up_dev_s g_uart1priv = {
 #endif
 	.baud = CONFIG_UART1_BAUD,
 	.irq = RTL8721D_UARTLP_IRQ,
-	.tx = PA_12,
-	.rx = PA_13,
+	.tx = PB_1,
+	.rx = PB_2,
 	.FlowControl = FlowControlNone,
 	.txint_enable = false,
 	.rxint_enable = false,

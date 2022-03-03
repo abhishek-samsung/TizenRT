@@ -37,7 +37,7 @@ bool BufferInputDataSource::isPrepared()
 bool BufferInputDataSource::open()
 {
 	if (!isPrepared()) {
-		mFp = fopen("/rom/over_16000.mp3", "rb");
+		mFp = fopen("/mnt/sample.mp3", "rb");
 		mSrcSize = 2048;
 		mSrcBuf = new unsigned char[mSrcSize];
 		// Application can specify all audio informations (audioType/sampleRate/channels/pcmFormat),
