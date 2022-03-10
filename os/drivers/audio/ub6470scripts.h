@@ -51,7 +51,7 @@ t_codec_init_script_entry codec_initial_script[] = { /* refer to regs_default.h 
 
 
 	//Main Page Setting
-
+	{UB6470_REG_D_1BYTE, 0x00, {0x00,}, 0},
 	//PLL Setting
 	{UB6470_REG_D_1BYTE, 0x04, {0x00,}, 0},
 	{UB6470_REG_D_1BYTE, 0x05, {0x3F,}, 0},

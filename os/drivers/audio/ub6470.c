@@ -110,11 +110,13 @@ uint8_t ub6470_readreg_1byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr)
         FAR struct i2c_config_s *ub6470_i2c_config = &(priv->lower->i2c_config);
         uint8_t reg_w[4];
         reg_w[0] = regaddr;
-        if (i2c_writeread(dev, ub6470_i2c_config, reg_w, 1, reg, 1) < 0) {
+	int ret = i2c_writeread(dev, ub6470_i2c_config, reg_w, 1, reg, 1);
+        if (ret < 0) {
                 lldbg("Error, cannot read reg %x\n", regaddr);
 		PANIC();
                 return FAIL_8;
         }
+	else lldbg("read to 0x%x ret = %d\n", regaddr, ret);
         return reg[0];
 }
 
@@ -170,7 +172,10 @@ static int ub6470_writereg_1byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr,
         if (ret < 0) {
                 auddbg("Error, cannot write reg %x\n", regaddr);
         }
-        return ret;
+	else lldbg("written to 0x%x val 0x%x ret = %d\n", regaddr, regval, ret);
+	uint8_t regval2 = ub6470_readreg_1byte(priv, regaddr);       
+	lldbg("read from 0x%x val 0x%x\n", regaddr, regval2);
+	return ret;
 }
 
 /************************************************************************************
@@ -197,6 +202,7 @@ static int ub6470_writereg_4byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr,
         if (ret < 0) {
                 auddbg("Error, cannot write reg %x\n", regaddr);
         }
+	else lldbg("written to 0x%x ret = %d\n", regaddr, ret);
         return ret;
 }
 
@@ -1102,8 +1108,8 @@ static void ub6470_reconfigure(FAR struct ub6470_dev_s *priv)
 	 */
 	int res = ub6470_exec_i2c_script(priv, codec_initial_script, sizeof(codec_initial_script) / sizeof(t_codec_init_script_entry));
 	lldbg("reconfigure output : %d\n", res);
-	ub6470_set_i2s_samplerate(priv);
-	ub6470_set_i2s_datawidth(priv);
+//	ub6470_set_i2s_samplerate(priv);
+//	ub6470_set_i2s_datawidth(priv);
 }
 
 /****************************************************************************
@@ -1163,7 +1169,7 @@ FAR struct audio_lowerhalf_s *ub6470_initialize(FAR struct i2c_dev_s *i2c, FAR s
 	FAR struct ub6470_dev_s *priv;
 	uint8_t regval;
 	/* Sanity check */
-	DEBUGASSERT(i2c && i2s && lower);
+	DEBUGASSERT(i2c && lower);
 
 	auddbg("I2s dev addr is 0x%x\n", i2s);
 
@@ -1198,6 +1204,26 @@ FAR struct audio_lowerhalf_s *ub6470_initialize(FAR struct i2c_dev_s *i2c, FAR s
 	priv->volume = UB6470_SPK_VOL_DEF;
 	ub6470_setvolume(priv);
 #endif
+
+	int ret = ub6470_writereg_1byte(priv, 0x2A, 0xCC);
+	regval = ub6470_readreg_1byte(priv, 0x2A);
+	lldbg("\n\n addr : 0x%x written 0xCC, READ 0x%x\n\n", 0x2a, regval);
+
+	ret = ub6470_writereg_1byte(priv, 0x11, 0xCC);
+        regval = ub6470_readreg_1byte(priv, 0x11);
+        lldbg("\n\n addr : 0x%x written 0xCC, READ 0x%x\n\n", 0x11, regval);
+
+	ret = ub6470_writereg_1byte(priv, 0x2A, 0xF0);
+        regval = ub6470_readreg_1byte(priv, 0x2A);
+        lldbg("\n\n addr : 0x%x written 0xf0, READ 0x%x\n\n", 0x2a, regval);
+
+	ret = ub6470_writereg_1byte(priv, 0x11, 0xF0);
+        regval = ub6470_readreg_1byte(priv, 0x11);
+        lldbg("\n\n addr : 0x%x written 0xCC, READ 0x%x\n\n", 0x11, regval);
+
+	priv->i2s = amebad_i2s_initialize(0);
+	ub6470_set_i2s_samplerate(priv);
+        ub6470_set_i2s_datawidth(priv);
 	return &priv->dev;
 
 errout_with_dev:

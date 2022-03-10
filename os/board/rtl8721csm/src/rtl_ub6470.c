@@ -27,13 +27,13 @@ extern int amebad_gpio_write(PinName pin, FAR unsigned int value);
  ****************************************************************************/
 /* i2c config */
 #define UB6470_I2C_PORT        0
-#define UB6470_I2C_FREQ        400000
+#define UB6470_I2C_FREQ        100000
 #define UB6470_I2C_ADDRLEN     7
 
 #define UB6470_GPIO_A0_FAULT       9 //I2C_STRAP_PIN
 #define UB6470_GPIO_A0_FAULT_VAL   1 //HIGH
-#define UB6470_I2C_ADDR_H          ((0x30)>>1)  
-#define UB6470_I2C_ADDR_L          ((0x30)>>1) 
+#define UB6470_I2C_ADDR_H          0x1A
+#define UB6470_I2C_ADDR_L          0x1A 
 
 /* i2s config */
 #define UB6470_I2S_PORT 0
@@ -98,8 +98,19 @@ static void ub6470_control_reset_pin(bool active)
 	//The reset pins are shared with cx20921 and ub6470. the reset pin is controlled here  //CONFIG_AUDIO_UB6470_CX20921_SHARED_RESET_PIN
 	if(active)
 	{
+		amebad_gpio_write(_PA_0, 0);
+		for (int i = 0; i < 100000000; i++) {
+                        int ans;
+                        for (int j = 0; j <1000000000; j++) ans = j;
+                        if (i %10000000 == 0) lldbg("waiting after power off %d\n", ans);
+                }
 		amebad_gpio_write(_PA_0, 1);
 		lldbg("power on\n");
+		for (int i = 0; i < 100000000; i++) {
+			int ans;
+			for (int j = 0; j <1000000000; j++) ans = j;
+			if (i %10000000 == 0) lldbg("waiting after power up %d\n", ans);
+		}
 	}
 	else
 	{
@@ -178,9 +189,9 @@ int rtl_ub6470_initialize(int minor)
 		lldbg("i2c init done\n");
 		lldbg("calling init i2s\n");
 		/* Get an instance of the I2S interface for the UB6470 data channel */
-		i2s = amebad_i2s_initialize(UB6470_I2S_PORT);
+		i2s = NULL;//amebad_i2s_initialize(UB6470_I2S_PORT);
 		// i2schar_register(i2s, 0);
-		if (!i2s) {
+		if (i2s) {
 			auddbg("ERROR: Failed to initialize I2S\n");
 			ret = -ENODEV;
 			goto errout_with_i2s;
