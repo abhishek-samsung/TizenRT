@@ -340,7 +340,9 @@ void board_initialize(void)
 		}
 	}
 #endif
+#ifdef CONFIG_AUDIO_UB6470
 	rtl_ub6470_initialize(0);
+#endif
 
 #ifdef CONFIG_FTL_ENABLED
 	app_ftl_init();

@@ -61,12 +61,20 @@
  * hello_main
  ****************************************************************************/
 
+int counter = 0;
+
 #ifdef CONFIG_BUILD_KERNEL
 int main(int argc, FAR char *argv[])
 #else
 int hello_main(int argc, char *argv[])
 #endif
 {
+	sleep(2);
+	counter++;
 	printf("Hello, World!!\n");
+	if (counter == 3) {
+		printf("registering i2s driver\n");
+		struct i2s_dev_s *i2s = amebad_i2s_initialize(0);
+	}
 	return 0;
 }

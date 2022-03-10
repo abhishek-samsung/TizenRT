@@ -214,7 +214,7 @@ int i2ccmd_dev(FAR struct i2ctool_s *i2ctool, int argc, char **argv)
 				ret = I2C_TRANSFER(dev, msg, 2);
 			}
 
-			if (ret == OK) {
+			if (ret > 0) {
 				i2ctool_printf(i2ctool, "%02x ", addr);
 			} else {
 				i2ctool_printf(i2ctool, "-- ");
