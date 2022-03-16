@@ -129,6 +129,10 @@ int amebad_gpio_write(PinName pin, FAR unsigned int value) {
 	gpio_write(&p, value);
 }
 
+int amebad_PA0_set(FAR unsigned int value) {
+	return amebad_gpio_write(_PA_0, value);
+}
+
 /****************************************************************************
  * Name: amebad_gpio_get
  *
