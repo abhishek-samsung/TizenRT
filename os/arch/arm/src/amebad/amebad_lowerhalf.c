@@ -267,6 +267,7 @@ FAR struct gpio_lowerhalf_s *amebad_gpio_lowerhalf(u32 pinname, u32 pinmode, u32
 	gpio_init(&lower->obj, pinname);
     	gpio_dir(&lower->obj, pinmode);
     	gpio_mode(&lower->obj, pinpull);
+	gpio_write(&lower->obj, 0);
 	lower->pinmode =pinmode;
 	lower->pinpull = pinpull;
 	lower->ops = &amebad_gpio_ops;

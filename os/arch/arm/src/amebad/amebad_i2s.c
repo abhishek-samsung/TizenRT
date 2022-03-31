@@ -281,10 +281,10 @@ static int i2s_err_cb_register(struct i2s_dev_s *dev, i2s_err_cb_t cb, void *arg
 
 static const i2s_config_t i2s_default_config = {
 
-	.sample_rate = CONFIG_AMEBAD_I2S_SAMPLERATE,
-	.bits_per_sample = CONFIG_AMEBAD_I2S_DATALEN,
+	.sample_rate =  I2S_SR_48KHZ,
+	.bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
 
-	.channel_num = CH_MONO,
+	.channel_num = CH_STEREO,
 #if defined(I2S_HAVE_TX) && (0 < I2S_HAVE_TX)
 	.direction = I2S_DIR_TX,
 #endif
@@ -1055,7 +1055,7 @@ void i2s_transfer_rx_handleirq(void *data, char *pbuf)
 
 	int result = OK;
 
-	i2s_rxdma_callback(priv, result);
+	//i2s_rxdma_callback(priv, result);
 }
 
 #if defined(I2S_HAVE_RX) && (0 < I2S_HAVE_RX)

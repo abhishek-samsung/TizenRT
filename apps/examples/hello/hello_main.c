@@ -86,6 +86,8 @@ int hello_main(int argc, char *argv[])
 #if 1
     amebad_PA0_set(0);
     lldbg("set gpio0 to low");
+    lldbg("registering i2s driver\n");
+    struct i2s_dev_s *i2s = amebad_i2s_initialize(0);
     sleep(2);
     amebad_PA0_set(1);
     lldbg("set gpio0 to high");
@@ -102,7 +104,9 @@ int hello_main(int argc, char *argv[])
     config.frequency = 100000;
     config.addrlen = 7;
     config.address = 0x1A;
-    
+   
+//    while(true) {
+
     addr[0] = 0x04;
     addr[1] = 0x00;
 
@@ -200,17 +204,16 @@ int hello_main(int argc, char *argv[])
     addr[0] = 0x01; 
     addr[1] = 0x00;
 
-    for (int i = 0; i < 6; i++) {
-    	ret = i2c_write(dev, &config, addr, 2);
+    ret = i2c_write(dev, &config, addr, 2);
 
-    	if (ret != 2) {
-        	lldbg("write fail\n");
-            	return;
-    	}
-    	else lldbg("written 0x%02x to regaddr 0x%02x\n", addr[1], addr[0]);
-    }
+    if (ret != 2) {
+        lldbg("write fail\n");
+        return;
+    } else lldbg("written 0x%02x to regaddr 0x%02x\n", addr[1], addr[0]);
 
     sleep(2);
+
+    while(true) {
 
     ret = i2c_write(dev, &config, addr, 1); // send address 0x01 followed by read command.
 
@@ -228,7 +231,11 @@ int hello_main(int argc, char *argv[])
 
     lldbg("read 0x%02x from regaddr 0x%02x\n", buf[0], addr[0]);
 
+    if (buf[0] == 0x02) break;    // wait until we read 0x02 from the register.
+
     sleep(2);
+
+    }
 
     addr[0] = 0x2A; // write to regaddr 0x01 value 0x00
     addr[1] = 0xCC;
