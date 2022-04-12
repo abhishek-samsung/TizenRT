@@ -50,8 +50,6 @@ t_codec_init_script_entry codec_initial_script[] = { /* refer to regs_default.h 
 	//REG_IvDisEn  = 0x0000
 
 
-	//Main Page Setting
-	{UB6470_REG_D_1BYTE, 0x00, {0x00,}, 0},
 	//PLL Setting
 	{UB6470_REG_D_1BYTE, 0x04, {0x00,}, 0},
 	{UB6470_REG_D_1BYTE, 0x05, {0x3F,}, 0},
@@ -80,7 +78,7 @@ t_codec_init_script_entry codec_initial_script[] = { /* refer to regs_default.h 
 //Audio IF Page Setting
 
 //SDIO Format1 Setting
-	{UB6470_REG_D_1BYTE, 0x10, {0xD0,}, 0},
+	{UB6470_REG_D_1BYTE, 0x10, {0xDC,}, 0},
 
 //SDIO Format2 Setting
 	{UB6470_REG_D_1BYTE, 0x11, {0x50,}, 0},

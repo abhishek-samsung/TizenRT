@@ -189,9 +189,8 @@ int rtl_ub6470_initialize(int minor)
 		lldbg("i2c init done\n");
 		lldbg("calling init i2s\n");
 		/* Get an instance of the I2S interface for the UB6470 data channel */
-		i2s = NULL;//amebad_i2s_initialize(UB6470_I2S_PORT);
-		// i2schar_register(i2s, 0);
-		if (i2s) {
+		i2s = amebad_i2s_initialize(UB6470_I2S_PORT);
+		if (!i2s) {
 			auddbg("ERROR: Failed to initialize I2S\n");
 			ret = -ENODEV;
 			goto errout_with_i2s;
