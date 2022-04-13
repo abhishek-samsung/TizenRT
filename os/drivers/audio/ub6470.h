@@ -39,13 +39,13 @@
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
-#define UB6470_SAMPLE_FREQUENCY_IN_HZ  (48000) /* refer to Input data sample rate */
+#define UB6470_SAMPLE_FREQUENCY_IN_HZ  (96000) /* refer to Input data sample rate */
 #define UB6470_CHANNELS                2
-#define UB6470_BPSAMP                  32 /* refer to Digital Audio Interface Control registers */
+#define UB6470_BPSAMP                  16 /* refer to Digital Audio Interface Control registers */
 
-#define UB6470_DEFAULT_SAMPRATE    48000
+#define UB6470_DEFAULT_SAMPRATE    96000
 #define UB6470_DEFAULT_NCHANNELS   2
-#define UB6470_DEFAULT_BPSAMP      24
+#define UB6470_DEFAULT_BPSAMP      16
 #define FAIL_8                      0xFF
 #define FAIL_32                     0xFFFFFFFF
 #define ub6470_givesem(s)          sem_post(s)
