@@ -78,10 +78,10 @@ t_codec_init_script_entry codec_initial_script[] = { /* refer to regs_default.h 
 //Audio IF Page Setting
 
 //SDIO Format1 Setting
-	{UB6470_REG_D_1BYTE, 0x10, {0x5C,}, 0},
+	{UB6470_REG_D_1BYTE, 0x10, {0xDC,}, 0},
 
 //SDIO Format2 Setting
-	{UB6470_REG_D_1BYTE, 0x11, {0x60,}, 0},
+	{UB6470_REG_D_1BYTE, 0x11, {0x50,}, 0},
 
 //SDO Enable Setting
 	{UB6470_REG_D_1BYTE, 0x13, {0x00,}, 0},
