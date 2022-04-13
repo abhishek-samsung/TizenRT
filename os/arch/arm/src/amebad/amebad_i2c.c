@@ -799,7 +799,7 @@ static int amebad_i2c_isr_process(struct amebad_i2c_priv_s *priv)
 #else
 		ret = rtk_i2c_write(priv->i2c_object, priv->msgv->addr, w_msgv->buffer, w_msgv->length, 1);
 #endif
-		lldbg("i2c writing - priv->msgv->addr = 0x%x, w_msgv->buffer = 0x%x 0x%x, w_msgv->length = 0x%x\n", priv->msgv->addr, w_msgv->buffer[0], w_msgv->buffer[1], w_msgv->length);
+		//lldbg("i2c writing - priv->msgv->addr = 0x%x, w_msgv->buffer = 0x%x 0x%x, w_msgv->length = 0x%x\n", priv->msgv->addr, w_msgv->buffer[0], w_msgv->buffer[1], w_msgv->length);
 		if(ret != w_msgv->length) {
 			lldbg("write length is not successful - ret = %d, w_msgv->length = %d\n", ret, w_msgv->length);
 			ret = -1;
@@ -814,7 +814,7 @@ static int amebad_i2c_isr_process(struct amebad_i2c_priv_s *priv)
 #else
 		ret = rtk_i2c_read(priv->i2c_object, priv->msgv->addr, w_msgv->buffer, w_msgv->length, 1);
 #endif
-		lldbg("i2c reading - priv->msgv->addr = 0x%x, w_msgv->buffer = 0x%x\n", priv->msgv->addr, w_msgv->buffer[0]);
+		//lldbg("i2c reading - priv->msgv->addr = 0x%x, w_msgv->buffer = 0x%x\n", priv->msgv->addr, w_msgv->buffer[0]);
 		if(ret != w_msgv->length) {
 			lldbg("read length is not successful - ret = %d, w_msgv->length = %d\n", ret, w_msgv->length);
 			ret = -1;

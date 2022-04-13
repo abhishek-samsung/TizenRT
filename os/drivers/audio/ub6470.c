@@ -92,11 +92,12 @@ static const struct audio_ops_s g_audioops = {
 static void delay(unsigned int mS)
 {
         //usleep(mS * 1000);
+	int ans;
 	for (int i = 0; i < 100000000; i++) {
-                        int ans;
-                        for (int j = 0; j <1000000000; j++) ans = j;
-                        if (i %10000000 == 0) lldbg("waiting === delay  %d\n", ans);
+                        ans = (ans + i)%5;
+                        if (i %50000000 == 0) lldbg("waiting === delay\n", ans);
         }
+	ans += 1;
 }
 
 /****************************************************************************
@@ -123,7 +124,7 @@ uint8_t ub6470_readreg_1byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr)
 		PANIC();
                 return FAIL_8;
         }
-	else lldbg("read to 0x%x ret = %d\n", regaddr, ret);
+	//else lldbg("read to 0x%x ret = %d\n", regaddr, ret);
         return reg[0];
 }
 
@@ -179,9 +180,9 @@ static int ub6470_writereg_1byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr,
         if (ret != 2) {
                 auddbg("Error, cannot write reg %x\n", regaddr);
         }
-	else lldbg("written to 0x%x val 0x%x ret = %d\n", regaddr, regval, ret);
-	uint8_t regval2 = ub6470_readreg_1byte(priv, regaddr);       
-	lldbg("read from 0x%x val 0x%x\n", regaddr, regval2);
+	//else lldbg("written to 0x%x val 0x%x ret = %d\n", regaddr, regval, ret);
+	//uint8_t regval2 = ub6470_readreg_1byte(priv, regaddr);       
+	//lldbg("read from 0x%x val 0x%x\n", regaddr, regval2);
 	return ret;
 }
 
@@ -209,7 +210,7 @@ static int ub6470_writereg_4byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr,
         if (ret != 4) {
                 auddbg("Error, cannot write reg %x\n", regaddr);
         }
-	else lldbg("written to 0x%x ret = %d\n", regaddr, ret);
+	//else lldbg("written to 0x%x ret = %d\n", regaddr, ret);
         return ret;
 }
 
@@ -236,6 +237,8 @@ static int ub6470_exec_i2c_script(FAR struct ub6470_dev_s *priv, t_codec_init_sc
 		
 		if ((uint8_t)script[i].addr == 0x01) {
                         delay(script[i].delay); // wait as we are setting pll registers
+			uint8_t regval2 = ub6470_readreg_1byte(priv, 0x01);
+			lldbg("val of 0x01 : 0x%02x\n", regval2);
                 }
 		
         }

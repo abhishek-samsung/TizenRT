@@ -98,19 +98,21 @@ static void ub6470_control_reset_pin(bool active)
 	//The reset pins are shared with cx20921 and ub6470. the reset pin is controlled here  //CONFIG_AUDIO_UB6470_CX20921_SHARED_RESET_PIN
 	if(active)
 	{
+		lldbg("reset low\n");
 		amebad_gpio_write(_PA_0, 0);
 		for (int i = 0; i < 100000000; i++) {
                         int ans;
-                        for (int j = 0; j <1000000000; j++) ans = j;
-                        if (i %10000000 == 0) lldbg("waiting after power off %d\n", ans);
+                        for (int j = 0; j <1000; j++) ans = j;
+                        //if (i %10000000 == 0) lldbg("waiting after power off %d\n", ans);
                 }
 		amebad_gpio_write(_PA_0, 1);
-		lldbg("power on\n");
+		//lldbg("power on\n");
 		for (int i = 0; i < 100000000; i++) {
 			int ans;
-			for (int j = 0; j <1000000000; j++) ans = j;
-			if (i %10000000 == 0) lldbg("waiting after power up %d\n", ans);
+			for (int j = 0; j <1000; j++) ans = j;
+			//if (i %10000000 == 0) lldbg("waiting after power up %d\n", ans);
 		}
+		lldbg("reset high\n");
 	}
 	else
 	{
