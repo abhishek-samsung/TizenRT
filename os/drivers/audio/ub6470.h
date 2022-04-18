@@ -45,7 +45,7 @@
 
 #define UB6470_DEFAULT_SAMPRATE    48000
 #define UB6470_DEFAULT_NCHANNELS   2
-#define UB6470_DEFAULT_BPSAMP      24
+#define UB6470_DEFAULT_BPSAMP      32
 #define FAIL_8                      0xFF
 #define FAIL_32                     0xFFFFFFFF
 #define ub6470_givesem(s)          sem_post(s)

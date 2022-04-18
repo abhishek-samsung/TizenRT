@@ -900,9 +900,10 @@ static int ub6470_enqueuebuffer(FAR struct audio_lowerhalf_s *dev, FAR struct ap
 		return OK;
 	}
 	lldbg("I2S send is called\n");
-	priv->volume = UB6470_SPK_VOL_MAX; /* debugging prupose to check if volume is not on mute*/
-        lldbg("set volume to max\n");
-        ub6470_setvolume(priv);
+	priv->volume = UB6470_SPK_VOL_MAX; 
+	/* debugging prupose to check if volume is not on mute*/
+        //lldbg("set volume to max\n");
+        //ub6470_setvolume(priv);
 	ret = I2S_SEND(priv->i2s, apb, ub6470_txcallback, priv, UB6470_I2S_TIMEOUT_MS);
 
 	return ret;
