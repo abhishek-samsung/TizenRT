@@ -94,13 +94,13 @@ bool MediaWorker::processLoop()
 void *MediaWorker::mediaLooper(void *arg)
 {
 	auto worker = static_cast<MediaWorker *>(arg);
-	medvdbg("MediaWorker : mediaLooper\n");
+	//medvdbg("MediaWorker : mediaLooper\n");
 
 	while (worker->mIsRunning) {
 		while (worker->processLoop() && worker->mWorkerQueue.isEmpty());
 
 		std::function<void()> run = worker->deQueue();
-		medvdbg("MediaWorker : deQueue\n");
+		//medvdbg("MediaWorker : deQueue\n");
 		if (run != nullptr) {
 			run();
 		}

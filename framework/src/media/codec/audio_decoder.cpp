@@ -116,7 +116,7 @@ using namespace media;
 #define OPUS_PACKET_SYNC_VERIFY(buf) (strncmp((const char *)buf, "Opus", 4) == 0)
 #define OPUS_PACKET_GETSIZE(buf) (OPUS_PACKET_HEADER_LEN + _u32_at(buf+4))
 
-#define BYTES_PER_SAMPLE sizeof(signed short)
+#define BYTES_PER_SAMPLE sizeof(int)
 
 /****************************************************************************
  * Private Declarations
@@ -1031,20 +1031,34 @@ size_t audio_decoder_get_frames(audio_decoder_p decoder, unsigned char *buf, siz
 
 	while (size < max) {
 		if (pcm->samples) {
+			meddbg("converting 16 to 32 bit\n");
 			// Copy remained data to decoder output buffer
+			signed short temp = 0;
 			size_t nSamples = (max - size) / BYTES_PER_SAMPLE;
 			if (pcm->length  <= nSamples) {
 				// Copy all data
-				memcpy(buf + size, pcm->samples, pcm->length * BYTES_PER_SAMPLE);
-				size += pcm->length * BYTES_PER_SAMPLE;
+				//memcpy(buf + size, pcm->samples, pcm->length * BYTES_PER_SAMPLE);
+				for (int i = 0; i < nSamples; i++) {
+					memcpy(buf + size, pcm->samples + i, BYTES_PER_SAMPLE/2);
+					size+= BYTES_PER_SAMPLE/2;
+					memcpy(buf + size, &temp, BYTES_PER_SAMPLE/2);
+					size+= BYTES_PER_SAMPLE/2;
+				}
+				//size += pcm->length * BYTES_PER_SAMPLE;
 				// Clear remained data record
 				pcm->samples = NULL;
 				pcm->length = 0;
 				continue;
 			} else {
 				// Copy part of data required
-				memcpy(buf + size, pcm->samples, nSamples * BYTES_PER_SAMPLE);
-				size = max;
+				//memcpy(buf + size, pcm->samples, nSamples * BYTES_PER_SAMPLE);
+				for (int i = 0; i < nSamples; i++) {
+                                        memcpy(buf + size, pcm->samples + i, BYTES_PER_SAMPLE/2);
+                                        size+= BYTES_PER_SAMPLE/2;
+                                        memcpy(buf + size, &temp, BYTES_PER_SAMPLE/2);
+                                        size+= BYTES_PER_SAMPLE/2;
+                                }
+				//size = max;
 				// Update remained data record
 				pcm->samples += nSamples;
 				pcm->length -= nSamples;
