@@ -586,15 +586,14 @@ static int ub6470_configure(FAR struct audio_lowerhalf_s *dev, FAR const struct 
 
 		if (caps->ac_controls.b[2] != UB6470_BPSAMP) {
 			auddbg("ERROR: Unsupported bits per sample: %d\n", caps->ac_controls.b[2]);
-			auddbg("overriding bits per sample\n");
-			//break;
+			break;
 		}
 
 		/* Save the current stream configuration */
 
 		priv->samprate = caps->ac_controls.hw[0];
 		priv->nchannels = caps->ac_channels;
-		priv->bpsamp = UB6470_BPSAMP; //caps->ac_controls.b[2];
+		priv->bpsamp = caps->ac_controls.b[2];
 
 		audvdbg("    Number of channels: 0x%x\n", priv->nchannels);
 		audvdbg("    Sample rate:        0x%x\n", priv->samprate);
