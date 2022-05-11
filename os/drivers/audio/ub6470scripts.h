@@ -46,7 +46,92 @@ t_codec_init_script_entry codec_stop_script[] = {
 };
 
 t_codec_init_script_entry codec_initial_script[] = { /* refer to regs_default.h file for ub647x */
+	{UB6470_REG_D_1BYTE, 0x04, {0x00,}, 0},
+	{UB6470_REG_D_1BYTE, 0x05, {0x3F,}, 0},
+	{UB6470_REG_D_1BYTE, 0x03, {0x01,}, 0},
+	
+	{UB6470_REG_D_1BYTE, 0x01, {0x00,}, 0},
+        {UB6470_REG_D_1BYTE, 0x01, {0x00,}, 0},
+        {UB6470_REG_D_1BYTE, 0x01, {0x00,}, 0},
+        {UB6470_REG_D_1BYTE, 0x01, {0x00,}, 0},
+        {UB6470_REG_D_1BYTE, 0x01, {0x00,}, 0},
+        {UB6470_REG_D_1BYTE, 0x01, {0x00,}, 0},
+	{UB6470_REG_D_1BYTE, 0x01, {0x00,}, 0},
 
+	{UB6470_REG_D_1BYTE, 0x11, {0x50,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x6B, {0x40,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x25, {0x00,}, 0},
+	{UB6470_REG_D_1BYTE, 0x26, {0x00,}, 0},
+	{UB6470_REG_D_1BYTE, 0x27, {0x00,}, 0},
+	{UB6470_REG_D_1BYTE, 0x28, {0x00,}, 0},
+
+	//SDIO Format1 Setting
+        {UB6470_REG_D_1BYTE, 0x10, {0xD0,}, 0},
+
+	//SDIO Format2 Setting
+        {UB6470_REG_D_1BYTE, 0x11, {0x50,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x20, {0x00,}, 0},
+	{UB6470_REG_D_1BYTE, 0x21, {0x00,}, 0},
+	{UB6470_REG_D_1BYTE, 0x22, {0x00,}, 0},
+	{UB6470_REG_D_1BYTE, 0x23, {0x00,}, 0},
+
+	{UB6470_REG_D_4BYTE, 0xF8, {0x00, 0x00, 0x04, 0x18}, 0},
+	{UB6470_REG_D_4BYTE, 0xF9, {0x00, 0x3F, 0xFB, 0xE7}, 0},
+	{UB6470_REG_D_4BYTE, 0xFA, {0x00, 0x3F, 0xF4, 0x2C}, 0},
+	{UB6470_REG_D_4BYTE, 0xFB, {0x00, 0x40, 0x00, 0x40}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x31, {0xD4,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x30, {0x01,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x33, {0x00,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x34, {0xC9,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x36, {0x40,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x38, {0xCF,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x3A, {0xCF,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x20, {0xCF,}, 0},
+	{UB6470_REG_D_1BYTE, 0x21, {0x00,}, 0},
+	{UB6470_REG_D_1BYTE, 0x23, {0x00,}, 0},
+	{UB6470_REG_D_1BYTE, 0x23, {0xCF,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x24, {0x00,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x42, {0x01,}, 0},
+	{UB6470_REG_D_1BYTE, 0x43, {0x7C,}, 0},
+	{UB6470_REG_D_1BYTE, 0x44, {0x20,}, 0},
+	{UB6470_REG_D_1BYTE, 0x45, {0x03,}, 0},
+	{UB6470_REG_D_1BYTE, 0x46, {0x1F,}, 0},
+	{UB6470_REG_D_1BYTE, 0x47, {0x03,}, 0},
+	{UB6470_REG_D_1BYTE, 0x48, {0x1A,}, 0},
+	{UB6470_REG_D_1BYTE, 0x49, {0x03,}, 0},
+	{UB6470_REG_D_1BYTE, 0x4A, {0x11,}, 0},
+	{UB6470_REG_D_1BYTE, 0x53, {0x00,}, 0},
+	{UB6470_REG_D_1BYTE, 0x56, {0x32,}, 0},
+	{UB6470_REG_D_1BYTE, 0x58, {0x0E,}, 0},
+	{UB6470_REG_D_1BYTE, 0x7F, {0x68,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x0E, {0x01,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x52, {0x10,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x41, {0xE4,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x40, {0x03,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x29, {0x0C,}, 0},
+
+	{UB6470_REG_D_1BYTE, 0x2A, {0xCC,}, 0},
+	{UB6470_REG_D_1BYTE, 0x2B, {0x00,}, 0},
+
+	/*
 	//REG_IvDisEn  = 0x0000
 
 
@@ -354,7 +439,7 @@ t_codec_init_script_entry codec_initial_script[] = { /* refer to regs_default.h 
 {UB6470_REG_D_1BYTE, 0x0E, {0x01,}, 0}
 //End identifier
 //{END_IDENTIFIER, 0x00}
-
+*/
 };
 
 t_codec_init_script_entry codec_init_mute_on_script[] = {

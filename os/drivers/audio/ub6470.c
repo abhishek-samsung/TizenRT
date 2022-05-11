@@ -427,7 +427,7 @@ static int ub6470_getcaps(FAR struct audio_lowerhalf_s *dev, int type, FAR struc
 		switch (caps->ac_subtype) {
 		case AUDIO_TYPE_QUERY:
 			/* Report the Sample rates we support */
-			caps->ac_controls.b[0] = AUDIO_SAMP_RATE_TYPE_48K;
+			caps->ac_controls.b[0] = AUDIO_SAMP_RATE_TYPE_96K;
 			break;
 
 		case AUDIO_FMT_MP3:
