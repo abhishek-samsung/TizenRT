@@ -171,7 +171,7 @@ void board_gpio_initialize(void)
 		u32 pinpull;
 	} pins[] = {
 		{
-			PA_0, PIN_OUTPUT, PullNone
+			PA_1, PIN_OUTPUT, PullNone
 		},
 		/*		{PA_6, PIN_OUTPUT, PullNone},
 				{PA_7, PIN_OUTPUT, PullNone},

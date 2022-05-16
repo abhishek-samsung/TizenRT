@@ -904,6 +904,10 @@ static int ub6470_enqueuebuffer(FAR struct audio_lowerhalf_s *dev, FAR struct ap
 	/* debugging prupose to check if volume is not on mute*/
         //lldbg("set volume to max\n");
         //ub6470_setvolume(priv);
+	uint8_t regval2 = ub6470_readreg_1byte(priv, 0x3C);
+        lldbg("val of 0x3C : 0x%02x\n", regval2);
+	regval2 = ub6470_readreg_1byte(priv, 0x3D);
+        lldbg("val of 0x3D : 0x%02x\n", regval2);
 	ret = I2S_SEND(priv->i2s, apb, ub6470_txcallback, priv, UB6470_I2S_TIMEOUT_MS);
 
 	return ret;
@@ -954,9 +958,9 @@ static int ub6470_ioctl(FAR struct audio_lowerhalf_s *dev, int cmd, unsigned lon
 
 		if (lower->control_powerdown) {
 			lower->control_powerdown(0);
-			delay(10);  //spec is 100us
+			//delay(10);  //spec is 100us
 		}
-		ub6470_exec_i2c_script(priv, codec_initial_script, sizeof(codec_initial_script) / sizeof(t_codec_init_script_entry));
+		//ub6470_exec_i2c_script(priv, codec_initial_script, sizeof(codec_initial_script) / sizeof(t_codec_init_script_entry));
 		
 		/* Amp Error Check */ // add error reg here
 		ub6470_writereg_1byte(priv, (uint8_t)0x0E, 0x00);

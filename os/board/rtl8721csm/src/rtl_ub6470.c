@@ -18,6 +18,7 @@
 
 #include "objects.h"
 #include "PinNames.h"
+#include "component/common/mbed/hal/gpio_api.h"
 
 extern FAR struct i2s_dev_s *amebad_i2s_initialize(uint16_t port);
 extern int amebad_gpio_write(PinName pin, FAR unsigned int value);
@@ -93,19 +94,24 @@ static struct cy4390x_ub6470_audioinfo_s g_ub6470info = {
 /****************************************************************************
  * Private Functions
  ****************************************************************************/
+
+gpio_t gpio_pa0;
+
 static void ub6470_control_reset_pin(bool active)
 {
 	//The reset pins are shared with cx20921 and ub6470. the reset pin is controlled here  //CONFIG_AUDIO_UB6470_CX20921_SHARED_RESET_PIN
 	if(active)
 	{
 		lldbg("reset low\n");
-		amebad_gpio_write(_PA_0, 0);
+		//amebad_gpio_write(_PA_0, 0);
+		gpio_write(&gpio_pa0, 0);
 		for (int i = 0; i < 100000000; i++) {
                         int ans;
                         for (int j = 0; j <1000; j++) ans = j;
                         //if (i %10000000 == 0) lldbg("waiting after power off %d\n", ans);
                 }
-		amebad_gpio_write(_PA_0, 1);
+		//amebad_gpio_write(_PA_0, 1);
+		gpio_write(&gpio_pa0, 1);
 		//lldbg("power on\n");
 		for (int i = 0; i < 100000000; i++) {
 			int ans;
@@ -199,6 +205,11 @@ int rtl_ub6470_initialize(int minor)
 		}
 		
 		lldbg("calling init i2s done\n");
+
+		gpio_init(&gpio_pa0, PA_0);
+        	gpio_write(&gpio_pa0, 0);
+        	gpio_dir(&gpio_pa0, PIN_OUTPUT);
+        	gpio_mode(&gpio_pa0, PullNone);
 #ifdef CONFIG_UB6470_EXCLUDE_PDN_CONTROL
 		g_ub6470info.lower.control_powerdown = ub6470_control_powerdown;
 #else
