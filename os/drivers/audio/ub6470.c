@@ -95,7 +95,7 @@ static void delay(unsigned int mS)
 	int ans;
 	for (int i = 0; i < 100000000; i++) {
                         ans = (ans + i)%5;
-                        if (i %50000000 == 0) lldbg("waiting === delay\n", ans);
+                        if (i %50000000 == 0) printf("waiting === delay\n", ans);
         }
 	ans += 1;
 }
@@ -120,11 +120,11 @@ uint8_t ub6470_readreg_1byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr)
         int ret = i2c_write(dev, ub6470_i2c_config, reg_w, 1);
 	ret =  i2c_read(dev, ub6470_i2c_config, reg, 1);
 	if (ret < 0) {
-                lldbg("Error, cannot read reg %x\n", regaddr);
+                printf("Error, cannot read reg %x\n", regaddr);
 		PANIC();
                 return FAIL_8;
         }
-	//else lldbg("read to 0x%x ret = %d\n", regaddr, ret);
+	//else printf("read to 0x%x ret = %d\n", regaddr, ret);
         return reg[0];
 }
 
@@ -180,9 +180,9 @@ static int ub6470_writereg_1byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr,
         if (ret != 2) {
                 auddbg("Error, cannot write reg %x\n", regaddr);
         }
-	//else lldbg("written to 0x%x val 0x%x ret = %d\n", regaddr, regval, ret);
+	//else printf("written to 0x%x val 0x%x ret = %d\n", regaddr, regval, ret);
 	//uint8_t regval2 = ub6470_readreg_1byte(priv, regaddr);       
-	//lldbg("read from 0x%x val 0x%x\n", regaddr, regval2);
+	//printf("read from 0x%x val 0x%x\n", regaddr, regval2);
 	return ret;
 }
 
@@ -210,7 +210,7 @@ static int ub6470_writereg_4byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr,
         if (ret != 4) {
                 auddbg("Error, cannot write reg %x\n", regaddr);
         }
-	//else lldbg("written to 0x%x ret = %d\n", regaddr, ret);
+	//else printf("written to 0x%x ret = %d\n", regaddr, ret);
         return ret;
 }
 
@@ -238,7 +238,7 @@ static int ub6470_exec_i2c_script(FAR struct ub6470_dev_s *priv, t_codec_init_sc
 		if ((uint8_t)script[i].addr == 0x01) {
                         delay(script[i].delay); // wait as we are setting pll registers
 			uint8_t regval2 = ub6470_readreg_1byte(priv, 0x01);
-			lldbg("val of 0x01 : 0x%02x\n", regval2);
+			printf("val of 0x01 : 0x%02x\n", regval2);
                 }
 		
         }
@@ -274,7 +274,7 @@ static void ub6470_takesem(sem_t *sem)
 #ifndef CONFIG_AUDIO_EXCLUDE_VOLUME
 static void ub6470_setvolume(FAR struct ub6470_dev_s *priv)
 {
-	lldbg("set volume is called\n");
+	printf("set volume is called\n");
         /* if no audio device object return */
         if (!priv) {
                 auddbg("Error, Device's private data Not available\n");
@@ -288,7 +288,7 @@ static void ub6470_setvolume(FAR struct ub6470_dev_s *priv)
                 } else {
                         codec_set_master_volume_script[1].val[0] = (uint8_t)priv->volume;
                         int ret = ub6470_exec_i2c_script(priv, codec_set_master_volume_script, sizeof(codec_set_master_volume_script) / sizeof(t_codec_init_script_entry));
-			lldbg("set volume output : %d\n", ret);
+			printf("set volume output : %d\n", ret);
                 }
         } else {
                 audvdbg("not running[volume=%u mute=%u]\n", priv->volume, priv->mute);
@@ -531,7 +531,7 @@ static int ub6470_configure(FAR struct audio_lowerhalf_s *dev, FAR const struct 
 			} else {
 				priv->volume = volume;
 			}
-			lldbg("set volume is called\n");
+			printf("set volume is called\n");
 			ub6470_setvolume(priv);
 		}
 		break;
@@ -882,7 +882,7 @@ static void ub6470_txcallback(FAR struct i2s_dev_s *dev, FAR struct ap_buffer_s 
  ****************************************************************************/
 static int ub6470_enqueuebuffer(FAR struct audio_lowerhalf_s *dev, FAR struct ap_buffer_s *apb)
 {
-	lldbg("In enqueue buffer\n");
+	printf("In enqueue buffer\n");
 	FAR struct ub6470_dev_s *priv = (FAR struct ub6470_dev_s *)dev;
 	int ret;
 
@@ -891,23 +891,23 @@ static int ub6470_enqueuebuffer(FAR struct audio_lowerhalf_s *dev, FAR struct ap
 	}
 
 	if (!priv->running) {
-		lldbg("device not runnning\n");
+		printf("device not runnning\n");
 		/* Add the new buffer to the tail of pending audio buffers */
 		ub6470_takesem(&priv->devsem);
 		sq_addlast((sq_entry_t *)&apb->dq_entry, &priv->pendq);
-		lldbg("enqueue added buf 0x%x\n", apb);
+		printf("enqueue added buf 0x%x\n", apb);
 		ub6470_givesem(&priv->devsem);
 		return OK;
 	}
-	lldbg("I2S send is called\n");
+	printf("I2S send is called\n");
 	priv->volume = UB6470_SPK_VOL_MAX; 
 	/* debugging prupose to check if volume is not on mute*/
-        //lldbg("set volume to max\n");
+        //printf("set volume to max\n");
         //ub6470_setvolume(priv);
 	uint8_t regval2 = ub6470_readreg_1byte(priv, 0x3C);
-        lldbg("val of 0x3C : 0x%02x\n", regval2);
+        printf("val of 0x3C : 0x%02x\n", regval2);
 	regval2 = ub6470_readreg_1byte(priv, 0x3D);
-        lldbg("val of 0x3D : 0x%02x\n", regval2);
+        printf("val of 0x3D : 0x%02x\n", regval2);
 	ret = I2S_SEND(priv->i2s, apb, ub6470_txcallback, priv, UB6470_I2S_TIMEOUT_MS);
 
 	return ret;
@@ -1121,7 +1121,7 @@ static void ub6470_reconfigure(FAR struct ub6470_dev_s *priv)
 	 * default state.
 	 */
 	int res = ub6470_exec_i2c_script(priv, codec_initial_script, sizeof(codec_initial_script) / sizeof(t_codec_init_script_entry));
-	lldbg("reconfigure output : %d\n", res);
+	printf("reconfigure output : %d\n", res);
 //	ub6470_set_i2s_samplerate(priv);
 //	ub6470_set_i2s_datawidth(priv);
 }
