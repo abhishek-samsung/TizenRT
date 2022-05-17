@@ -908,6 +908,8 @@ static int ub6470_enqueuebuffer(FAR struct audio_lowerhalf_s *dev, FAR struct ap
         printf("val of 0x3C : 0x%02x\n", regval2);
 	regval2 = ub6470_readreg_1byte(priv, 0x3D);
         printf("val of 0x3D : 0x%02x\n", regval2);
+	regval2 = ub6470_readreg_1byte(priv, 0x0F);
+        printf("val of 0x0F : 0x%02x\n", regval2);
 	ret = I2S_SEND(priv->i2s, apb, ub6470_txcallback, priv, UB6470_I2S_TIMEOUT_MS);
 
 	return ret;
