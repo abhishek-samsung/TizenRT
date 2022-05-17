@@ -58,12 +58,12 @@ static const std::string TEST_HTTP_URL = "";
 enum test_command_e {
 	APP_OFF = 0,
 	PLAYER_START = 1,
-	PLAYER_PAUSE,
-	PLAYER_RESUME,
+//	PLAYER_PAUSE,
+//	PLAYER_RESUME,
 	PLAYER_STOP,
-	GET_MAX_VOLUME,
-	VOLUME_UP,
-	VOLUME_DOWN
+//	GET_MAX_VOLUME,
+//	VOLUME_UP,
+//	VOLUME_DOWN
 };
 
 class MyMediaPlayer : public MediaPlayerObserverInterface,
@@ -156,7 +156,7 @@ void MyMediaPlayer::doCommand(int command)
 		}
 		focusManager.requestFocus(mFocusRequest);
 		break;
-	case PLAYER_PAUSE:
+/*	case PLAYER_PAUSE:
 		cout << "PLAYER_PAUSE is selected" << endl;
 		if (mp.pause() != PLAYER_OK) {
 			cout << "Mediaplayer::pause failed" << endl;
@@ -168,7 +168,7 @@ void MyMediaPlayer::doCommand(int command)
 			cout << "Mediaplayer::start failed" << endl;
 		}
 		break;
-	case PLAYER_STOP:
+*/	case PLAYER_STOP:
 		cout << "PLAYER_STOP is selected" << endl;
 		if (mp.stop() != PLAYER_OK) {
 			cout << "Mediaplayer::stop failed" << endl;
@@ -180,7 +180,7 @@ void MyMediaPlayer::doCommand(int command)
 		isSourceSet = false;
 		focusManager.abandonFocus(mFocusRequest);
 		break;
-	case GET_MAX_VOLUME:
+/*	case GET_MAX_VOLUME:
 		cout << "GET_MAX_VOLUME is selected" << endl;
 		if (mp.getMaxVolume(&volume) != PLAYER_OK) {
 			cout << "MediaPlayer::getMaxVolume failed" << endl;
@@ -230,7 +230,7 @@ void MyMediaPlayer::doCommand(int command)
 			cout << "Now, Volume is " << (int)volume << endl;
 		}
 		break;
-	default:
+*/	default:
 		break;
 	}
 }
@@ -314,6 +314,7 @@ class MediaPlayerController
 public:
 	void start()
 	{
+		int player = -5;
 		while (true) {
 			vector<string> sourceList = {"Exit APP", "Test PCM", "Test BUFFER", "Test HTTP"};
 			listDirEntries("/mnt", sourceList);
@@ -329,7 +330,7 @@ public:
 			}
 
 			while (true) {
-				auto player = view.selectPlayer();
+				if (player == -5) player = view.selectPlayer();
 				if (player < 0) {
 					break;
 				}

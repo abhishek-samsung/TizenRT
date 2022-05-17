@@ -82,13 +82,13 @@ int CmdView::selectCommand(void)
 	cout << "====================" << endl;
 	cout << " 0. Do Nothing      " << endl;
 	cout << " 1. PLAYER_START    " << endl;
-	cout << " 2. PLAYER_PAUSE    " << endl;
-	cout << " 3. PLAYER_RESUME   " << endl;
-	cout << " 4. PLAYER_STOP     " << endl;
-	cout << " 5. GET_MAX_VOLUME  " << endl;
-	cout << " 6. VOLUME_UP       " << endl;
-	cout << " 7. VOLUME_DOWN     " << endl;
+//	cout << " 2. PLAYER_PAUSE    " << endl;
+//	cout << " 3. PLAYER_RESUME   " << endl;
+	cout << " 2. PLAYER_STOP     " << endl;
+//	cout << " 5. GET_MAX_VOLUME  " << endl;
+//	cout << " 6. VOLUME_UP       " << endl;
+//	cout << " 7. VOLUME_DOWN     " << endl;
 	cout << "====================" << endl;
-	return getUserInput(0, 7);
+	return getUserInput(0, 2);
 }
 }
