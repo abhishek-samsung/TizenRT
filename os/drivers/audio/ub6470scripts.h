@@ -68,10 +68,10 @@ t_codec_init_script_entry codec_initial_script[] = { /* refer to regs_default.h 
 	{UB6470_REG_D_1BYTE, 0x28, {0x00,}, 0},
 
 	//SDIO Format1 Setting
-        {UB6470_REG_D_1BYTE, 0x10, {0x50,}, 0},
+//        {UB6470_REG_D_1BYTE, 0x10, {0x50,}, 0},
 
 	//SDIO Format2 Setting
-        {UB6470_REG_D_1BYTE, 0x11, {0x60,}, 0},
+  //      {UB6470_REG_D_1BYTE, 0x11, {0x60,}, 0},
 
 	{UB6470_REG_D_1BYTE, 0x20, {0x00,}, 0},
 	{UB6470_REG_D_1BYTE, 0x21, {0x00,}, 0},
