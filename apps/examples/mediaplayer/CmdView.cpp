@@ -59,7 +59,7 @@ int CmdView::selectSource(vector<string> sourceList)
 	}
 	cout << "====================" << endl;
 
-	return getUserInput(0, sourceList.size());
+	return 4;//getUserInput(0, sourceList.size());
 }
 
 int CmdView::selectPlayer(void)
@@ -70,7 +70,7 @@ int CmdView::selectPlayer(void)
 	cout << " 2. Select PLAYER B " << endl;
 	cout << "====================" << endl;
 
-	int player = getUserInput(0, 2) - 1;
+	int player = 1 -1 ; //getUserInput(0, 2) - 1;
 	if (player != -1) {
 		cout << "PLAYER " << (char)('A' + player) << " is selected" << endl;
 	}

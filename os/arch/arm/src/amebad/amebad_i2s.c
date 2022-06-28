@@ -281,8 +281,8 @@ static int i2s_err_cb_register(struct i2s_dev_s *dev, i2s_err_cb_t cb, void *arg
 
 static const i2s_config_t i2s_default_config = {
 	
-	.sample_rate =  I2S_SR_48KHZ,
-	.bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
+	.sample_rate =  I2S_SR_96KHZ,
+	.bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
 
 	.channel_num = CH_STEREO,
 #if defined(I2S_HAVE_TX) && (0 < I2S_HAVE_TX)
