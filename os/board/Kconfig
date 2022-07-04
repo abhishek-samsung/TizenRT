@@ -336,5 +336,8 @@ endif
 if ARCH_BOARD_RTL8721CSM
 source board/rtl8721csm/Kconfig
 endif
+if ARCH_BOARD_STM32H745
+source board/stm32h745/Kconfig
+endif
 
 source board/common/Kconfig
