@@ -121,10 +121,16 @@ CHIP_CSRCS += stm32h7xx_hal_tim.c stm32h7xx_hal_tim_ex.c
 CHIP_CSRCS += stm32h7xx_hal_flash.c stm32h7xx_hal_flash_ex.c
 CHIP_CSRCS += stm32h7xx_hal_usart.c stm32h7xx_hal_uart_ex.c
 CHIP_CSRCS += stm32h7xx_hal_hsem.c
+CHIP_CSRCS += stm32h7xx_hal_wwdg.c
+CHIP_CSRCS += stm32h7xx_hal_dma.c stm32h7xx_hal_dma_ex.c
+CHIP_CSRCS += stm32h7xx_hal_mdma.c
+
 
 
 CFLAGS += -I$(ARCH_SRCDIR)/chip/hal
+CFLAGS += -I$(ARCH_SRCDIR)/chip/chip
 VPATH += chip/hal
+VPATH += chip/chip
 
 # ST Defines
 CFLAGS += \
@@ -132,7 +138,3 @@ CFLAGS += \
 -DUSE_HAL_DRIVER \
 -DSTM32H745xx \
 -DUSE_FULL_LL_DRIVER \
-
-CFLAGS += -DUSE_HAL_UART_REGISTER_CALLBACKS=0
-CFLAGS += -DUSE_HAL_USART_REGISTER_CALLBACKS=0
-CFLAGS += -DUSE_HAL_TIM_REGISTER_CALLBACKS=0

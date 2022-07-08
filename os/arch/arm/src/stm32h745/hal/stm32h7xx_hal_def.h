@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h7xx.h"
-#include "Legacy/stm32_hal_legacy.h"
+#include "stm32_hal_legacy.h"
 #include <stddef.h>
 #include <math.h>
 
@@ -66,7 +66,7 @@ typedef enum
                               (__DMA_HANDLE__).Parent = (__HANDLE__);             \
                           } while(0)
 
-#define UNUSED(x) ((void)(x))
+/* #define UNUSED(x) ((void)(x)) //redefined */
 
 /** @brief Reset the Handle's State field.
   * @param __HANDLE__: specifies the Peripheral Handle.
