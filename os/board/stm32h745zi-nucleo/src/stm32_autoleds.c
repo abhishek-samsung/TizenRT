@@ -1,8 +1,7 @@
 /****************************************************************************
- * configs/stm32h745zi-nucleo/src/stm32_userleds.c
+ * configs/stm32h745zi-nucleo/src/stm32_autoleds.c
  *
- *   Copyright (C) 2016 Gregory Nutt. All rights reserved.
- *   Author: Gregory Nutt <gnutt@nuttx.org>
+ *   Copyright (C) 2018 Gregory Nutt. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -43,24 +42,24 @@
 #include <stdbool.h>
 #include <debug.h>
 
+#include <tinyara/board.h>
 #include <arch/board/board.h>
-#include <tinyara/pm/pm.h>
 
 #include "chip.h"
 #include "up_arch.h"
 #include "up_internal.h"
 
-#ifndef CONFIG_ARCH_LEDS
+#ifdef CONFIG_ARCH_LEDS
 
 /****************************************************************************
- * Private Functions
+ * Public Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Name: board_userled_initialize
+ * Name: board_led_initialize
  ****************************************************************************/
 
-void board_userled_initialize(void)
+void board_led_initialize(void)
 {
   /* Configure LD4,5 GPIO for output */
 
@@ -69,31 +68,108 @@ void board_userled_initialize(void)
 }
 
 /****************************************************************************
- * Name: board_userled
+ * Name: board_led_on
  ****************************************************************************/
 
-void board_userled(int led, bool ledon)
+void board_led_on(int led)
 {
   switch (led)
-  {
-  case BOARD_LED_RED:
-    //stm32l4_gpiowrite(GPIO_LED_RED, ledon);
-    break;
+    {
+      /* 0: LED_STARTED, LED_HEAPALLOCATE, LED_IRQSENABLED
+       *
+       * Since the LEDs were initially all OFF and since this state only
+       * occurs one time, nothing need be done.
+       */
 
-  case BOARD_LED_GRN:
-    //stm32l4_gpiowrite(GPIO_LED_GRN, ledon);
-    break;
-  }
+      default:
+      case LED_STARTED:
+      case LED_HEAPALLOCATE:
+      case LED_IRQSENABLED:
+        break;
+
+      /* 1: LED_STACKCREATED
+       *
+       * This case will also occur only once.
+       */
+
+      case LED_STACKCREATED:
+        break;
+
+      /* 2: LED_INIRQ, LED_SIGNAL, LED_ASSERTION
+       *
+       * This case will occur many times.
+       */
+
+      case LED_INIRQ:
+      case LED_SIGNAL:
+      case LED_ASSERTION:
+        //stm32l4_gpiowrite(GPIO_LED_RED, true);
+        break;
+
+      /* 3: LED_PANIC: GPIO_LED_GRN=OFF RX=ON
+       *
+       * This case will also occur many times.
+       */
+
+      case LED_PANIC:
+        //stm32l4_gpiowrite(GPIO_LED_GRN, false);
+        //stm32l4_gpiowrite(GPIO_LED_RED, true);
+        break;
+
+      case LED_IDLE:
+        //stm32l4_gpiowrite(GPIO_LED_GRN, true);
+        //stm32l4_gpiowrite(GPIO_LED_RED, false);
+        break;
+    }
 }
 
 /****************************************************************************
- * Name: board_userled_all
+ * Name: board_led_off
  ****************************************************************************/
 
-void board_userled_all(uint8_t ledset)
+void board_led_off(int led)
 {
-  //stm32l4_gpiowrite(GPIO_LED_RED, (ledset & BOARD_LED_RED_BIT) != 0);
-  //stm32l4_gpiowrite(GPIO_LED_GRN, (ledset & BOARD_LED_GRN_BIT) != 0);
+  switch (led)
+    {
+      /* 0: LED_STARTED, LED_HEAPALLOCATE, LED_IRQSENABLED:
+       * 1: LED_STACKCREATED:
+       *
+       * These cases should never happen.
+       */
+
+      default:
+      case LED_STARTED:
+      case LED_HEAPALLOCATE:
+      case LED_IRQSENABLED:
+      case LED_STACKCREATED:
+        break;
+
+      /* 2: LED_INIRQ, LED_SIGNAL, LED_ASSERTION:
+       *
+       * This case will occur many times.
+       */
+
+      case LED_INIRQ:
+      case LED_SIGNAL:
+      case LED_ASSERTION:
+        //stm32l4_gpiowrite(GPIO_LED_RED, false);
+        break;
+
+      /* 3: LED_PANIC: GPIO_LED_GRN=OFF RX=OFF
+       *
+       * This case will also occur many times.
+       */
+
+      case LED_PANIC:
+        //stm32l4_gpiowrite(GPIO_LED_GRN, false);
+        //stm32l4_gpiowrite(GPIO_LED_RED, false);
+        break;
+
+      case LED_IDLE:
+        //stm32l4_gpiowrite(GPIO_LED_GRN, false);
+        //stm32l4_gpiowrite(GPIO_LED_RED, false);
+        break;
+    }
 }
 
-#endif /* !CONFIG_ARCH_LEDS */
+#endif /* CONFIG_ARCH_LEDS */

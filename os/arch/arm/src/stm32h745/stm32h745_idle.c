@@ -1,7 +1,7 @@
 /****************************************************************************
- * configs/stm32h745zi-nucleo/src/stm32_appinit.c
+ *  arch/arm/src/stm32h745/stm32h745_idle.c
  *
- *   Copyright (C) 2018 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2011-2012, 2015-2016 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,64 +37,19 @@
  * Included Files
  ****************************************************************************/
 
+#include <arch/board/board.h>
 #include <tinyara/config.h>
-
-#include <sys/types.h>
-#include <sys/mount.h>
-#include <stdio.h>
-#include <syslog.h>
-#include <errno.h>
 #include <debug.h>
-#include <string.h>
-#include <stdlib.h>
 
 #include <tinyara/arch.h>
+#include <tinyara/irq.h>
 #include <tinyara/board.h>
+#include <tinyara/pm/pm.h>
+#include <errno.h>
 
-#include <arch/board/board.h>
-#include <arch/board/boardctl.h>
+#include "chip.h"
+#include "up_internal.h"
 
-/****************************************************************************
- * Public Functions
- ****************************************************************************/
-int board_app_initialize(void)
+void up_idle(void)
 {
-    return OK;
 }
-
-#ifdef CONFIG_BOARDCTL_IOCTL
-int board_ioctl(unsigned int cmd, uintptr_t arg)
-{
-  switch (cmd)
-    {
-      default:
-        return -EINVAL;
-    }
-
-    return OK;
-}
-#endif
-
-#if defined(CONFIG_BOARDCTL_UNIQUEID)
-int board_uniqueid(uint8_t *uniqueid)
-{
-  if (uniqueid == 0)
-    {
-      return -EINVAL;
-    }
-
-  stm32h745_get_uniqueid(uniqueid);
-  return OK;
-}
-#endif
-
-
-
-
-
-
-
-
-
-
-

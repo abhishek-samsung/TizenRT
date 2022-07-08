@@ -1,7 +1,7 @@
 /****************************************************************************
- * configs/stm32h745zi-nucleo/src/stm32_appinit.c
+ * arch/arm/src/stm32h745/stm32h745_timerisr.c
  *
- *   Copyright (C) 2018 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2009, 2017 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,62 +39,107 @@
 
 #include <tinyara/config.h>
 
-#include <sys/types.h>
-#include <sys/mount.h>
-#include <stdio.h>
-#include <syslog.h>
-#include <errno.h>
+#include <stdint.h>
+#include <time.h>
 #include <debug.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include <tinyara/arch.h>
-#include <tinyara/board.h>
-
 #include <arch/board/board.h>
-#include <arch/board/boardctl.h>
+
+#include "nvic.h"
+#include "clock/clock.h"
+#include "up_internal.h"
+#include "up_arch.h"
+
+#include "chip.h"
+
+
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Function:  stm32h745_timerisr
+ *
+ * Description:
+ *   The timer ISR will perform a variety of services for various portions
+ *   of the systems.
+ *
+ ****************************************************************************/
+
+int up_timerisr(int irq, uint32_t *regs)
+{
+    /* Process timer interrupt */
+    sched_process_timer();
+
+    return 0;
+}
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
-int board_app_initialize(void)
+
+/****************************************************************************
+ * Function:  arm_timer_initialize
+ *
+ * Description:
+ *   This function is called during start-up to initialize
+ *   the timer interrupt.
+ *
+ ****************************************************************************/
+
+void up_timer_initialize(void)
 {
-    return OK;
 }
 
-#ifdef CONFIG_BOARDCTL_IOCTL
-int board_ioctl(unsigned int cmd, uintptr_t arg)
+
+/****************************************************************************
+ * Function:  arm_timer_initialize
+ *
+ * Description:
+ *   This function is called during start-up to initialize
+ *   the timer interrupt.
+ *
+ ****************************************************************************/
+
+int up_sys_timerisr(int irq, uint32_t *regs)
 {
-  switch (cmd)
-    {
-      default:
-        return -EINVAL;
-    }
-
-    return OK;
+    return 0;
 }
-#endif
 
-#if defined(CONFIG_BOARDCTL_UNIQUEID)
-int board_uniqueid(uint8_t *uniqueid)
+void up_sys_timer_initialize(void)
 {
-  if (uniqueid == 0)
-    {
-      return -EINVAL;
-    }
-
-  stm32h745_get_uniqueid(uniqueid);
-  return OK;
 }
-#endif
+
+void up_sys_timer_deinitialize(void)
+{
+}
+
+/****************************************************************************
+ * Function:  arm_timer_initialize
+ *
+ * Description:
+ *   This function is called during start-up to initialize
+ *   the timer interrupt.
+ *
+ ****************************************************************************/
+int up_hal_timerisr(int irq, uint32_t *regs)
+{
+  return 0;
+}
+
+void up_hal_timer_initialize(void)
+{
+}
 
 
+void up_hal_timer_deinitialize(void)
+{
+}
 
+void supress_hal_tick(void)
+{
+}
 
-
-
-
-
-
-
-
+void enable_hal_tick(void)
+{
+}

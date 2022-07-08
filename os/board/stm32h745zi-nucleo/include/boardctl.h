@@ -1,8 +1,8 @@
-/****************************************************************************
- * configs/stm32h745zi-nucleo/src/stm32_appinit.c
+/************************************************************************************
+ * configs/stm32l4r9ai-disco/include/boardctl.h
  *
- *   Copyright (C) 2018 Gregory Nutt. All rights reserved.
- *   Author: Gregory Nutt <gnutt@nuttx.org>
+ *   Copyright (C) 2016 dev@ziggurat29.com. All rights reserved.
+ *   Author: dev@ziggurat29.com
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,70 +31,22 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- ****************************************************************************/
+ ************************************************************************************/
+
+#ifndef __CONFIGS_STM32H745ZI_NUCLEO_INCLUDE_BOARDCTL_H
+#define __CONFIGS_STM32H745ZI_NUCLEO_INCLUDE_BOARDCTL_H
 
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-#include <tinyara/config.h>
-
-#include <sys/types.h>
-#include <sys/mount.h>
-#include <stdio.h>
-#include <syslog.h>
-#include <errno.h>
-#include <debug.h>
-#include <string.h>
-#include <stdlib.h>
-
-#include <tinyara/arch.h>
-#include <tinyara/board.h>
-
-#include <arch/board/board.h>
-#include <arch/board/boardctl.h>
+#include <sys/boardctl.h>
 
 /****************************************************************************
- * Public Functions
+ * Pre-processor Definitions
  ****************************************************************************/
-int board_app_initialize(void)
-{
-    return OK;
-}
 
-#ifdef CONFIG_BOARDCTL_IOCTL
-int board_ioctl(unsigned int cmd, uintptr_t arg)
-{
-  switch (cmd)
-    {
-      default:
-        return -EINVAL;
-    }
+#define BIOC_ENTER_MEMMAP   BOARDIOC_USER+1
+#define BIOC_EXIT_MEMMAP    BOARDIOC_USER+2
 
-    return OK;
-}
-#endif
-
-#if defined(CONFIG_BOARDCTL_UNIQUEID)
-int board_uniqueid(uint8_t *uniqueid)
-{
-  if (uniqueid == 0)
-    {
-      return -EINVAL;
-    }
-
-  stm32h745_get_uniqueid(uniqueid);
-  return OK;
-}
-#endif
-
-
-
-
-
-
-
-
-
-
-
+#endif  /* __CONFIGS_STM32H745ZI_NUCLEO_INCLUDE_BOARDCTL_H */

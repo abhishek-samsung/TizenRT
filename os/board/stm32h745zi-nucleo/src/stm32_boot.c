@@ -1,5 +1,5 @@
 /************************************************************************************
- * configs/stm32l4r9ai-disco/src/stm32_boot.c
+ * configs/stm32h745zi-nucleo/src/stm32_boot.c
  *
  *   Copyright (C) 2018 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
@@ -56,7 +56,6 @@
 #endif
 
 #include "up_arch.h"
-#include "stm32l4r9ai-disco.h"
 
 #ifdef CONFIG_PRODCONFIG
 int up_check_prodswd(void)
@@ -81,15 +80,6 @@ int up_check_proddownload(void)
 
 void board_initialize(void)
 {
-    up_hal_timer_initialize();
-
-    /* Configure on-board LEDs if LED support has been selected. */
-#ifdef CONFIG_ARCH_LEDS
-    board_led_initialize();
-#endif
-
-    /* Initialize for flash access */
-    stm32l4_flash_initialize();
 }
 
 /****************************************************************************
@@ -108,13 +98,6 @@ void board_initialize(void)
 #ifdef CONFIG_BOARD_LATE_INITIALIZE
 void board_late_initialize(void)
 {
-  /* Perform NSH initialization here instead of from the NSH.  This
-   * alternative NSH initialization is necessary when NSH is ran in user-space
-   * but the initialization function must run in kernel space.
-   */
-
-#if defined(CONFIG_NSH_LIBRARY) && !defined(CONFIG_NSH_ARCHINIT)
-    board_app_initialize(0);
-#endif
+    board_app_initialize();
 }
 #endif

@@ -70,6 +70,13 @@ ifeq ($(CONFIG_BOARD_CRASHDUMP),y)
 CSRCS += crashdump.c
 endif
 
+# boardctl support
+ifeq ($(CONFIG_LIB_BOARDCTL),y)
+DEPPATH += --dep-path $(TOPDIR)/arch
+VPATH += :$(TOPDIR)/arch
+CSRCS += boardctl.c
+endif
+
 #CSRCS += stm32l4r9i_discovery.c
 #CSRCS += stm32l4r9i_discovery_io.c
 #CSRCS += stm32l4r9i_discovery_ts.c

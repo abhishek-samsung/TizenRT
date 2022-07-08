@@ -1,7 +1,7 @@
 /****************************************************************************
- * configs/stm32h745zi-nucleo/src/stm32_appinit.c
+ * arch/arm/src/stm32h745/stm32h745_irq.c
  *
- *   Copyright (C) 2018 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2009-2016 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,62 +39,78 @@
 
 #include <tinyara/config.h>
 
-#include <sys/types.h>
-#include <sys/mount.h>
-#include <stdio.h>
-#include <syslog.h>
-#include <errno.h>
+#include <stdint.h>
 #include <debug.h>
-#include <string.h>
-#include <stdlib.h>
 
+#include <tinyara/irq.h>
 #include <tinyara/arch.h>
-#include <tinyara/board.h>
+#include <arch/irq.h>
+#include <arch/armv7-m/nvicpri.h>
 
-#include <arch/board/board.h>
-#include <arch/board/boardctl.h>
+#include "nvic.h"
+#include "ram_vectors.h"
+#include "up_arch.h"
+#include "up_internal.h"
+
+volatile uint32_t *current_regs;
 
 /****************************************************************************
- * Public Functions
+ * Name: up_irqinitialize
  ****************************************************************************/
-int board_app_initialize(void)
+
+void up_irqinitialize(void)
 {
-    return OK;
 }
 
-#ifdef CONFIG_BOARDCTL_IOCTL
-int board_ioctl(unsigned int cmd, uintptr_t arg)
-{
-  switch (cmd)
-    {
-      default:
-        return -EINVAL;
-    }
+/****************************************************************************
+ * Name: up_disable_irq
+ *
+ * Description:
+ *   Disable the IRQ specified by 'irq'
+ *
+ ****************************************************************************/
 
-    return OK;
+void up_disable_irq(int irq)
+{
+}
+
+/****************************************************************************
+ * Name: up_enable_irq
+ *
+ * Description:
+ *   Enable the IRQ specified by 'irq'
+ *
+ ****************************************************************************/
+
+void up_enable_irq(int irq)
+{
+}
+
+/****************************************************************************
+ * Name: up_ack_irq
+ *
+ * Description:
+ *   Acknowledge the IRQ
+ *
+ ****************************************************************************/
+
+void up_ack_irq(int irq)
+{
+}
+
+/****************************************************************************
+ * Name: up_prioritize_irq
+ *
+ * Description:
+ *   Set the priority of an IRQ.
+ *
+ *   Since this API is not supported on all architectures, it should be
+ *   avoided in common implementations where possible.
+ *
+ ****************************************************************************/
+
+#ifdef CONFIG_ARCH_IRQPRIO
+int up_prioritize_irq(int irq, int priority)
+{
 }
 #endif
-
-#if defined(CONFIG_BOARDCTL_UNIQUEID)
-int board_uniqueid(uint8_t *uniqueid)
-{
-  if (uniqueid == 0)
-    {
-      return -EINVAL;
-    }
-
-  stm32h745_get_uniqueid(uniqueid);
-  return OK;
-}
-#endif
-
-
-
-
-
-
-
-
-
-
-

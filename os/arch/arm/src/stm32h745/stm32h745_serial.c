@@ -1,7 +1,7 @@
 /****************************************************************************
- * configs/stm32h745zi-nucleo/src/stm32_appinit.c
+ * arch/arm/src/stm32h745/stm32h745_serial.c
  *
- *   Copyright (C) 2018 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2009, 2012 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,62 +39,73 @@
 
 #include <tinyara/config.h>
 
-#include <sys/types.h>
-#include <sys/mount.h>
-#include <stdio.h>
-#include <syslog.h>
-#include <errno.h>
-#include <debug.h>
-#include <string.h>
-#include <stdlib.h>
-
-#include <tinyara/arch.h>
-#include <tinyara/board.h>
+#include <stdint.h>
 
 #include <arch/board/board.h>
-#include <arch/board/boardctl.h>
+
+#include "up_internal.h"
+#include "up_arch.h"
+
+#include "chip.h"
+
 
 /****************************************************************************
- * Public Functions
+ * Name: up_serialinit
+ *
+ * Description:
+ *   Register serial console and serial ports.  This assumes
+ *   that up_earlyserialinit was called previously.
+ *
  ****************************************************************************/
-int board_app_initialize(void)
+
+void up_serialinit(void)
 {
-    return OK;
 }
 
-#ifdef CONFIG_BOARDCTL_IOCTL
-int board_ioctl(unsigned int cmd, uintptr_t arg)
+/****************************************************************************
+ * Name: up_earlyserialinit
+ * Name: up_earlyserialinit
+ *
+ * Description:
+ *   Register serial console and serial ports.  This assumes
+ *   that up_earlyserialinit was called previously.
+ *
+ ****************************************************************************/
+void up_earlyserialinit(void)
 {
-  switch (cmd)
-    {
-      default:
-        return -EINVAL;
-    }
+	/* NOTE: This function assumes that low level hardware configuration
+	 * -- including all clocking and pin configuration -- was performed by the
+	 * function imxrt_lowsetup() earlier in the boot sequence.
+	 */
 
-    return OK;
+	/* Enable the console UART.  The other UARTs will be initialized if and
+	 * when they are first opened.
+	 */
 }
-#endif
 
-#if defined(CONFIG_BOARDCTL_UNIQUEID)
-int board_uniqueid(uint8_t *uniqueid)
+
+
+
+/****************************************************************************
+ * Name: up_lowputc
+ *
+ * Description:
+ *   Output one character to he UART
+ *
+ ****************************************************************************/
+void up_lowputc(char ch)
 {
-  if (uniqueid == 0)
-    {
-      return -EINVAL;
-    }
-
-  stm32h745_get_uniqueid(uniqueid);
-  return OK;
 }
-#endif
 
 
-
-
-
-
-
-
-
-
-
+/****************************************************************************
+ * Name: up_getc
+ *
+ * Description:
+ *   Get one character from the UART
+ *
+ ****************************************************************************/
+uint8_t up_getc(void)
+{
+	return 0;
+}
