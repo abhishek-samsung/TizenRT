@@ -62,93 +62,159 @@
  * STM32H745xx
  *
  */
-
-#define STM32H745_IRQ_WWDG        (STM32H745_IRQ_FIRST + 0)  /* 0:  Window Watchdog interrupt */
-#define STM32H745_IRQ_PVD         (STM32H745_IRQ_FIRST + 1)  /* 1:  PVD through EXTI Line detection interrupt */
-#define STM32H745_IRQ_TAMPER      (STM32H745_IRQ_FIRST + 2)  /* 2:  Tamper and time stamp interrupts */
-#define STM32H745_IRQ_TIMESTAMP   (STM32H745_IRQ_FIRST + 2)  /* 2:  Tamper and time stamp interrupts */
-#define STM32H745_IRQ_RTC_WKUP    (STM32H745_IRQ_FIRST + 3)  /* 3:  RTC global interrupt */
-#define STM32H745_IRQ_FLASH       (STM32H745_IRQ_FIRST + 4)  /* 4:  Flash global interrupt */
-#define STM32H745_IRQ_RCC         (STM32H745_IRQ_FIRST + 5)  /* 5:  RCC global interrupt */
-#define STM32H745_IRQ_EXTI0       (STM32H745_IRQ_FIRST + 6)  /* 6:  EXTI Line 0 interrupt */
-#define STM32H745_IRQ_EXTI1       (STM32H745_IRQ_FIRST + 7)  /* 7:  EXTI Line 1 interrupt */
-#define STM32H745_IRQ_EXTI2       (STM32H745_IRQ_FIRST + 8)  /* 8:  EXTI Line 2 interrupt */
-#define STM32H745_IRQ_EXTI3       (STM32H745_IRQ_FIRST + 9)  /* 9:  EXTI Line 3 interrupt */
-#define STM32H745_IRQ_EXTI4       (STM32H745_IRQ_FIRST + 10) /* 10: EXTI Line 4 interrupt */
-#define STM32H745_IRQ_DMA1CH1     (STM32H745_IRQ_FIRST + 11) /* 11: DMA1 Channel 1 global interrupt */
-#define STM32H745_IRQ_DMA1CH2     (STM32H745_IRQ_FIRST + 12) /* 12: DMA1 Channel 2 global interrupt */
-#define STM32H745_IRQ_DMA1CH3     (STM32H745_IRQ_FIRST + 13) /* 13: DMA1 Channel 3 global interrupt */
-#define STM32H745_IRQ_DMA1CH4     (STM32H745_IRQ_FIRST + 14) /* 14: DMA1 Channel 4 global interrupt */
-#define STM32H745_IRQ_DMA1CH5     (STM32H745_IRQ_FIRST + 15) /* 15: DMA1 Channel 5 global interrupt */
-#define STM32H745_IRQ_DMA1CH6     (STM32H745_IRQ_FIRST + 16) /* 16: DMA1 Channel 6 global interrupt */
-#define STM32H745_IRQ_DMA1CH7     (STM32H745_IRQ_FIRST + 17) /* 17: DMA1 Channel 7 global interrupt */
-#define STM32H745_IRQ_ADC1        (STM32H745_IRQ_FIRST + 18) /* 18: ADC1 global interrupt */
-#define STM32H745_IRQ_CAN1TX      (STM32H745_IRQ_FIRST + 19) /* 19: CAN1 TX interrupts */
-#define STM32H745_IRQ_CAN1RX0     (STM32H745_IRQ_FIRST + 20) /* 20: CAN1 RX0 interrupts */
-#define STM32H745_IRQ_CAN1RX1     (STM32H745_IRQ_FIRST + 21) /* 21: CAN1 RX1 interrupt */
-#define STM32H745_IRQ_CAN1SCE     (STM32H745_IRQ_FIRST + 22) /* 22: CAN1 SCE interrupt */
-#define STM32H745_IRQ_EXTI95      (STM32H745_IRQ_FIRST + 23) /* 23: EXTI Line[9:5] interrupts */
-#define STM32H745_IRQ_TIM1BRK     (STM32H745_IRQ_FIRST + 24) /* 24: TIM1 Break interrupt */
-#define STM32H745_IRQ_TIM15       (STM32H745_IRQ_FIRST + 24) /* 24: TIM15 global interrupt */
-#define STM32H745_IRQ_TIM1UP      (STM32H745_IRQ_FIRST + 25) /* 25: TIM1 Update interrupt */
-#define STM32H745_IRQ_TIM16       (STM32H745_IRQ_FIRST + 25) /* 25: TIM16 global interrupt */
-#define STM32H745_IRQ_TIM1TRGCOM  (STM32H745_IRQ_FIRST + 26) /* 26: TIM1 Trigger and Commutation interrupts */
-#define STM32H745_IRQ_TIM1CC      (STM32H745_IRQ_FIRST + 27) /* 27: TIM1 Capture Compare interrupt */
-#define STM32H745_IRQ_TIM2        (STM32H745_IRQ_FIRST + 28) /* 28: TIM2 global interrupt */
-#define STM32H745_IRQ_TIM3        (STM32H745_IRQ_FIRST + 29) /* 29: TIM3 global interrupt */
-/* Reserved */                                           /* 30: TIM4 global interrupt */
-#define STM32H745_IRQ_I2C1EV      (STM32H745_IRQ_FIRST + 31) /* 31: I2C1 event interrupt */
-#define STM32H745_IRQ_I2C1ER      (STM32H745_IRQ_FIRST + 32) /* 32: I2C1 error interrupt */
-#define STM32H745_IRQ_I2C2EV      (STM32H745_IRQ_FIRST + 33) /* 33: I2C2 event interrupt */
-#define STM32H745_IRQ_I2C2ER      (STM32H745_IRQ_FIRST + 34) /* 34: I2C2 error interrupt */
-#define STM32H745_IRQ_SPI1        (STM32H745_IRQ_FIRST + 35) /* 35: SPI1 global interrupt */
-#define STM32H745_IRQ_SPI2        (STM32H745_IRQ_FIRST + 36) /* 36: SPI2 global interrupt */
-#define STM32H745_IRQ_USART1      (STM32H745_IRQ_FIRST + 37) /* 37: USART1 global interrupt */
-#define STM32H745_IRQ_USART2      (STM32H745_IRQ_FIRST + 38) /* 38: USART2 global interrupt */
-#define STM32H745_IRQ_USART3      (STM32H745_IRQ_FIRST + 39) /* 39: USART3 global interrupt */
-#define STM32H745_IRQ_EXTI1510    (STM32H745_IRQ_FIRST + 40) /* 40: EXTI Line[15:10] interrupts */
-#define STM32H745_IRQ_RTCALRM     (STM32H745_IRQ_FIRST + 41) /* 41: RTC alarm through EXTI line interrupt */
-/* Reserved */                                           /* 42-48: reserved */
-#define STM32H745_IRQ_SDMMC1      (STM32H745_IRQ_FIRST + 49) /* 49: SDMMC1 global interrupt */
-/* Reserved */                                           /* 50: TIM5 global interrupt */
-#define STM32H745_IRQ_SPI3        (STM32H745_IRQ_FIRST + 51) /* 51: SPI3 global interrupt */
-#define STM32H745_IRQ_UART4       (STM32H745_IRQ_FIRST + 52) /* 52: UART4 global interrupt */
-/* Reserved */                                         /* 53: UART5 global interrupt */
-#define STM32H745_IRQ_TIM6        (STM32H745_IRQ_FIRST + 54) /* 54: TIM6 global interrupt */
-#define STM32H745_IRQ_DAC         (STM32H745_IRQ_FIRST + 54) /* 54: DAC1 underrun error interrupts */
-#define STM32H745_IRQ_TIM7        (STM32H745_IRQ_FIRST + 55) /* 55: TIM7 global interrupt */
-#define STM32H745_IRQ_DMA2CH1     (STM32H745_IRQ_FIRST + 56) /* 56: DMA2 Channel 1 global interrupt */
-#define STM32H745_IRQ_DMA2CH2     (STM32H745_IRQ_FIRST + 57) /* 57: DMA2 Channel 2 global interrupt */
-#define STM32H745_IRQ_DMA2CH3     (STM32H745_IRQ_FIRST + 58) /* 58: DMA2 Channel 3 global interrupt */
-#define STM32H745_IRQ_DMA2CH4     (STM32H745_IRQ_FIRST + 59) /* 59: DMA2 Channel 4 global interrupt */
-#define STM32H745_IRQ_DMA2CH5     (STM32H745_IRQ_FIRST + 60) /* 60: DMA2 Channel 5 global interrupt */
-#define STM32H745_IRQ_DFSDM0      (STM32H745_IRQ_FIRST + 61) /* 61: DFSDM0 global interrupt */
-#define STM32H745_IRQ_DFSDM1      (STM32H745_IRQ_FIRST + 62) /* 62: DFSDM1 global interrupt*/
-/* Reserved */                                           /* 63: DFSDM2 global interrupt */
-#define STM32H745_IRQ_COMP        (STM32H745_IRQ_FIRST + 64) /* 64: COMP1/COMP2 interrupts */
-#define STM32H745_IRQ_LPTIM1      (STM32H745_IRQ_FIRST + 65) /* 65: LPTIM1 global interrupt */
-#define STM32H745_IRQ_LPTIM2      (STM32H745_IRQ_FIRST + 66) /* 66: LPTIM2 global interrupt */
-#define STM32H745_IRQ_USB_FS      (STM32H745_IRQ_FIRST + 67) /* 67: USB event interrupt through EXTI line 17 */
-#define STM32H745_IRQ_DMA2CH6     (STM32H745_IRQ_FIRST + 68) /* 68: DMA2 Channel 6 global interrupt */
-#define STM32H745_IRQ_DMA2CH7     (STM32H745_IRQ_FIRST + 69) /* 69: DMA2 Channel 7 global interrupt */
-#define STM32H745_IRQ_LPUART1     (STM32H745_IRQ_FIRST + 70) /* 70: Low power UART 1 global interrupt */
-#define STM32H745_IRQ_QUADSPI     (STM32H745_IRQ_FIRST + 71) /* 71: QUADSPI global interrupt */
-#define STM32H745_IRQ_I2C3EV      (STM32H745_IRQ_FIRST + 72) /* 72: I2C3 event interrupt */
-#define STM32H745_IRQ_I2C3ER      (STM32H745_IRQ_FIRST + 73) /* 73: I2C3 error interrupt */
-#define STM32H745_IRQ_SAI1        (STM32H745_IRQ_FIRST + 74) /* 74: SAI1 global interrupt */
-/* Reserved */                                           /* 75: SAI2 global interrupt */
-#define STM32H745_IRQ_SWPMI1      (STM32H745_IRQ_FIRST + 76) /* 76: SWPMI1 global interrupt */
-#define STM32H745_IRQ_TSC         (STM32H745_IRQ_FIRST + 77) /* 77: TSC global interrupt */
-#define STM32H745_IRQ_LCD         (STM32H745_IRQ_FIRST + 78) /* 78: LCD global interrupt */
-#define STM32H745_IRQ_AES         (STM32H745_IRQ_FIRST + 79) /* 79: AES crypto global interrupt */
-#define STM32H745_IRQ_RNG         (STM32H745_IRQ_FIRST + 80) /* 80: RNG global interrupt */
-#define STM32H745_IRQ_FPU         (STM32H745_IRQ_FIRST + 81) /* 81: FPU global interrupt */
-#define STM32H745_IRQ_CRS         (STM32H745_IRQ_FIRST + 82) /* 82: CRS global interrupt */
-#define STM32H745_IRQ_I2C4EV      (STM32H745_IRQ_FIRST + 83) /* 83: I2C4 event interrupt */
-#define STM32H745_IRQ_I2C4ER      (STM32H745_IRQ_FIRST + 84) /* 84: I2C4 error interrupt */
+#define STM32H745_IRQ_WWDG                   (STM32H745_IRQ_FIRST + 0)      /*!< Window WatchDog Interrupt ( wwdg1_it, wwdg2_it)                   */
+#define STM32H745_IRQ_PVD_AVD                (STM32H745_IRQ_FIRST + 1)      /*!< PVD/AVD through EXTI Line detection Interrupt                     */
+#define STM32H745_IRQ_TAMP_STAMP             (STM32H745_IRQ_FIRST + 2)      /*!< Tamper and TimeStamp interrupts through the EXTI line             */
+#define STM32H745_IRQ_RTC_WKUP               (STM32H745_IRQ_FIRST + 3)      /*!< RTC Wakeup interrupt through the EXTI line                        */
+#define STM32H745_IRQ_FLASH                  (STM32H745_IRQ_FIRST + 4)      /*!< FLASH global Interrupt                                            */
+#define STM32H745_IRQ_RCC                    (STM32H745_IRQ_FIRST + 5)      /*!< RCC global Interrupt                                              */
+#define STM32H745_IRQ_EXTI0                  (STM32H745_IRQ_FIRST + 6)      /*!< EXTI Line0 Interrupt                                              */
+#define STM32H745_IRQ_EXTI1                  (STM32H745_IRQ_FIRST + 7)      /*!< EXTI Line1 Interrupt                                              */
+#define STM32H745_IRQ_EXTI2                  (STM32H745_IRQ_FIRST + 8)      /*!< EXTI Line2 Interrupt                                              */
+#define STM32H745_IRQ_EXTI3                  (STM32H745_IRQ_FIRST + 9)      /*!< EXTI Line3 Interrupt                                              */
+#define STM32H745_IRQ_EXTI4                  (STM32H745_IRQ_FIRST + 10)     /*!< EXTI Line4 Interrupt                                              */
+#define STM32H745_IRQ_DMA1_Stream0           (STM32H745_IRQ_FIRST + 11)     /*!< DMA1 Stream 0 global Interrupt                                    */
+#define STM32H745_IRQ_DMA1_Stream1           (STM32H745_IRQ_FIRST + 12)     /*!< DMA1 Stream 1 global Interrupt                                    */
+#define STM32H745_IRQ_DMA1_Stream2           (STM32H745_IRQ_FIRST + 13)     /*!< DMA1 Stream 2 global Interrupt                                    */
+#define STM32H745_IRQ_DMA1_Stream3           (STM32H745_IRQ_FIRST + 14)     /*!< DMA1 Stream 3 global Interrupt                                    */
+#define STM32H745_IRQ_DMA1_Stream4           (STM32H745_IRQ_FIRST + 15)     /*!< DMA1 Stream 4 global Interrupt                                    */
+#define STM32H745_IRQ_DMA1_Stream5           (STM32H745_IRQ_FIRST + 16)     /*!< DMA1 Stream 5 global Interrupt                                    */
+#define STM32H745_IRQ_DMA1_Stream6           (STM32H745_IRQ_FIRST + 17)     /*!< DMA1 Stream 6 global Interrupt                                    */
+#define STM32H745_IRQ_ADC                    (STM32H745_IRQ_FIRST + 18)     /*!< ADC1 and  ADC2 global Interrupts                                  */
+#define STM32H745_IRQ_FDCAN1_IT0             (STM32H745_IRQ_FIRST + 19)     /*!< FDCAN1 Interrupt line 0                                           */
+#define STM32H745_IRQ_FDCAN2_IT0             (STM32H745_IRQ_FIRST + 20)     /*!< FDCAN2 Interrupt line 0                                           */
+#define STM32H745_IRQ_FDCAN1_IT1             (STM32H745_IRQ_FIRST + 21)     /*!< FDCAN1 Interrupt line 1                                           */
+#define STM32H745_IRQ_FDCAN2_IT1             (STM32H745_IRQ_FIRST + 22)     /*!< FDCAN2 Interrupt line 1                                           */
+#define STM32H745_IRQ_EXTI9_5                (STM32H745_IRQ_FIRST + 23)     /*!< External Line[9:5] Interrupts                                     */
+#define STM32H745_IRQ_TIM1_BRK               (STM32H745_IRQ_FIRST + 24)     /*!< TIM1 Break Interrupt                                              */
+#define STM32H745_IRQ_TIM1_UP                (STM32H745_IRQ_FIRST + 25)     /*!< TIM1 Update Interrupt                                             */
+#define STM32H745_IRQ_TIM1_TRG_COM           (STM32H745_IRQ_FIRST + 26)     /*!< TIM1 Trigger and Commutation Interrupt                            */
+#define STM32H745_IRQ_TIM1_CC                (STM32H745_IRQ_FIRST + 27)     /*!< TIM1 Capture Compare Interrupt                                    */
+#define STM32H745_IRQ_TIM2                   (STM32H745_IRQ_FIRST + 28)     /*!< TIM2 global Interrupt                                             */
+#define STM32H745_IRQ_TIM3                   (STM32H745_IRQ_FIRST + 29)     /*!< TIM3 global Interrupt                                             */
+#define STM32H745_IRQ_TIM4                   (STM32H745_IRQ_FIRST + 30)     /*!< TIM4 global Interrupt                                             */
+#define STM32H745_IRQ_I2C1_EV                (STM32H745_IRQ_FIRST + 31)     /*!< I2C1 Event Interrupt                                              */
+#define STM32H745_IRQ_I2C1_ER                (STM32H745_IRQ_FIRST + 32)     /*!< I2C1 Error Interrupt                                              */
+#define STM32H745_IRQ_I2C2_EV                (STM32H745_IRQ_FIRST + 33)     /*!< I2C2 Event Interrupt                                              */
+#define STM32H745_IRQ_I2C2_ER                (STM32H745_IRQ_FIRST + 34)     /*!< I2C2 Error Interrupt                                              */
+#define STM32H745_IRQ_SPI1                   (STM32H745_IRQ_FIRST + 35)     /*!< SPI1 global Interrupt                                             */
+#define STM32H745_IRQ_SPI2                   (STM32H745_IRQ_FIRST + 36)     /*!< SPI2 global Interrupt                                             */
+#define STM32H745_IRQ_USART1                 (STM32H745_IRQ_FIRST + 37)     /*!< USART1 global Interrupt                                           */
+#define STM32H745_IRQ_USART2                 (STM32H745_IRQ_FIRST + 38)     /*!< USART2 global Interrupt                                           */
+#define STM32H745_IRQ_USART3                 (STM32H745_IRQ_FIRST + 39)     /*!< USART3 global Interrupt                                           */
+#define STM32H745_IRQ_EXTI15_10              (STM32H745_IRQ_FIRST + 40)     /*!< External Line[15:10] Interrupts                                   */
+#define STM32H745_IRQ_RTC_Alarm              (STM32H745_IRQ_FIRST + 41)     /*!< RTC Alarm (A and B) through EXTI Line Interrupt                   */
+/* Reserved */
+#define STM32H745_IRQ_TIM8_BRK_TIM12         (STM32H745_IRQ_FIRST + 43)     /*!< TIM8 Break Interrupt and TIM12 global interrupt                   */
+#define STM32H745_IRQ_TIM8_UP_TIM13          (STM32H745_IRQ_FIRST + 44)     /*!< TIM8 Update Interrupt and TIM13 global interrupt                  */
+#define STM32H745_IRQ_TIM8_TRG_COM_TIM14     (STM32H745_IRQ_FIRST + 45)     /*!< TIM8 Trigger and Commutation Interrupt and TIM14 global interrupt */
+#define STM32H745_IRQ_TIM8_CC                (STM32H745_IRQ_FIRST + 46)     /*!< TIM8 Capture Compare Interrupt                                    */
+#define STM32H745_IRQ_DMA1_Stream7           (STM32H745_IRQ_FIRST + 47)     /*!< DMA1 Stream7 Interrupt                                            */
+#define STM32H745_IRQ_FMC                    (STM32H745_IRQ_FIRST + 48)     /*!< FMC global Interrupt                                              */
+#define STM32H745_IRQ_SDMMC1                 (STM32H745_IRQ_FIRST + 49)     /*!< SDMMC1 global Interrupt                                           */
+#define STM32H745_IRQ_TIM5                   (STM32H745_IRQ_FIRST + 50)     /*!< TIM5 global Interrupt                                             */
+#define STM32H745_IRQ_SPI3                   (STM32H745_IRQ_FIRST + 51)     /*!< SPI3 global Interrupt                                             */
+#define STM32H745_IRQ_UART4                  (STM32H745_IRQ_FIRST + 52)     /*!< UART4 global Interrupt                                            */
+#define STM32H745_IRQ_UART5                  (STM32H745_IRQ_FIRST + 53)     /*!< UART5 global Interrupt                                            */
+#define STM32H745_IRQ_TIM6_DAC               (STM32H745_IRQ_FIRST + 54)     /*!< TIM6 global and DAC1&2 underrun error  interrupts                 */
+#define STM32H745_IRQ_TIM7                   (STM32H745_IRQ_FIRST + 55)     /*!< TIM7 global interrupt                                             */
+#define STM32H745_IRQ_DMA2_Stream0           (STM32H745_IRQ_FIRST + 56)     /*!<   DMA2 Stream 0 global Interrupt                                  */
+#define STM32H745_IRQ_DMA2_Stream1           (STM32H745_IRQ_FIRST + 57)     /*!<   DMA2 Stream 1 global Interrupt                                  */
+#define STM32H745_IRQ_DMA2_Stream2           (STM32H745_IRQ_FIRST + 58)     /*!<   DMA2 Stream 2 global Interrupt                                  */
+#define STM32H745_IRQ_DMA2_Stream3           (STM32H745_IRQ_FIRST + 59)     /*!<   DMA2 Stream 3 global Interrupt                                  */
+#define STM32H745_IRQ_DMA2_Stream4           (STM32H745_IRQ_FIRST + 60)     /*!<   DMA2 Stream 4 global Interrupt                                  */
+#define STM32H745_IRQ_ETH                    (STM32H745_IRQ_FIRST + 61)     /*!< Ethernet global Interrupt                                         */
+#define STM32H745_IRQ_ETH_WKUP               (STM32H745_IRQ_FIRST + 62)     /*!< Ethernet Wakeup through EXTI line Interrupt                       */
+#define STM32H745_IRQ_FDCAN_CAL              (STM32H745_IRQ_FIRST + 63)     /*!< FDCAN Calibration unit Interrupt                                  */
+#define STM32H745_IRQ_CM7_SEV                (STM32H745_IRQ_FIRST + 64)     /*!< CM7 Send event interrupt for CM4                                  */
+#define STM32H745_IRQ_CM4_SEV                (STM32H745_IRQ_FIRST + 65)     /*!< CM4 Send event interrupt for CM7                                  */
+/* Reserved */
+/* Reserved */
+#define STM32H745_IRQ_DMA2_Stream5           (STM32H745_IRQ_FIRST + 68)     /*!< DMA2 Stream 5 global interrupt                                    */
+#define STM32H745_IRQ_DMA2_Stream6           (STM32H745_IRQ_FIRST + 69)     /*!< DMA2 Stream 6 global interrupt                                    */
+#define STM32H745_IRQ_DMA2_Stream7           (STM32H745_IRQ_FIRST + 70)     /*!< DMA2 Stream 7 global interrupt                                    */
+#define STM32H745_IRQ_USART6                 (STM32H745_IRQ_FIRST + 71)     /*!< USART6 global interrupt                                           */
+#define STM32H745_IRQ_I2C3_EV                (STM32H745_IRQ_FIRST + 72)     /*!< I2C3 event interrupt                                              */
+#define STM32H745_IRQ_I2C3_ER                (STM32H745_IRQ_FIRST + 73)     /*!< I2C3 error interrupt                                              */
+#define STM32H745_IRQ_OTG_HS_EP1_OUT         (STM32H745_IRQ_FIRST + 74)     /*!< USB OTG HS End Point 1 Out global interrupt                       */
+#define STM32H745_IRQ_OTG_HS_EP1_IN          (STM32H745_IRQ_FIRST + 75)     /*!< USB OTG HS End Point 1 In global interrupt                        */
+#define STM32H745_IRQ_OTG_HS_WKUP            (STM32H745_IRQ_FIRST + 76)     /*!< USB OTG HS Wakeup through EXTI interrupt                          */
+#define STM32H745_IRQ_OTG_HS                 (STM32H745_IRQ_FIRST + 77)     /*!< USB OTG HS global interrupt                                       */
+#define STM32H745_IRQ_DCMI                   (STM32H745_IRQ_FIRST + 78)     /*!< DCMI global interrupt                                             */
+/* Reserved */
+#define STM32H745_IRQ_RNG                    (STM32H745_IRQ_FIRST + 80)     /*!< RNG global interrupt                                              */
+#define STM32H745_IRQ_FPU                    (STM32H745_IRQ_FIRST + 81)     /*!< FPU global interrupt                                              */
+#define STM32H745_IRQ_UART7                  (STM32H745_IRQ_FIRST + 82)     /*!< UART7 global interrupt                                            */
+#define STM32H745_IRQ_UART8                  (STM32H745_IRQ_FIRST + 83)     /*!< UART8 global interrupt                                            */
+#define STM32H745_IRQ_SPI4                   (STM32H745_IRQ_FIRST + 84)     /*!< SPI4 global Interrupt                                             */
+#define STM32H745_IRQ_SPI5                   (STM32H745_IRQ_FIRST + 85)     /*!< SPI5 global Interrupt                                             */
+#define STM32H745_IRQ_SPI6                   (STM32H745_IRQ_FIRST + 86)     /*!< SPI6 global Interrupt                                             */
+#define STM32H745_IRQ_SAI1                   (STM32H745_IRQ_FIRST + 87)     /*!< SAI1 global Interrupt                                             */
+#define STM32H745_IRQ_LTDC                   (STM32H745_IRQ_FIRST + 88)     /*!< LTDC global Interrupt                                             */
+#define STM32H745_IRQ_LTDC_ER                (STM32H745_IRQ_FIRST + 89)     /*!< LTDC Error global Interrupt                                       */
+#define STM32H745_IRQ_DMA2D                  (STM32H745_IRQ_FIRST + 90)     /*!< DMA2D global Interrupt                                            */
+#define STM32H745_IRQ_SAI2                   (STM32H745_IRQ_FIRST + 91)     /*!< SAI2 global Interrupt                                             */
+#define STM32H745_IRQ_QUADSPI                (STM32H745_IRQ_FIRST + 92)     /*!< Quad SPI global interrupt                                         */
+#define STM32H745_IRQ_LPTIM1                 (STM32H745_IRQ_FIRST + 93)     /*!< LP TIM1 interrupt                                                 */
+#define STM32H745_IRQ_CEC                    (STM32H745_IRQ_FIRST + 94)     /*!< HDMI-CEC global Interrupt                                         */
+#define STM32H745_IRQ_I2C4_EV                (STM32H745_IRQ_FIRST + 95)     /*!< I2C4 Event Interrupt                                              */
+#define STM32H745_IRQ_I2C4_ER                (STM32H745_IRQ_FIRST + 96)     /*!< I2C4 Error Interrupt                                              */
+#define STM32H745_IRQ_SPDIF_RX               (STM32H745_IRQ_FIRST + 97)     /*!< SPDIF-RX global Interrupt                                         */
+#define STM32H745_IRQ_OTG_FS_EP1_OUT         (STM32H745_IRQ_FIRST + 98)     /*!< USB OTG HS2 global interrupt                                      */
+#define STM32H745_IRQ_OTG_FS_EP1_IN          (STM32H745_IRQ_FIRST + 99)     /*!< USB OTG HS2 End Point 1 Out global interrupt                      */
+#define STM32H745_IRQ_OTG_FS_WKUP            (STM32H745_IRQ_FIRST + 100)    /*!< USB OTG HS2 End Point 1 In global interrupt                       */
+#define STM32H745_IRQ_OTG_FS                 (STM32H745_IRQ_FIRST + 101)    /*!< USB OTG HS2 Wakeup through EXTI interrupt                         */
+#define STM32H745_IRQ_DMAMUX1_OVR            (STM32H745_IRQ_FIRST + 102)    /*!<DMAMUX1 Overrun interrupt                                          */
+#define STM32H745_IRQ_HRTIM1_Master          (STM32H745_IRQ_FIRST + 103)    /*!< HRTIM Master Timer global Interrupts                              */
+#define STM32H745_IRQ_HRTIM1_TIMA            (STM32H745_IRQ_FIRST + 104)    /*!< HRTIM Timer A global Interrupt                                    */
+#define STM32H745_IRQ_HRTIM1_TIMB            (STM32H745_IRQ_FIRST + 105)    /*!< HRTIM Timer B global Interrupt                                    */
+#define STM32H745_IRQ_HRTIM1_TIMC            (STM32H745_IRQ_FIRST + 106)    /*!< HRTIM Timer C global Interrupt                                    */
+#define STM32H745_IRQ_HRTIM1_TIMD            (STM32H745_IRQ_FIRST + 107)    /*!< HRTIM Timer D global Interrupt                                    */
+#define STM32H745_IRQ_HRTIM1_TIME            (STM32H745_IRQ_FIRST + 108)    /*!< HRTIM Timer E global Interrupt                                    */
+#define STM32H745_IRQ_HRTIM1_FLT             (STM32H745_IRQ_FIRST + 109)    /*!< HRTIM Fault global Interrupt                                      */
+#define STM32H745_IRQ_DFSDM1_FLT0            (STM32H745_IRQ_FIRST + 110)    /*!<DFSDM Filter1 Interrupt                                            */
+#define STM32H745_IRQ_DFSDM1_FLT1            (STM32H745_IRQ_FIRST + 111)    /*!<DFSDM Filter2 Interrupt                                            */
+#define STM32H745_IRQ_DFSDM1_FLT2            (STM32H745_IRQ_FIRST + 112)    /*!<DFSDM Filter3 Interrupt                                            */
+#define STM32H745_IRQ_DFSDM1_FLT3            (STM32H745_IRQ_FIRST + 113)    /*!<DFSDM Filter4 Interrupt                                            */
+#define STM32H745_IRQ_SAI3                   (STM32H745_IRQ_FIRST + 114)    /*!< SAI3 global Interrupt                                             */
+#define STM32H745_IRQ_SWPMI1                 (STM32H745_IRQ_FIRST + 115)    /*!< Serial Wire Interface 1 global interrupt                          */
+#define STM32H745_IRQ_TIM15                  (STM32H745_IRQ_FIRST + 116)    /*!< TIM15 global Interrupt                                            */
+#define STM32H745_IRQ_TIM16                  (STM32H745_IRQ_FIRST + 117)    /*!< TIM16 global Interrupt                                            */
+#define STM32H745_IRQ_TIM17                  (STM32H745_IRQ_FIRST + 118)    /*!< TIM17 global Interrupt                                            */
+#define STM32H745_IRQ_MDIOS_WKUP             (STM32H745_IRQ_FIRST + 119)    /*!< MDIOS Wakeup  Interrupt                                           */
+#define STM32H745_IRQ_MDIOS                  (STM32H745_IRQ_FIRST + 120)    /*!< MDIOS global Interrupt                                            */
+#define STM32H745_IRQ_JPEG                   (STM32H745_IRQ_FIRST + 121)    /*!< JPEG global Interrupt                                             */
+#define STM32H745_IRQ_MDMA                   (STM32H745_IRQ_FIRST + 122)    /*!< MDMA global Interrupt                                             */
+/* Reserved */
+#define STM32H745_IRQ_SDMMC2                 (STM32H745_IRQ_FIRST + 124)    /*!< SDMMC2 global Interrupt                                           */
+#define STM32H745_IRQ_HSEM1                  (STM32H745_IRQ_FIRST + 125)    /*!< HSEM1 global Interrupt                                            */
+#define STM32H745_IRQ_HSEM2                  (STM32H745_IRQ_FIRST + 126)    /*!< HSEM2 global Interrupt                                            */
+#define STM32H745_IRQ_ADC3                   (STM32H745_IRQ_FIRST + 127)    /*!< ADC3 global Interrupt                                             */
+#define STM32H745_IRQ_DMAMUX2_OVR            (STM32H745_IRQ_FIRST + 128)    /*!<DMAMUX2 Overrun interrupt                                          */
+#define STM32H745_IRQ_BDMA_Channel0          (STM32H745_IRQ_FIRST + 129)    /*!< BDMA Channel 0 global Interrupt                                   */
+#define STM32H745_IRQ_BDMA_Channel1          (STM32H745_IRQ_FIRST + 130)    /*!< BDMA Channel 1 global Interrupt                                   */
+#define STM32H745_IRQ_BDMA_Channel2          (STM32H745_IRQ_FIRST + 131)    /*!< BDMA Channel 2 global Interrupt                                   */
+#define STM32H745_IRQ_BDMA_Channel3          (STM32H745_IRQ_FIRST + 132)    /*!< BDMA Channel 3 global Interrupt                                   */
+#define STM32H745_IRQ_BDMA_Channel4          (STM32H745_IRQ_FIRST + 133)    /*!< BDMA Channel 4 global Interrupt                                   */
+#define STM32H745_IRQ_BDMA_Channel5          (STM32H745_IRQ_FIRST + 134)    /*!< BDMA Channel 5 global Interrupt                                   */
+#define STM32H745_IRQ_BDMA_Channel6          (STM32H745_IRQ_FIRST + 135)    /*!< BDMA Channel 6 global Interrupt                                   */
+#define STM32H745_IRQ_BDMA_Channel7          (STM32H745_IRQ_FIRST + 136)    /*!< BDMA Channel 7 global Interrupt                                   */
+#define STM32H745_IRQ_COMP                   (STM32H745_IRQ_FIRST + 137)    /*!< COMP global Interrupt                                             */
+#define STM32H745_IRQ_LPTIM2                 (STM32H745_IRQ_FIRST + 138)    /*!< LP TIM2 global interrupt                                          */
+#define STM32H745_IRQ_LPTIM3                 (STM32H745_IRQ_FIRST + 139)    /*!< LP TIM3 global interrupt                                          */
+#define STM32H745_IRQ_LPTIM4                 (STM32H745_IRQ_FIRST + 140)    /*!< LP TIM4 global interrupt                                          */
+#define STM32H745_IRQ_LPTIM5                 (STM32H745_IRQ_FIRST + 141)    /*!< LP TIM5 global interrupt                                          */
+#define STM32H745_IRQ_LPUART1                (STM32H745_IRQ_FIRST + 142)    /*!< LP UART1 interrupt                                                */
+#define STM32H745_IRQ_WWDG_RST               (STM32H745_IRQ_FIRST + 143)    /*!<Window Watchdog reset interrupt (exti_d2_wwdg_it, exti_d1_wwdg_it) */
+#define STM32H745_IRQ_CRS                    (STM32H745_IRQ_FIRST + 144)    /*!< Clock Recovery Global Interrupt                                   */
+#define STM32H745_IRQ_ECC                    (STM32H745_IRQ_FIRST + 145)    /*!< ECC diagnostic Global Interrupt                                   */
+#define STM32H745_IRQ_SAI4                   (STM32H745_IRQ_FIRST + 146)    /*!< SAI4 global interrupt                                             */
+/* Reserved */
+#define STM32H745_IRQ_HOLD_CORE              (STM32H745_IRQ_FIRST + 148)    /*!< Hold core interrupt                                               */
+#define STM32H745_IRQ_WAKEUP_PIN             (STM32H745_IRQ_FIRST + 149)    /*!< Interrupt for all 6 wake-up pins                                  */
 
 #if defined(CONFIG_STM32H745_STM32H745ZI)
-#  define STM32H745_IRQ_NEXTINTS  85
+#  define STM32H745_IRQ_NEXTINTS  150
 #else
 #  error "Unsupported STM32H745 chip"
 #endif

@@ -74,6 +74,11 @@
  * has been detected and the system has halted.
  */
 
+
+#define STM32_CPUCLK_FREQUENCY   400000000 /*400MHz*/
+#define STM32_HCLK_FREQUENCY     (STM32_CPUCLK_FREQUENCY / 2)
+
+
 #define LED_STARTED      0
 #define LED_HEAPALLOCATE 1
 #define LED_IRQSENABLED  2

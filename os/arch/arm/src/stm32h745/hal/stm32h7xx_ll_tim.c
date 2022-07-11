@@ -220,12 +220,12 @@ static ErrorStatus IC4Config(TIM_TypeDef *TIMx, LL_TIM_IC_InitTypeDef *TIM_ICIni
   * @brief  Set TIMx registers to their reset values.
   * @param  TIMx Timer instance
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: invalid TIMx instance
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: invalid TIMx instance
   */
 ErrorStatus LL_TIM_DeInit(TIM_TypeDef *TIMx)
 {
-  ErrorStatus result = SUCCESS;
+  ErrorStatus result = _SUCCESS;
 
   /* Check the parameters */
   assert_param(IS_TIM_INSTANCE(TIMx));
@@ -328,7 +328,7 @@ ErrorStatus LL_TIM_DeInit(TIM_TypeDef *TIMx)
 #endif /* TIM17 */
   else
   {
-    result = ERROR;
+    result = _ERROR;
   }
 
   return result;
@@ -356,8 +356,8 @@ void LL_TIM_StructInit(LL_TIM_InitTypeDef *TIM_InitStruct)
   * @param  TIM_InitStruct pointer to a @ref LL_TIM_InitTypeDef structure
   *         (TIMx time base unit configuration data structure)
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: not applicable
   */
 ErrorStatus LL_TIM_Init(TIM_TypeDef *TIMx, LL_TIM_InitTypeDef *TIM_InitStruct)
 {
@@ -401,7 +401,7 @@ ErrorStatus LL_TIM_Init(TIM_TypeDef *TIMx, LL_TIM_InitTypeDef *TIM_InitStruct)
      and the repetition counter value (if applicable) immediately */
   LL_TIM_GenerateEvent_UPDATE(TIMx);
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 /**
@@ -437,12 +437,12 @@ void LL_TIM_OC_StructInit(LL_TIM_OC_InitTypeDef *TIM_OC_InitStruct)
   * @param  TIM_OC_InitStruct pointer to a @ref LL_TIM_OC_InitTypeDef structure (TIMx output channel configuration
   *         data structure)
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx output channel is initialized
-  *          - ERROR: TIMx output channel is not initialized
+  *          - _SUCCESS: TIMx output channel is initialized
+  *          - _ERROR: TIMx output channel is not initialized
   */
 ErrorStatus LL_TIM_OC_Init(TIM_TypeDef *TIMx, uint32_t Channel, LL_TIM_OC_InitTypeDef *TIM_OC_InitStruct)
 {
-  ErrorStatus result = ERROR;
+  ErrorStatus result = _ERROR;
 
   switch (Channel)
   {
@@ -498,12 +498,12 @@ void LL_TIM_IC_StructInit(LL_TIM_IC_InitTypeDef *TIM_ICInitStruct)
   * @param  TIM_IC_InitStruct pointer to a @ref LL_TIM_IC_InitTypeDef structure (TIMx input channel configuration data
   *         structure)
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx output channel is initialized
-  *          - ERROR: TIMx output channel is not initialized
+  *          - _SUCCESS: TIMx output channel is initialized
+  *          - _ERROR: TIMx output channel is not initialized
   */
 ErrorStatus LL_TIM_IC_Init(TIM_TypeDef *TIMx, uint32_t Channel, LL_TIM_IC_InitTypeDef *TIM_IC_InitStruct)
 {
-  ErrorStatus result = ERROR;
+  ErrorStatus result = _ERROR;
 
   switch (Channel)
   {
@@ -552,8 +552,8 @@ void LL_TIM_ENCODER_StructInit(LL_TIM_ENCODER_InitTypeDef *TIM_EncoderInitStruct
   * @param  TIM_EncoderInitStruct pointer to a @ref LL_TIM_ENCODER_InitTypeDef structure (TIMx encoder interface
   *         configuration data structure)
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: not applicable
   */
 ErrorStatus LL_TIM_ENCODER_Init(TIM_TypeDef *TIMx, LL_TIM_ENCODER_InitTypeDef *TIM_EncoderInitStruct)
 {
@@ -608,7 +608,7 @@ ErrorStatus LL_TIM_ENCODER_Init(TIM_TypeDef *TIMx, LL_TIM_ENCODER_InitTypeDef *T
   /* Write to TIMx CCER */
   LL_TIM_WriteReg(TIMx, CCER, tmpccer);
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 /**
@@ -645,8 +645,8 @@ void LL_TIM_HALLSENSOR_StructInit(LL_TIM_HALLSENSOR_InitTypeDef *TIM_HallSensorI
   * @param  TIM_HallSensorInitStruct pointer to a @ref LL_TIM_HALLSENSOR_InitTypeDef structure (TIMx HALL sensor
   *         interface configuration data structure)
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: not applicable
   */
 ErrorStatus LL_TIM_HALLSENSOR_Init(TIM_TypeDef *TIMx, LL_TIM_HALLSENSOR_InitTypeDef *TIM_HallSensorInitStruct)
 {
@@ -717,7 +717,7 @@ ErrorStatus LL_TIM_HALLSENSOR_Init(TIM_TypeDef *TIMx, LL_TIM_HALLSENSOR_InitType
   /* Write to TIMx CCR2 */
   LL_TIM_OC_SetCompareCH2(TIMx, TIM_HallSensorInitStruct->CommutationDelay);
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 /**
@@ -763,8 +763,8 @@ void LL_TIM_BDTR_StructInit(LL_TIM_BDTR_InitTypeDef *TIM_BDTRInitStruct)
   * @param  TIM_BDTRInitStruct pointer to a @ref LL_TIM_BDTR_InitTypeDef structure (Break and Dead Time configuration
   *         data structure)
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: Break and Dead Time is initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: Break and Dead Time is initialized
+  *          - _ERROR: not applicable
   */
 ErrorStatus LL_TIM_BDTR_Init(TIM_TypeDef *TIMx, LL_TIM_BDTR_InitTypeDef *TIM_BDTRInitStruct)
 {
@@ -828,7 +828,7 @@ ErrorStatus LL_TIM_BDTR_Init(TIM_TypeDef *TIMx, LL_TIM_BDTR_InitTypeDef *TIM_BDT
   /* Set TIMx_BDTR */
   LL_TIM_WriteReg(TIMx, BDTR, tmpbdtr);
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 /**
   * @}
@@ -847,8 +847,8 @@ ErrorStatus LL_TIM_BDTR_Init(TIM_TypeDef *TIMx, LL_TIM_BDTR_InitTypeDef *TIM_BDT
   * @param  TIMx Timer Instance
   * @param  TIM_OCInitStruct pointer to the the TIMx output channel 1 configuration data structure
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: not applicable
   */
 static ErrorStatus OC1Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCInitStruct)
 {
@@ -918,7 +918,7 @@ static ErrorStatus OC1Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCIni
   /* Write to TIMx CCER */
   LL_TIM_WriteReg(TIMx, CCER, tmpccer);
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 /**
@@ -926,8 +926,8 @@ static ErrorStatus OC1Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCIni
   * @param  TIMx Timer Instance
   * @param  TIM_OCInitStruct pointer to the the TIMx output channel 2 configuration data structure
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: not applicable
   */
 static ErrorStatus OC2Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCInitStruct)
 {
@@ -997,7 +997,7 @@ static ErrorStatus OC2Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCIni
   /* Write to TIMx CCER */
   LL_TIM_WriteReg(TIMx, CCER, tmpccer);
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 /**
@@ -1005,8 +1005,8 @@ static ErrorStatus OC2Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCIni
   * @param  TIMx Timer Instance
   * @param  TIM_OCInitStruct pointer to the the TIMx output channel 3 configuration data structure
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: not applicable
   */
 static ErrorStatus OC3Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCInitStruct)
 {
@@ -1076,7 +1076,7 @@ static ErrorStatus OC3Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCIni
   /* Write to TIMx CCER */
   LL_TIM_WriteReg(TIMx, CCER, tmpccer);
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 /**
@@ -1084,8 +1084,8 @@ static ErrorStatus OC3Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCIni
   * @param  TIMx Timer Instance
   * @param  TIM_OCInitStruct pointer to the the TIMx output channel 4 configuration data structure
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: not applicable
   */
 static ErrorStatus OC4Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCInitStruct)
 {
@@ -1146,7 +1146,7 @@ static ErrorStatus OC4Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCIni
   /* Write to TIMx CCER */
   LL_TIM_WriteReg(TIMx, CCER, tmpccer);
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 /**
@@ -1154,8 +1154,8 @@ static ErrorStatus OC4Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCIni
   * @param  TIMx Timer Instance
   * @param  TIM_OCInitStruct pointer to the the TIMx output channel 5 configuration data structure
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: not applicable
   */
 static ErrorStatus OC5Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCInitStruct)
 {
@@ -1207,7 +1207,7 @@ static ErrorStatus OC5Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCIni
   /* Write to TIMx CCER */
   LL_TIM_WriteReg(TIMx, CCER, tmpccer);
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 /**
@@ -1215,8 +1215,8 @@ static ErrorStatus OC5Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCIni
   * @param  TIMx Timer Instance
   * @param  TIM_OCInitStruct pointer to the the TIMx output channel 6 configuration data structure
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: not applicable
   */
 static ErrorStatus OC6Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCInitStruct)
 {
@@ -1267,7 +1267,7 @@ static ErrorStatus OC6Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCIni
   /* Write to TIMx CCER */
   LL_TIM_WriteReg(TIMx, CCER, tmpccer);
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 /**
@@ -1275,8 +1275,8 @@ static ErrorStatus OC6Config(TIM_TypeDef *TIMx, LL_TIM_OC_InitTypeDef *TIM_OCIni
   * @param  TIMx Timer Instance
   * @param  TIM_ICInitStruct pointer to the the TIMx input channel 1 configuration data structure
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: not applicable
   */
 static ErrorStatus IC1Config(TIM_TypeDef *TIMx, LL_TIM_IC_InitTypeDef *TIM_ICInitStruct)
 {
@@ -1300,7 +1300,7 @@ static ErrorStatus IC1Config(TIM_TypeDef *TIMx, LL_TIM_IC_InitTypeDef *TIM_ICIni
              (TIM_CCER_CC1P | TIM_CCER_CC1NP),
              (TIM_ICInitStruct->ICPolarity | TIM_CCER_CC1E));
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 /**
@@ -1308,8 +1308,8 @@ static ErrorStatus IC1Config(TIM_TypeDef *TIMx, LL_TIM_IC_InitTypeDef *TIM_ICIni
   * @param  TIMx Timer Instance
   * @param  TIM_ICInitStruct pointer to the the TIMx input channel 2 configuration data structure
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: not applicable
   */
 static ErrorStatus IC2Config(TIM_TypeDef *TIMx, LL_TIM_IC_InitTypeDef *TIM_ICInitStruct)
 {
@@ -1333,7 +1333,7 @@ static ErrorStatus IC2Config(TIM_TypeDef *TIMx, LL_TIM_IC_InitTypeDef *TIM_ICIni
              (TIM_CCER_CC2P | TIM_CCER_CC2NP),
              ((TIM_ICInitStruct->ICPolarity << 4U) | TIM_CCER_CC2E));
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 /**
@@ -1341,8 +1341,8 @@ static ErrorStatus IC2Config(TIM_TypeDef *TIMx, LL_TIM_IC_InitTypeDef *TIM_ICIni
   * @param  TIMx Timer Instance
   * @param  TIM_ICInitStruct pointer to the the TIMx input channel 3 configuration data structure
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: not applicable
   */
 static ErrorStatus IC3Config(TIM_TypeDef *TIMx, LL_TIM_IC_InitTypeDef *TIM_ICInitStruct)
 {
@@ -1366,7 +1366,7 @@ static ErrorStatus IC3Config(TIM_TypeDef *TIMx, LL_TIM_IC_InitTypeDef *TIM_ICIni
              (TIM_CCER_CC3P | TIM_CCER_CC3NP),
              ((TIM_ICInitStruct->ICPolarity << 8U) | TIM_CCER_CC3E));
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 /**
@@ -1374,8 +1374,8 @@ static ErrorStatus IC3Config(TIM_TypeDef *TIMx, LL_TIM_IC_InitTypeDef *TIM_ICIni
   * @param  TIMx Timer Instance
   * @param  TIM_ICInitStruct pointer to the the TIMx input channel 4 configuration data structure
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: TIMx registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: TIMx registers are de-initialized
+  *          - _ERROR: not applicable
   */
 static ErrorStatus IC4Config(TIM_TypeDef *TIMx, LL_TIM_IC_InitTypeDef *TIM_ICInitStruct)
 {
@@ -1399,7 +1399,7 @@ static ErrorStatus IC4Config(TIM_TypeDef *TIMx, LL_TIM_IC_InitTypeDef *TIM_ICIni
              (TIM_CCER_CC4P | TIM_CCER_CC4NP),
              ((TIM_ICInitStruct->ICPolarity << 12U) | TIM_CCER_CC4E));
 
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 

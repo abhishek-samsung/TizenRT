@@ -98,12 +98,12 @@
   * @brief  De-initialize GPIO registers (Registers restored to their default values).
   * @param  GPIOx GPIO Port
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: GPIO registers are de-initialized
-  *          - ERROR:   Wrong GPIO Port
+  *          - _SUCCESS: GPIO registers are de-initialized
+  *          - _ERROR:   Wrong GPIO Port
   */
 ErrorStatus LL_GPIO_DeInit(GPIO_TypeDef *GPIOx)
 {
-  ErrorStatus status = SUCCESS;
+  ErrorStatus status = _SUCCESS;
 
   /* Check the parameters */
   assert_param(IS_GPIO_ALL_INSTANCE(GPIOx));
@@ -182,7 +182,7 @@ ErrorStatus LL_GPIO_DeInit(GPIO_TypeDef *GPIOx)
 #endif /* GPIOK */
   else
   {
-    status = ERROR;
+    status = _ERROR;
   }
 
   return (status);
@@ -194,8 +194,8 @@ ErrorStatus LL_GPIO_DeInit(GPIO_TypeDef *GPIOx)
   * @param GPIO_InitStruct pointer to a @ref LL_GPIO_InitTypeDef structure
   *         that contains the configuration information for the specified GPIO peripheral.
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: GPIO registers are initialized according to GPIO_InitStruct content
-  *          - ERROR:   Not applicable
+  *          - _SUCCESS: GPIO registers are initialized according to GPIO_InitStruct content
+  *          - _ERROR:   Not applicable
   */
 ErrorStatus LL_GPIO_Init(GPIO_TypeDef *GPIOx, LL_GPIO_InitTypeDef *GPIO_InitStruct)
 {
@@ -261,7 +261,7 @@ ErrorStatus LL_GPIO_Init(GPIO_TypeDef *GPIOx, LL_GPIO_InitTypeDef *GPIO_InitStru
     pinpos++;
   }
 
-  return (SUCCESS);
+  return (_SUCCESS);
 }
 
 /**

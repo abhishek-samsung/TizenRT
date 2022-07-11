@@ -122,12 +122,12 @@
   * @brief  De-initialize USART registers (Registers restored to their default values).
   * @param  USARTx USART Instance
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: USART registers are de-initialized
-  *          - ERROR: USART registers are not de-initialized
+  *          - _SUCCESS: USART registers are de-initialized
+  *          - _ERROR: USART registers are not de-initialized
   */
 ErrorStatus LL_USART_DeInit(USART_TypeDef *USARTx)
 {
-  ErrorStatus status = SUCCESS;
+  ErrorStatus status = _SUCCESS;
 
   /* Check the parameters */
   assert_param(IS_UART_INSTANCE(USARTx));
@@ -218,7 +218,7 @@ ErrorStatus LL_USART_DeInit(USART_TypeDef *USARTx)
 #endif /* USART10 */
   else
   {
-    status = ERROR;
+    status = _ERROR;
   }
 
   return (status);
@@ -229,18 +229,18 @@ ErrorStatus LL_USART_DeInit(USART_TypeDef *USARTx)
   *         parameters in USART_InitStruct.
   * @note   As some bits in USART configuration registers can only be written when
   *         the USART is disabled (USART_CR1_UE bit =0), USART Peripheral should be in disabled state prior calling
-  *         this function. Otherwise, ERROR result will be returned.
+  *         this function. Otherwise, _ERROR result will be returned.
   * @note   Baud rate value stored in USART_InitStruct BaudRate field, should be valid (different from 0).
   * @param  USARTx USART Instance
   * @param  USART_InitStruct pointer to a LL_USART_InitTypeDef structure
   *         that contains the configuration information for the specified USART peripheral.
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: USART registers are initialized according to USART_InitStruct content
-  *          - ERROR: Problem occurred during USART Registers initialization
+  *          - _SUCCESS: USART registers are initialized according to USART_InitStruct content
+  *          - _ERROR: Problem occurred during USART Registers initialization
   */
 ErrorStatus LL_USART_Init(USART_TypeDef *USARTx, LL_USART_InitTypeDef *USART_InitStruct)
 {
-  ErrorStatus status = ERROR;
+  ErrorStatus status = _ERROR;
   uint32_t periphclk = LL_RCC_PERIPH_FREQUENCY_NO;
 
   /* Check the parameters */
@@ -334,7 +334,7 @@ ErrorStatus LL_USART_Init(USART_TypeDef *USARTx, LL_USART_InitTypeDef *USART_Ini
 #endif /* USART10 */
     else
     {
-      /* Nothing to do, as error code is already assigned to ERROR value */
+      /* Nothing to do, as error code is already assigned to _ERROR value */
     }
 
     /* Configure the USART Baud Rate :
@@ -345,7 +345,7 @@ ErrorStatus LL_USART_Init(USART_TypeDef *USARTx, LL_USART_InitTypeDef *USART_Ini
     if ((periphclk != LL_RCC_PERIPH_FREQUENCY_NO)
         && (USART_InitStruct->BaudRate != 0U))
     {
-      status = SUCCESS;
+      status = _SUCCESS;
       LL_USART_SetBaudRate(USARTx,
                            periphclk,
                            USART_InitStruct->PrescalerValue,
@@ -362,7 +362,7 @@ ErrorStatus LL_USART_Init(USART_TypeDef *USARTx, LL_USART_InitTypeDef *USART_Ini
      */
     LL_USART_SetPrescaler(USARTx, USART_InitStruct->PrescalerValue);
   }
-  /* Endif (=> USART not in Disabled state => return ERROR) */
+  /* Endif (=> USART not in Disabled state => return _ERROR) */
 
   return (status);
 }
@@ -392,18 +392,18 @@ void LL_USART_StructInit(LL_USART_InitTypeDef *USART_InitStruct)
   *         specified parameters in the USART_ClockInitStruct.
   * @note   As some bits in USART configuration registers can only be written when
   *         the USART is disabled (USART_CR1_UE bit =0), USART Peripheral should be in disabled state prior calling
-  *         this function. Otherwise, ERROR result will be returned.
+  *         this function. Otherwise, _ERROR result will be returned.
   * @param  USARTx USART Instance
   * @param  USART_ClockInitStruct pointer to a @ref LL_USART_ClockInitTypeDef structure
   *         that contains the Clock configuration information for the specified USART peripheral.
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: USART registers related to Clock settings are initialized according
+  *          - _SUCCESS: USART registers related to Clock settings are initialized according
   *                     to USART_ClockInitStruct content
-  *          - ERROR: Problem occurred during USART Registers initialization
+  *          - _ERROR: Problem occurred during USART Registers initialization
   */
 ErrorStatus LL_USART_ClockInit(USART_TypeDef *USARTx, LL_USART_ClockInitTypeDef *USART_ClockInitStruct)
 {
-  ErrorStatus status = SUCCESS;
+  ErrorStatus status = _SUCCESS;
 
   /* Check USART Instance and Clock signal output parameters */
   assert_param(IS_UART_INSTANCE(USARTx));
@@ -433,10 +433,10 @@ ErrorStatus LL_USART_ClockInit(USART_TypeDef *USARTx, LL_USART_ClockInitTypeDef 
                USART_ClockInitStruct->ClockOutput | USART_ClockInitStruct->ClockPolarity |
                USART_ClockInitStruct->ClockPhase | USART_ClockInitStruct->LastBitClockPulse);
   }
-  /* Else (USART not in Disabled state => return ERROR */
+  /* Else (USART not in Disabled state => return _ERROR */
   else
   {
-    status = ERROR;
+    status = _ERROR;
   }
 
   return (status);

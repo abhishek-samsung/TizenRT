@@ -489,8 +489,8 @@ void LL_SetSystemCoreClock(uint32_t CPU_Frequency)
   * @param  UTILS_ClkInitStruct pointer to a @ref LL_UTILS_ClkInitTypeDef structure that contains
   *                             the configuration information for the BUS prescalers.
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: Max frequency configuration done
-  *          - ERROR: Max frequency configuration not done
+  *          - _SUCCESS: Max frequency configuration done
+  *          - _ERROR: Max frequency configuration not done
   *
   * (*)  : For stm32h72xxx and stm32h73xxx family lines and requires to enable the CPU_FREQ_BOOST flash option byte, 520MHZ otherwise.
   * (**) : For stm32h74xxx and stm32h75xxx family lines and requires the board to be connected on LDO regulator not SMPS, 400MHZ otherwise.
@@ -530,7 +530,7 @@ ErrorStatus LL_PLL_ConfigSystemClock_HSI(LL_UTILS_PLLInitTypeDef *UTILS_PLLInitS
   assert_param(IS_LL_UTILS_CHECK_VCO_RANGES(UTILS_PLLInitStruct->VCO_Input, UTILS_PLLInitStruct->VCO_Output));
 
   /* Check if one of the PLL is enabled */
-  if(UTILS_IsPLLsReady() == SUCCESS)
+  if(UTILS_IsPLLsReady() == _SUCCESS)
   {
     /* Calculate the new PLL output frequency */
     pllfreq = UTILS_GetPLLOutputFrequency(hsi_clk, UTILS_PLLInitStruct);
@@ -562,7 +562,7 @@ ErrorStatus LL_PLL_ConfigSystemClock_HSI(LL_UTILS_PLLInitTypeDef *UTILS_PLLInitS
   else
   {
     /* Current PLL configuration cannot be modified */
-    status = ERROR;
+    status = _ERROR;
   }
 
   return status;
@@ -585,8 +585,8 @@ ErrorStatus LL_PLL_ConfigSystemClock_HSI(LL_UTILS_PLLInitTypeDef *UTILS_PLLInitS
   * @param  UTILS_ClkInitStruct pointer to a @ref LL_UTILS_ClkInitTypeDef structure that contains
   *                             the configuration information for the BUS prescalers.
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: Max frequency configuration done
-  *          - ERROR: Max frequency configuration not done
+  *          - _SUCCESS: Max frequency configuration done
+  *          - _ERROR: Max frequency configuration not done
   *
   * (*)  : For stm32h72xxx and stm32h73xxx family lines and requires to enable the CPU_FREQ_BOOST flash option byte, 520MHZ otherwise.
   * (**) : For stm32h74xxx and stm32h75xxx family lines and requires the board to be connected on LDO regulator not SMPS, 400MHZ otherwise.
@@ -626,7 +626,7 @@ ErrorStatus LL_PLL_ConfigSystemClock_HSE(uint32_t HSEFrequency, uint32_t HSEBypa
   assert_param(IS_LL_UTILS_CHECK_VCO_RANGES(UTILS_PLLInitStruct->VCO_Input, UTILS_PLLInitStruct->VCO_Output));
 
   /* Check if one of the PLL is enabled */
-  if(UTILS_IsPLLsReady() == SUCCESS)
+  if(UTILS_IsPLLsReady() == _SUCCESS)
   {
     /* Calculate the new PLL output frequency */
     pllfreq = UTILS_GetPLLOutputFrequency(HSEFrequency, UTILS_PLLInitStruct);
@@ -669,7 +669,7 @@ ErrorStatus LL_PLL_ConfigSystemClock_HSE(uint32_t HSEFrequency, uint32_t HSEBypa
   else
   {
     /* Current PLL configuration cannot be modified */
-    status = ERROR;
+    status = _ERROR;
   }
 
   return status;
@@ -684,12 +684,12 @@ ErrorStatus LL_PLL_ConfigSystemClock_HSE(uint32_t HSEFrequency, uint32_t HSEBypa
             voltage range.
   * @param  HCLK_Frequency  HCLK frequency
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: Latency has been modified
-  *          - ERROR: Latency cannot be modified
+  *          - _SUCCESS: Latency has been modified
+  *          - _ERROR: Latency cannot be modified
   */
 ErrorStatus LL_SetFlashLatency(uint32_t HCLK_Frequency)
 {
-  ErrorStatus status = SUCCESS;
+  ErrorStatus status = _SUCCESS;
   uint32_t timeout;
   uint32_t getlatency;
   uint32_t latency = LL_FLASH_LATENCY_0;  /* default value 0WS */
@@ -699,7 +699,7 @@ ErrorStatus LL_SetFlashLatency(uint32_t HCLK_Frequency)
   /* Frequency cannot be equal to 0 */
   if (HCLK_Frequency == 0U)
   {
-    status = ERROR;
+    status = _ERROR;
   }
   else
   {
@@ -746,7 +746,7 @@ ErrorStatus LL_SetFlashLatency(uint32_t HCLK_Frequency)
       }
       else
       {
-        status = ERROR;
+        status = _ERROR;
       }
     }
 #if (STM32H7_DEV_ID == 0x480UL)
@@ -793,7 +793,7 @@ ErrorStatus LL_SetFlashLatency(uint32_t HCLK_Frequency)
       }
       else
       {
-        status = ERROR;
+        status = _ERROR;
       }
     }
     else if(LL_PWR_GetRegulVoltageScaling() == LL_PWR_REGU_VOLTAGE_SCALE2)
@@ -832,7 +832,7 @@ ErrorStatus LL_SetFlashLatency(uint32_t HCLK_Frequency)
       }
       else
       {
-        status = ERROR;
+        status = _ERROR;
       }
     }
     else /* Scale 3 */
@@ -871,11 +871,11 @@ ErrorStatus LL_SetFlashLatency(uint32_t HCLK_Frequency)
       }
       else
       {
-        status = ERROR;
+        status = _ERROR;
       }
     }
 
-    if(status == SUCCESS)
+    if(status == _SUCCESS)
     {
       LL_FLASH_SetLatency(latency);
 
@@ -891,7 +891,7 @@ ErrorStatus LL_SetFlashLatency(uint32_t HCLK_Frequency)
 
       if(getlatency != latency)
       {
-        status = ERROR;
+        status = _ERROR;
       }
     }
   }
@@ -934,32 +934,32 @@ static uint32_t UTILS_GetPLLOutputFrequency(uint32_t PLL_InputFrequency, LL_UTIL
 /**
   * @brief  Check that all PLLs are ready therefore configuration can be done
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: All PLLs are ready so configuration can be done
-  *          - ERROR: One PLL at least is busy
+  *          - _SUCCESS: All PLLs are ready so configuration can be done
+  *          - _ERROR: One PLL at least is busy
   */
 static ErrorStatus UTILS_IsPLLsReady(void)
 {
-  ErrorStatus status = SUCCESS;
+  ErrorStatus status = _SUCCESS;
 
   /* Check if one of the PLL1 is busy */
   if(LL_RCC_PLL1_IsReady() != 0U)
   {
     /* PLL1 configuration cannot be done */
-    status = ERROR;
+    status = _ERROR;
   }
 
   /* Check if one of the PLL2 is busy */
   if(LL_RCC_PLL2_IsReady() != 0U)
   {
     /* PLL2 configuration cannot be done */
-    status = ERROR;
+    status = _ERROR;
   }
 
   /* Check if one of the PLL3 is busy */
   if(LL_RCC_PLL3_IsReady() != 0U)
   {
     /* PLL3 configuration cannot be done */
-    status = ERROR;
+    status = _ERROR;
   }
 
   return status;
@@ -971,12 +971,12 @@ static ErrorStatus UTILS_IsPLLsReady(void)
   * @param  UTILS_ClkInitStruct pointer to a @ref LL_UTILS_ClkInitTypeDef structure that contains
   *                             the configuration information for the BUS prescalers.
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: No problem to switch system to PLL
-  *          - ERROR: Problem to switch system to PLL
+  *          - _SUCCESS: No problem to switch system to PLL
+  *          - _ERROR: Problem to switch system to PLL
   */
 static ErrorStatus UTILS_EnablePLLAndSwitchSystem(uint32_t SYSCLK_Frequency, LL_UTILS_ClkInitTypeDef *UTILS_ClkInitStruct)
 {
-  ErrorStatus status = SUCCESS;
+  ErrorStatus status = _SUCCESS;
   uint32_t new_hclk_frequency;
 
   assert_param(IS_LL_UTILS_SYSCLK_DIV(UTILS_ClkInitStruct->SYSCLKDivider));
@@ -997,7 +997,7 @@ static ErrorStatus UTILS_EnablePLLAndSwitchSystem(uint32_t SYSCLK_Frequency, LL_
     }
 
   /* Update system clock configuration */
-  if(status == SUCCESS)
+  if(status == _SUCCESS)
   {
     /* Enable PLL */
     LL_RCC_PLL1_Enable();

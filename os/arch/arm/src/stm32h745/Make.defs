@@ -118,7 +118,10 @@ CHIP_CSRCS += stm32h745_hsem.c
 CHIP_CSRCS += stm32h745_idle.c
 CHIP_CSRCS += stm32h745_irq.c
 CHIP_CSRCS += stm32h745_timerisr.c
+CHIP_CSRCS += system_stm32h745.c
 
+CHIP_CSRCS += stm32h7xx_hal.c
+CHIP_CSRCS += stm32h7xx_hal_msp.c
 CHIP_CSRCS += stm32h7xx_hal_cortex.c
 CHIP_CSRCS += stm32h7xx_hal_gpio.c
 CHIP_CSRCS += stm32h7xx_hal_rcc.c stm32h7xx_hal_rcc_ex.c
@@ -129,7 +132,6 @@ CHIP_CSRCS += stm32h7xx_hal_hsem.c
 CHIP_CSRCS += stm32h7xx_hal_wwdg.c
 CHIP_CSRCS += stm32h7xx_hal_dma.c stm32h7xx_hal_dma_ex.c
 CHIP_CSRCS += stm32h7xx_hal_mdma.c
-
 
 
 CFLAGS += -I$(ARCH_SRCDIR)/chip/hal

@@ -16,7 +16,7 @@
  *
  ****************************************************************************/
 /****************************************************************************
- * configs/stm32f429i-disco/scripts/ld.script
+ * configs/stm32h745zi-nucleo/scripts/ld.script
  *
  *   Copyright (C) 2011-2012 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
@@ -52,13 +52,16 @@
  *
  ****************************************************************************/
 
-/* The STM32F429ZIT6 has 2048Kb of FLASH beginning at address 0x0800:0000 and
- * 256Kb of SRAM. SRAM is split up into four blocks:
+/* The STM32H745ZI has 2048Kb of FLASH beginning at address 0x0800:0000 and
+ * total 1024Kb of SRAM. SRAM is split up into seven blocks:
  *
- * 1) 112Kb of SRAM beginning at address 0x2000:0000
- * 2)  16Kb of SRAM beginning at address 0x2001:c000
- * 3)  64Kb of SRAM beginning at address 0x2002:0000
- * 4)  64Kb of CCM SRAM beginning at address 0x1000:0000
+ * 1)  64Kb of ITCM     beginning at address 0x0000:0000
+ * 2) 128Kb of DTCM     beginning at address 0x2000:0000
+ * 3) 512Kb of AXI SRAM beginning at address 0x2400:0000
+ * 4) 128Kb of SRAM1    beginning at address 0x3000:0000
+ * 5) 128Kb of SRAM2    beginning at address 0x3002:0000
+ * 6)  32Kb of SRAM3    beginning at address 0x3004:0000
+ * 7)  64Kb of SRAM4    beginning at address 0x3800:0000
  *
  * When booting from FLASH, FLASH memory is aliased to address 0x0000:0000
  * where the code expects to begin execution by jumping to the entry point in
@@ -68,8 +71,14 @@
 
 MEMORY
 {
-    flash (rx) : ORIGIN = 0x08000000, LENGTH = 2048K
-    sram (rwx) : ORIGIN = 0x20000000, LENGTH = 112K
+    flash (rx) : ORIGIN = 0x08000000, LENGTH = 1024K
+    itcm_sram  (rwx) : ORIGIN = 0x00000000, LENGTH = 64K
+    dtcm_sram  (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
+    axi_sram   (rwx) : ORIGIN = 0x24000000, LENGTH = 512K
+    sarm1_sram (rwx) : ORIGIN = 0x30000000, LENGTH = 128K
+    sarm2_sram (rwx) : ORIGIN = 0x30020000, LENGTH = 128K
+    sarm3_sram (rwx) : ORIGIN = 0x30040000, LENGTH = 32K
+    sarm4_sram (rwx) : ORIGIN = 0x38000000, LENGTH = 64K
 }
 
 OUTPUT_ARCH(arm)
@@ -116,7 +125,7 @@ SECTIONS
 		*(.gnu.linkonce.d.*)
 		CONSTRUCTORS
 		_edata = ABSOLUTE(.);
-	} > sram AT > flash
+	} > axi_sram AT > flash
 
 	.bss : {
 		_sbss = ABSOLUTE(.);
@@ -124,7 +133,7 @@ SECTIONS
 		*(.gnu.linkonce.b.*)
 		*(COMMON)
 		_ebss = ABSOLUTE(.);
-	} > sram
+	} > axi_sram
 
 	/* Stabs debugging sections. */
 	.stab 0 : { *(.stab) }

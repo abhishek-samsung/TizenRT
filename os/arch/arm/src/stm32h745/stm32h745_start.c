@@ -50,25 +50,10 @@
 #include "up_internal.h"
 #include "nvic.h"
 
-
+#include <system_stm32h745.h>
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
-
-/* Memory Map ***************************************************************/
-/*
- * 0x0800:0000 - Beginning of the internal FLASH.   Address of vectors.
- *               Mapped as boot memory address 0x0000:0000 at reset.
- * 0x080f:ffff - End of flash region (assuming the max of 2MiB of FLASH).
- * 0x1000:0000 - Start of internal SRAM2
- * 0x2000:0000 - Start of internal SRAM and start of .data (_sdata)
- *             - End of .data (_edata) and start of .bss (_sbss)
- *             - End of .bss (_ebss) and bottom of idle stack
- *             - _ebss + CONFIG_IDLETHREAD_STACKSIZE = end of idle stack,
- *               start of heap. NOTE that the ARM uses a decrement before
- *               store stack so that the correct initial value is the end of
- *               the stack + 4;
- */
 
 //#define SRAM2_START  STM32L4_SRAM2_BASE
 //#define SRAM2_END    (SRAM2_START + STM32L4_SRAM2_SIZE)
@@ -248,9 +233,8 @@ void __start(void)
 		*dest++ = *src++;
 	}
 
-	//SystemInit();
-	//HAL_Init();
-	//up_sys_timer_initialize();
+	SystemInit();
+	HAL_Init();
 
 #ifdef CONFIG_ARMV7M_STACKCHECK
 	/* Set the stack limit before we attempt to call any functions */
@@ -259,17 +243,8 @@ void __start(void)
 #endif
 
 #ifdef CONFIG_STM32L4_SRAM2_INIT
-	/* The SRAM2 region is parity checked, but upon power up, it will be in
-	 * a random state and probably invalid with respect to parity, potentially
-	 * generating faults if accessed.  If elected, we will write zeros to the
-	 * memory, forcing the parity to be set to a valid state.
-	 * NOTE:  this is optional because this may be inappropriate, especially
-	 * if the memory is being used for it's battery backed purpose.  In that
-	 * case, the first-time initialization needs to be performed by the board
-	 * under application-specific circumstances.  On the other hand, if we're
-	 * using this memory for, say, additional heap space, then this is handy.
-	 */
-	for (dest = (uint32_t *)SRAM2_START; dest < (uint32_t *)SRAM2_END; ) {
+	for (dest = (uint32_t *)SRAM2_START; dest < (uint32_t *)SRAM2_END; )
+	{
 		*dest++ = 0;
 	}
 #endif
@@ -294,11 +269,8 @@ void __start(void)
 	showprogress('C');
 	showprogress('D');
 
-	/* For Systick enable */
-	//up_sys_timer_initialize();
-
 	/* Initialize onboard resources */
-	//board_initialize();
+	board_initialize();
 	showprogress('E');
 
 	/* Then start NuttX */

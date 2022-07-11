@@ -75,8 +75,8 @@
 /**
   * @brief  De-initialize the EXTI registers to their default reset values.
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: EXTI registers are de-initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: EXTI registers are de-initialized
+  *          - _ERROR: not applicable
   */
 ErrorStatus LL_EXTI_DeInit(void)
 {
@@ -142,19 +142,19 @@ ErrorStatus LL_EXTI_DeInit(void)
   LL_EXTI_WriteReg(C2PR3, EXTI_PR3_PR_Msk);
 
 #endif /* DUAL_CORE*/
-  return SUCCESS;
+  return _SUCCESS;
 }
 
 /**
   * @brief  Initialize the EXTI registers according to the specified parameters in EXTI_InitStruct.
   * @param  EXTI_InitStruct pointer to a @ref LL_EXTI_InitTypeDef structure.
   * @retval An ErrorStatus enumeration value:
-  *          - SUCCESS: EXTI registers are initialized
-  *          - ERROR: not applicable
+  *          - _SUCCESS: EXTI registers are initialized
+  *          - _ERROR: not applicable
   */
 ErrorStatus LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
 {
-  ErrorStatus status = SUCCESS;
+  ErrorStatus status = _SUCCESS;
   /* Check the parameters */
   assert_param(IS_LL_EXTI_LINE_0_31(EXTI_InitStruct->Line_0_31));
   assert_param(IS_LL_EXTI_LINE_32_63(EXTI_InitStruct->Line_32_63));
@@ -236,7 +236,7 @@ ErrorStatus LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
             LL_EXTI_EnableFallingTrig_0_31(EXTI_InitStruct->Line_0_31);
             break;
           default:
-            status = ERROR;
+            status = _ERROR;
             break;
         }
       }
@@ -310,7 +310,7 @@ ErrorStatus LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
             LL_EXTI_EnableFallingTrig_32_63(EXTI_InitStruct->Line_32_63);
             break;
           default:
-            status = ERROR;
+            status = _ERROR;
             break;
         }
       }
@@ -385,7 +385,7 @@ ErrorStatus LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct)
             LL_EXTI_EnableFallingTrig_64_95(EXTI_InitStruct->Line_64_95);
             break;
           default:
-            status = ERROR;
+            status = _ERROR;
             break;
         }
       }
