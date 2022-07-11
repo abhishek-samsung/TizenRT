@@ -68,6 +68,7 @@
  * the 0x0800:0000 address
  * range.
  */
+EXTERN(_vectors)
 
 MEMORY
 {
