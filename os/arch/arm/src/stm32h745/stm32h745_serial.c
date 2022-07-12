@@ -41,6 +41,11 @@
 
 #include <stdint.h>
 
+#include <tinyara/irq.h>
+#include <tinyara/arch.h>
+#include <tinyara/serial/serial.h>
+
+#include <arch/serial.h>
 #include <arch/board/board.h>
 
 #include "up_internal.h"
@@ -50,7 +55,108 @@
 #include <stm32h7xx_hal.h>
 
 
-UART_HandleTypeDef huart3;
+#define CONSOLE_DEV             g_uart3             /* USART3 is console */
+#define TTYS0_DEV               g_uart3             /* USART3 is ttyS0 */
+#define TTYS1_DEV               g_uart3             /* USART3 is ttyS0 */
+#define TTYS2_DEV               g_uart3             /* USART3 is ttyS0 */
+
+
+struct stm32h745_up_dev_s
+{
+  uint8_t parity;
+  uint8_t bits;
+  uint8_t stopbit;
+  uint32_t baud;
+  uint32_t irq;
+  uint32_t tx;
+  uint32_t rx;
+  uint32_t rts;
+  uint32_t cts;
+  uint8_t FlowControl;
+  bool txint_enable;
+  bool rxint_enable;
+#ifdef CONFIG_SERIAL_IFLOWCONTROL
+  uint8_t iflow:1;      /* input flow control (RTS) enabled */
+#endif
+#ifdef CONFIG_SERIAL_OFLOWCONTROL
+  uint8_t oflow:1;      /* output flow control (CTS) enabled */
+#endif
+  uint8_t tx_level;
+};
+
+static int  stm32h745_up_setup(struct uart_dev_s *dev);
+static void stm32h745_up_shutdown(struct uart_dev_s *dev);
+static int  stm32h745_up_attach(struct uart_dev_s *dev);
+static void stm32h745_up_detach(struct uart_dev_s *dev);
+static int  stm32h745_up_interrupt(int irq, void *context, FAR void *arg);
+static int  stm32h745_up_ioctl(FAR struct uart_dev_s *dev, int cmd, unsigned long arg);
+static int  stm32h745_up_receive(struct uart_dev_s *dev, uint8_t *status);
+static void stm32h745_up_rxint(struct uart_dev_s *dev, bool enable);
+static bool stm32h745_up_rxavailable(struct uart_dev_s *dev);
+static void stm32h745_up_send(struct uart_dev_s *dev, int ch);
+static void stm32h745_up_txint(struct uart_dev_s *dev, bool enable);
+static bool stm32h745_up_txready(struct uart_dev_s *dev);
+static bool stm32h745_up_txempty(struct uart_dev_s *dev);
+
+static const struct uart_ops_s g_uart_ops = 
+{
+  .setup         = stm32h745_up_setup,
+  .shutdown      = stm32h745_up_shutdown,
+  .attach        = stm32h745_up_attach,
+  .detach        = stm32h745_up_detach,
+  .ioctl         = stm32h745_up_ioctl,
+  .receive       = stm32h745_up_receive,
+  .rxint         = stm32h745_up_rxint,
+  .rxavailable   = stm32h745_up_rxavailable,
+#ifdef CONFIG_SERIAL_IFLOWCONTROL
+  .rxflowcontrol = NULL,
+#endif
+  .send          = stm32h745_up_send,
+  .txint         = stm32h745_up_txint,
+  .txready       = stm32h745_up_txready,
+  .txempty       = stm32h745_up_txempty,
+};
+
+static char g_uart3rxbuffer[CONFIG_USART3_RXBUFSIZE];
+static char g_uart3txbuffer[CONFIG_USART3_TXBUFSIZE];
+
+static struct stm32h745_up_dev_s g_uart3priv = 
+{
+
+  .parity = CONFIG_USART3_PARITY,
+  .bits = CONFIG_USART3_BITS,
+#if (CONFIG_USART3_2STOP)
+  .stopbit = 2,
+#else
+  .stopbit = 1,
+#endif
+  .baud = CONFIG_USART3_BAUD,
+  .irq  = STM32H745_IRQ_USART3,
+  .tx   = 0,
+  .rx   = 0,
+  .rts  = 0,
+  .cts  = 0,
+  .FlowControl  = UART_HWCONTROL_NONE,
+  .txint_enable = false,
+  .rxint_enable = false,
+};
+
+static uart_dev_t g_uart3 = 
+{
+  .isconsole = false,
+  .recv = 
+  {
+    .size   = CONFIG_USART3_RXBUFSIZE,
+    .buffer = g_uart3rxbuffer,
+  },
+  .xmit = 
+  {
+    .size   = CONFIG_USART3_TXBUFSIZE,
+    .buffer = g_uart3txbuffer,
+  },
+  .ops  = &g_uart_ops,
+  .priv = &g_uart3priv,
+};
 
 /****************************************************************************
  * Name: up_serialinit
@@ -60,170 +166,125 @@ UART_HandleTypeDef huart3;
  *   that up_earlyserialinit was called previously.
  *
  ****************************************************************************/
-
 void up_serialinit(void)
 {
+    uart_register("/dev/console", &CONSOLE_DEV);
+    uart_register("/dev/ttyS0", &TTYS0_DEV);
+    uart_register("/dev/ttyS1", &TTYS1_DEV);
+    uart_register("/dev/ttyS2", &TTYS2_DEV);
 }
 
 /****************************************************************************
- * Name: up_earlyserialinit
- * Name: up_earlyserialinit
- *
- * Description:
- *   Register serial console and serial ports.  This assumes
- *   that up_earlyserialinit was called previously.
- *
+ * Private Functions - stm32h745_up_setup
  ****************************************************************************/
-
-void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
+static int  stm32h745_up_setup(struct uart_dev_s *dev)
 {
-
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
-  if(uartHandle->Instance==USART3)
-  {
-  /* USER CODE BEGIN USART3_MspInit 0 */
-
-  /* USER CODE END USART3_MspInit 0 */
-
-  /** Initializes the peripherals clock
-  */
-    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART3;
-    PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
-    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-    {
-      //Error_Handler();
-    }
-
-    /* USART3 clock enable */
-    __HAL_RCC_USART3_CLK_ENABLE();
-
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    /**USART3 GPIO Configuration
-    PB10     ------> USART3_TX
-    PB11     ------> USART3_RX
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /* USER CODE BEGIN USART3_MspInit 1 */
-
-  /* USER CODE END USART3_MspInit 1 */
-  }
+  return OK;
 }
 
-void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
+/****************************************************************************
+ * Private Functions - stm32h745_up_shutdown
+ ****************************************************************************/
+static void stm32h745_up_shutdown(struct uart_dev_s *dev)
 {
-
-  if(uartHandle->Instance==USART3)
-  {
-  /* USER CODE BEGIN USART3_MspDeInit 0 */
-
-  /* USER CODE END USART3_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_USART3_CLK_DISABLE();
-
-    /**USART3 GPIO Configuration
-    PB10     ------> USART3_TX
-    PB11     ------> USART3_RX
-    */
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_10|GPIO_PIN_11);
-
-  /* USER CODE BEGIN USART3_MspDeInit 1 */
-
-  /* USER CODE END USART3_MspDeInit 1 */
-  }
-}
-
-void up_earlyserialinit(void)
-{
-  huart3.Instance = USART3;
-  huart3.Init.BaudRate = 115200;
-  huart3.Init.WordLength = UART_WORDLENGTH_8B;
-  huart3.Init.StopBits = UART_STOPBITS_1;
-  huart3.Init.Parity = UART_PARITY_NONE;
-  huart3.Init.Mode = UART_MODE_TX_RX;
-  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
-  huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart3.Init.ClockPrescaler = UART_PRESCALER_DIV1;
-  huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart3) != HAL_OK)
-  {
-    //Error_Handler();
-  }
-  if (HAL_UARTEx_SetTxFifoThreshold(&huart3, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
-  {
-    //Error_Handler();
-  }
-  if (HAL_UARTEx_SetRxFifoThreshold(&huart3, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
-  {
-    //Error_Handler();
-  }
-  if (HAL_UARTEx_DisableFifoMode(&huart3) != HAL_OK)
-  {
-    //Error_Handler();
-  }
 
 }
 
 /****************************************************************************
- * Name: up_lowputc
- *
- * Description:
- *   Output one byte on the serial console
- *
- * Input Parameters:
- *   ch - chatacter to output
- *
- * Returned Value:
- *   None
- *
+ * Private Functions - stm32h745_up_attach
  ****************************************************************************/
-void up_lowputc(char ch)
+static int  stm32h745_up_attach(struct uart_dev_s *dev)
 {
-    HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFF);
+  return OK;
+}
+
+/****************************************************************************
+ * Private Functions - stm32h745_up_detach
+ ****************************************************************************/
+static void stm32h745_up_detach(struct uart_dev_s *dev)
+{
+
+}
+
+/****************************************************************************
+ * Private Functions - stm32h745_up_interrupt
+ ****************************************************************************/
+static int  stm32h745_up_interrupt(int irq, void *context, FAR void *arg)
+{
+  return OK;
+}
+
+/****************************************************************************
+ * Private Functions - stm32h745_up_ioctl
+ ****************************************************************************/
+static int  stm32h745_up_ioctl(FAR struct uart_dev_s *dev, int cmd, unsigned long arg)
+{
+  return OK;
 }
 
 
 /****************************************************************************
- * Name: up_putc
- *
- * Description:
- *   Output one byte on the serial console
- *
- * Input Parameters:
- *   ch - chatacter to output
- *
- * Returned Value:
- *  sent character
- *
+ * Private Functions - stm32h745_up_receive
  ****************************************************************************/
-int up_putc(int ch)
+static int  stm32h745_up_receive(struct uart_dev_s *dev, uint8_t *status)
 {
-    if (ch == '\n')
-    {
-        up_lowputc('\r');
-    }
+  return OK;
+}
 
-    up_lowputc((char)ch);
-    
-    return ch;
+/****************************************************************************
+ * Private Functions - stm32h745_up_rxint
+ ****************************************************************************/
+static void stm32h745_up_rxint(struct uart_dev_s *dev, bool enable)
+{
+
+}
+
+/****************************************************************************
+ * Private Functions - stm32h745_up_rxavailable
+ ****************************************************************************/
+static bool stm32h745_up_rxavailable(struct uart_dev_s *dev)
+{
+  return true;
+}
+
+/****************************************************************************
+ * Private Functions - stm32h745_up_send
+ ****************************************************************************/
+extern UART_HandleTypeDef huart3;
+static void stm32h745_up_send(struct uart_dev_s *dev, int ch)
+{
+  HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFF);
+}
+
+/****************************************************************************
+ * Private Functions - stm32h745_up_txint
+ ****************************************************************************/
+static void stm32h745_up_txint(struct uart_dev_s *dev, bool enable)
+{
+
+}
+
+/****************************************************************************
+ * Private Functions - stm32h745_up_txready
+ ****************************************************************************/
+static bool stm32h745_up_txready(struct uart_dev_s *dev)
+{
+    return true;
 }
 
 
 /****************************************************************************
- * Name: up_getc
- *
- * Description:
- *   Get one character from the UART
- *
+ * Private Functions - stm32h745_up_txempty
  ****************************************************************************/
-uint8_t up_getc(void)
+static bool stm32h745_up_txempty(struct uart_dev_s *dev)
 {
-	return 0;
+    return true;
 }
+
+
+
+
+
+
+
+

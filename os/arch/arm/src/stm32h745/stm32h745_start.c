@@ -259,19 +259,19 @@ void __start(void)
 	stm32l4_lowsetup();
 #endif
 	//stm32l4_gpioinit();
-	showprogress('A');
 
 #ifdef USE_EARLYSERIALINIT
 	/* Perform early serial initialization */
 	up_earlyserialinit();
 #endif
-	showprogress('B');
-	showprogress('C');
-	showprogress('D');
+	showprogress('S');
+	showprogress('T');
+	showprogress('A');
+	showprogress('R');
+	showprogress('T');
 
 	/* Initialize onboard resources */
-	board_initialize();
-	showprogress('E');
+	//board_initialize();
 
 	/* Then start NuttX */
 	showprogress('\r');
@@ -283,7 +283,6 @@ void __start(void)
 	go_os_start((FAR void *)&_ebss, CONFIG_IDLETHREAD_STACKSIZE);
 #else
 	/* Call os_start() */
-	//up_sys_timer_deinitialize();
 	os_start();
 
 	/* Shoulnd't get here */

@@ -167,10 +167,10 @@ uint32_t common_system_clock;
 #endif /* DUAL_CORE && CORE_CM4 */
 
   /* Use systick as time base source and configure 1ms tick (default clock after Reset is HSI) */
-  if(HAL_InitTick(TICK_INT_PRIORITY) != HAL_OK)
-  {
-    return HAL_ERROR;
-  }
+  //if(HAL_InitTick(TICK_INT_PRIORITY) != HAL_OK)
+  //{
+  //  return HAL_ERROR;
+  //}
 
   /* Init the low level hardware */
   HAL_MspInit();

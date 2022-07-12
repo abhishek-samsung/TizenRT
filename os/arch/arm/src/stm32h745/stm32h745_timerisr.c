@@ -133,7 +133,6 @@ int up_timerisr(int irq, uint32_t *regs)
 {
     /* Process timer interrupt */
     sched_process_timer();
-
     return 0;
 }
 
@@ -179,7 +178,6 @@ void up_timer_initialize(void)
   putreg32(regval, NVIC_SYSTICK_CTRL);
 
   /* And enable the timer interrupt */
-
   up_enable_irq(STM32H745_IRQ_SYSTICK);
 }
 

@@ -52,6 +52,8 @@
 #include "up_arch.h"
 #include "up_internal.h"
 
+#include <stm32h7xx_hal.h>
+
 volatile uint32_t *current_regs;
 
 /****************************************************************************
@@ -84,6 +86,7 @@ void up_disable_irq(int irq)
 
 void up_enable_irq(int irq)
 {
+    NVIC_EnableIRQ((IRQn_Type) irq);
 }
 
 /****************************************************************************
