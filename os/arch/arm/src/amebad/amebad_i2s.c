@@ -56,6 +56,7 @@
 //#ifndef CONFIG_SCHED_WORKQUEUE
 //#error Work queue support is required (CONFIG_SCHED_WORKQUEUE)
 //#endif
+#define __16_BIT_PADDING__
 
 #ifdef CONFIG_AUDIO
 //#ifndef CONFIG_AUDIO
@@ -96,7 +97,7 @@
 #define CONFIG_DEBUG_FEATURES
 #endif
 
-#define DEBUG_I2S_DRIVER    0
+#define DEBUG_I2S_DRIVER    1
 
 #undef i2serr
 #undef i2sinfo
@@ -117,9 +118,13 @@
 #define OVER_SAMPLE_RATE (384U)
 
 #define I2S_DMA_PAGE_SIZE	768   // 2 ~ 4096
-#define I2S_DMA_PAGE_NUM    4   // Vaild number is 2~4
+// #define I2S_DMA_PAGE_SIZE	16384   // 2 ~ 4096
+#define I2S_DMA_PAGE_NUM    4 // Vaild number is 2~4
 
 /* I2S buffer container */
+#ifdef __16_BIT_PADDING__
+uint8_t* audio_buf;
+#endif
 
 struct amebad_buffer_s {
 	struct amebad_buffer_s *flink;	/* Supports a singly linked list */
@@ -280,7 +285,7 @@ static int i2s_err_cb_register(struct i2s_dev_s *dev, i2s_err_cb_t cb, void *arg
 ****************************************************************************/
 
 static const i2s_config_t i2s_default_config = {
-	
+
 	.sample_rate =  I2S_SR_48KHZ,
 	.bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
 
@@ -367,8 +372,18 @@ static int i2s_txdma_prep(struct amebad_i2s_s *priv, struct amebad_buffer_s *bfc
 
 	apb = bfcontainer->apb;
 
+#ifndef __16_BIT_PADDING__
 	priv->i2s_tx_buf = (void *)&(apb->samp[apb->curbyte]);
+#else	
+	int index;
+	printf("apb->curbyte = %d\n", apb->curbyte);
+
+	index = apb->curbyte*2 + apb->curbyte % 2;
+	priv->i2s_tx_buf = (void *)&(audio_buf[index]);
+#endif
+
 	i2s_set_dma_buffer(&priv->i2s_object, (char*)priv->i2s_tx_buf, NULL, I2S_DMA_PAGE_NUM, I2S_DMA_PAGE_SIZE);
+
 
 	return 0;
 }
@@ -419,6 +434,7 @@ static int i2s_tx_start(struct amebad_i2s_s *priv)
 
 	irqrestore(flags);
 
+	printf("===>[%s, %d] apb->curbyte =%d\n", __FUNCTION__, __LINE__, apb->curbyte);
 	/* Start a watchdog to catch DMA timeouts */
 	if (bfcontainer->timeout > 0) {
 		ret = wd_start(priv->tx.dog, bfcontainer->timeout, (wdentry_t)i2s_txdma_timeout, 1, (uint32_t)priv);
@@ -619,12 +635,30 @@ static int i2s_send(struct i2s_dev_s *dev, struct ap_buffer_s *apb, i2s_callback
 	i2sinfo("[I2S TX] apb=%p nbytes=%d samp=%p arg=%p timeout=%d\n", apb, apb->nbytes - apb->curbyte, apb->samp, arg, timeout);
 
 	i2s_dump_buffer("Sending", &apb->samp[apb->curbyte], apb->nbytes - apb->curbyte);
-
+	// lib_dumpbuffer("Sending", &apb->samp[apb->curbyte], apb->nbytes - apb->curbyte);
 #if defined(I2S_HAVE_TX) && (0 < I2S_HAVE_TX)
+
+#ifdef __16_BIT_PADDING__
+	printf("\n\n\n====> nmaxbytes = %d, nbytes = %d, curbyte=%d\n\n\n", apb->nmaxbytes, apb->nbytes, apb->curbyte);
+	audio_buf = (uint8_t*) calloc(apb->nmaxbytes*2,sizeof(char)); // Allocate buffer for padding 16bit data to 32bit	
+
+	if (NULL == audio_buf) {
+		printf("\nCalloc failed\n");
+		return ERROR;
+	}
+	
+	for (int i=0;i<(apb->nmaxbytes/2);i++) {
+		memcpy(audio_buf+(i*4),apb->samp+(i*2),2);
+	}
+
+#endif
+
+
 	struct amebad_buffer_s *bfcontainer;
 	irqstate_t flags;
 	int ret;
 
+	
 	/* Has the TX channel been enabled? */
 	if (!priv->txenab) {
 		i2serr("ERROR: I2S has no transmitter\n");
@@ -634,6 +668,7 @@ static int i2s_send(struct i2s_dev_s *dev, struct ap_buffer_s *apb, i2s_callback
 	/* Allocate a buffer container in advance */
 
 	bfcontainer = i2s_buf_tx_allocate(priv);
+
 
 	i2s_exclsem_take(priv);
 	i2sinfo("TX Exclusive Enter\n");
@@ -648,6 +683,8 @@ static int i2s_send(struct i2s_dev_s *dev, struct ap_buffer_s *apb, i2s_callback
 	bfcontainer->apb = apb;
 	bfcontainer->result = -EBUSY;
 
+
+
 	/* Prepare DMA microcode */
 	i2s_txdma_prep(priv, bfcontainer);
 
@@ -659,6 +696,10 @@ static int i2s_send(struct i2s_dev_s *dev, struct ap_buffer_s *apb, i2s_callback
 
 	i2s_exclsem_give(priv);
 	i2sinfo("TX Exclusive Exit\n");
+
+#ifdef __16_BIT_PADDING__
+	free(audio_buf);
+#endif
 
 	return OK;
 

@@ -41,7 +41,8 @@ I2S_StructInit(I2S_InitTypeDef* I2S_InitStruct)
 	I2S_InitStruct->I2S_SlaveMode = I2S_MASTER_MODE;
 	I2S_InitStruct->I2S_WordLen = I2S_WL_16;
 	I2S_InitStruct->I2S_Justify = I2S_JY_I2S;
-	I2S_InitStruct->I2S_EndianSwap = I2S_ES_BIG;
+	// I2S_InitStruct->I2S_EndianSwap = I2S_ES_BIG;
+	I2S_InitStruct->I2S_EndianSwap = I2S_ES_LITTLE;
 	I2S_InitStruct->I2S_ChNum = I2S_CH_STEREO;
 	I2S_InitStruct->I2S_PageNum = 4;
 	I2S_InitStruct->I2S_PageSize = (768/4);
