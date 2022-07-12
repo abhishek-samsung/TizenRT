@@ -150,13 +150,14 @@ uint32_t ub6470_readreg_4byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr)
                 auddbg("Error, cannot read reg %x\n", regaddr);
                 return FAIL_32;
         }
-        ret = i2c_read(dev, ub6470_i2c_config, reg, 4);
+        ret = i2c_read(dev, ub6470_i2c_config, reg, 3);
         if (ret < 0) {
                 auddbg("Error, cannot read reg %x\n", regaddr);
                 return FAIL_32;
         }
         regval = ((reg[0] << 24) | (reg[1] << 16) | (reg[2] << 8) | (reg[3]));
-        return regval;
+	printf("%02x\t%02x\t%02x\t%02x\n", regaddr, reg[0], reg[1], reg[2]);
+        return ret;
 }
 
 /************************************************************************************
@@ -181,8 +182,8 @@ static int ub6470_writereg_1byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr,
                 auddbg("Error, cannot write reg %x\n", regaddr);
         }
 	//else printf("written to 0x%x val 0x%x ret = %d\n", regaddr, regval, ret);
-	//uint8_t regval2 = ub6470_readreg_1byte(priv, regaddr);       
-	//printf("read from 0x%x val 0x%x\n", regaddr, regval2);
+	uint8_t regval2 = ub6470_readreg_1byte(priv, regaddr);       
+	printf("0x%02x\t0x%02x\n", regaddr, regval2);
 	return ret;
 }
 
@@ -210,7 +211,7 @@ static int ub6470_writereg_4byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr,
         if (ret != 4) {
                 auddbg("Error, cannot write reg %x\n", regaddr);
         }
-	//else printf("written to 0x%x ret = %d\n", regaddr, ret);
+	ret = ub6470_readreg_4byte(priv, regaddr);
         return ret;
 }
 
@@ -235,11 +236,13 @@ static int ub6470_exec_i2c_script(FAR struct ub6470_dev_s *priv, t_codec_init_sc
                         ret = ub6470_writereg_4byte(priv, (uint8_t)script[i].addr, script[i].val);
                 } 
 		
+		/*
 		if ((uint8_t)script[i].addr == 0x01) {
                         delay(script[i].delay); // wait as we are setting pll registers
 			uint8_t regval2 = ub6470_readreg_1byte(priv, 0x01);
 			printf("val of 0x01 : 0x%02x\n", regval2);
                 }
+		*/
 		
         }
         return ret;
@@ -910,6 +913,8 @@ static int ub6470_enqueuebuffer(FAR struct audio_lowerhalf_s *dev, FAR struct ap
         printf("val of 0x3D : 0x%02x\n", regval2);
 	regval2 = ub6470_readreg_1byte(priv, 0x0F);
         printf("val of 0x0F : 0x%02x\n", regval2);
+	regval2 = ub6470_readreg_1byte(priv, 0x2A);
+        printf("val of 0x2A : 0x%02x\n", regval2);
 	ret = I2S_SEND(priv->i2s, apb, ub6470_txcallback, priv, UB6470_I2S_TIMEOUT_MS);
 
 	return ret;
@@ -1123,6 +1128,22 @@ static void ub6470_reconfigure(FAR struct ub6470_dev_s *priv)
 	 * default state.
 	 */
 	int res = ub6470_exec_i2c_script(priv, codec_initial_script, sizeof(codec_initial_script) / sizeof(t_codec_init_script_entry));
+	uint8_t regval2;
+       	while (true) {
+		regval2 = ub6470_readreg_1byte(priv, 0x01);
+		if (regval2 == 0x02) {
+			printf("value of 0x01 is set to 0x02\n");
+			for (int i = 0; i < 1000000; i++) {
+				regval2++;
+			}
+			break;
+		}
+		printf("value of 0x01 is set to :%d\n", regval2);
+		for (int i = 0; i < 1000000; i++) {
+			regval2++;
+		}
+	}
+	res = ub6470_exec_i2c_script(priv, codec_initial_script2, sizeof(codec_initial_script2) / sizeof(t_codec_init_script_entry));
 	printf("reconfigure output : %d\n", res);
 //	ub6470_set_i2s_samplerate(priv);
 //	ub6470_set_i2s_datawidth(priv);
@@ -1156,7 +1177,7 @@ static void ub6470_hw_reset(FAR struct ub6470_dev_s *priv)
 		delay(100);
 	}
 	ub6470_reconfigure(priv);
-	ub6470_exec_i2c_script(priv, codec_init_mute_on_script, sizeof(codec_init_mute_on_script) / sizeof(t_codec_init_script_entry));
+	//ub6470_exec_i2c_script(priv, codec_init_mute_on_script, sizeof(codec_init_mute_on_script) / sizeof(t_codec_init_script_entry));
 }
 
 /****************************************************************************
@@ -1214,7 +1235,7 @@ FAR struct audio_lowerhalf_s *ub6470_initialize(FAR struct i2c_dev_s *i2c, FAR s
 
 	/*reconfigure the UB6470 hardwaqre */
 	ub6470_reconfigure(priv);
-	ub6470_exec_i2c_script(priv, codec_init_mute_on_script, sizeof(codec_init_mute_on_script) / sizeof(t_codec_init_script_entry));
+	//ub6470_exec_i2c_script(priv, codec_init_mute_on_script, sizeof(codec_init_mute_on_script) / sizeof(t_codec_init_script_entry));
 
 #ifndef CONFIG_AUDIO_EXCLUDE_VOLUME
 	priv->volume = UB6470_SPK_VOL_DEF;

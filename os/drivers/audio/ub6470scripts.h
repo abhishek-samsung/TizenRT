@@ -51,7 +51,10 @@ t_codec_init_script_entry codec_initial_script[] = { /* refer to regs_default.h 
 	{UB6470_REG_D_1BYTE, 0x03, {0x01,}, 0},
 	
 	{UB6470_REG_D_1BYTE, 0x01, {0x00,}, 0},
-       // {UB6470_REG_D_1BYTE, 0x01, {0x00,}, 0},
+};
+
+t_codec_init_script_entry codec_initial_script2[] = {
+       	// {UB6470_REG_D_1BYTE, 0x01, {0x00,}, 0},
        // {UB6470_REG_D_1BYTE, 0x01, {0x00,}, 0},
        // {UB6470_REG_D_1BYTE, 0x01, {0x00,}, 0},
        // {UB6470_REG_D_1BYTE, 0x01, {0x00,}, 0},
