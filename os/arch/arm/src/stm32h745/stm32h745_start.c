@@ -276,7 +276,6 @@ void __start(void)
 	stm32h745_os_heap_init();
 #ifdef CONFIG_ARMV7M_STACKCHECK
 	/* Set the stack limit before we attempt to call any functions */
-
 	__asm__ volatile ("sub r10, sp, %0" : : "r" (CONFIG_IDLETHREAD_STACKSIZE - 64) : );
 #endif
 
@@ -294,7 +293,6 @@ void __start(void)
 	//stm32h745_fpuconfig();
 
 #ifdef USE_EARLYSERIALINIT
-	/* Perform early serial initialization */
 	up_earlyserialinit();
 #endif
 	showprogress('S');
@@ -302,11 +300,6 @@ void __start(void)
 	showprogress('A');
 	showprogress('R');
 	showprogress('T');
-
-	/* Initialize onboard resources */
-	//board_initialize();
-
-	/* Then start NuttX */
 	showprogress('\r');
 	showprogress('\n');
 

@@ -107,6 +107,7 @@ endif
 
 CHIP_ASRCS  =
 CHIP_CSRCS  = stm32h745_start.c
+CHIP_CSRCS += stm32h745_haltick.c
 CHIP_CSRCS += stm32h745_rcc.c
 CHIP_CSRCS += stm32h745_gpio.c
 CHIP_CSRCS += stm32h745_wwdg1.c

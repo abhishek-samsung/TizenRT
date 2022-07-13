@@ -80,8 +80,12 @@ int up_check_proddownload(void)
 
 void board_initialize(void)
 {
+    stm32h745_haltick_init();
     up_lowputc('B');
-    up_lowputc('D');
+    up_lowputc('o');
+    up_lowputc('a');
+    up_lowputc('r');
+    up_lowputc('d');
     up_lowputc(' ');
     up_lowputc('I');
     up_lowputc('n');

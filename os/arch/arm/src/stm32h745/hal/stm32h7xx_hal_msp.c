@@ -21,7 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 
 /* USER CODE BEGIN Includes */
-
+#include <stm32h7xx_hal.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

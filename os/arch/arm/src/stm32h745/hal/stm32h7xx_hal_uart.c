@@ -667,7 +667,7 @@ HAL_StatusTypeDef HAL_UART_DeInit(UART_HandleTypeDef *huart)
   * @param huart UART handle.
   * @retval None
   */
-__weak void HAL_UART_MspInit(UART_HandleTypeDef *huart)
+__weak void __weak_HAL_UART_MspInit(UART_HandleTypeDef *huart)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(huart);
@@ -682,7 +682,7 @@ __weak void HAL_UART_MspInit(UART_HandleTypeDef *huart)
   * @param huart UART handle.
   * @retval None
   */
-__weak void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
+__weak void __weak_HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(huart);

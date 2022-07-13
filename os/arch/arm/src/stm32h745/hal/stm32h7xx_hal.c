@@ -225,7 +225,7 @@ HAL_StatusTypeDef HAL_DeInit(void)
   * @brief  Initializes the MSP.
   * @retval None
   */
-__weak void HAL_MspInit(void)
+__weak void __weak_HAL_MspInit(void)
 {
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_MspInit could be implemented in the user file
@@ -427,7 +427,7 @@ __weak void HAL_Delay(uint32_t Delay)
   *       implementations in user file.
   * @retval None
   */
-__weak void HAL_SuspendTick(void)
+__weak void __weak_HAL_SuspendTick(void)
 {
   /* Disable SysTick Interrupt */
   SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
@@ -443,7 +443,7 @@ __weak void HAL_SuspendTick(void)
   *       implementations in user file.
   * @retval None
   */
-__weak void HAL_ResumeTick(void)
+__weak void __weak_HAL_ResumeTick(void)
 {
   /* Enable SysTick Interrupt */
   SysTick->CTRL  |= SysTick_CTRL_TICKINT_Msk;
