@@ -50,6 +50,57 @@
 #include "chip.h"
 #include "up_internal.h"
 
+
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Name: up_idlepm
+ *
+ * Description:
+ *   Perform IDLE state power management.
+ *
+ ****************************************************************************/
+#ifdef CONFIG_PM
+static void up_idlepm(void)
+{
+
+}
+#else
+#  define up_idlepm()
+#endif
+
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Name: up_idle
+ *
+ * Description:
+ *   up_idle() is the logic that will be executed when their is no other
+ *   ready-to-run task.  This is processor idle time and will continue until
+ *   some interrupt occurs to cause a context switch from the idle task.
+ *
+ *   Processing in this state may be processor-specific. e.g., this is where
+ *   power management operations might be performed.
+ *
+ ****************************************************************************/
 void up_idle(void)
 {
+#if defined(CONFIG_SUPPRESS_INTERRUPTS) || defined(CONFIG_SUPPRESS_TIMER_INTS)
+  /* If the system is idle and there are no timer interrupts, then process
+   * "fake" timer interrupts. Hopefully, something will wake up.
+   */
+
+    sched_process_timer();
+#else
+
+    /* Perform IDLE mode power management */
+    up_idlepm();
+#endif    
 }
+
+
+

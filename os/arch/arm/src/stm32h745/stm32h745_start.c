@@ -38,6 +38,7 @@
  ****************************************************************************/
 
 #include <tinyara/config.h>
+#include <tinyara/mm/heap_regioninfo.h>
 
 #include <stdint.h>
 #include <assert.h>
@@ -50,6 +51,7 @@
 #include "up_internal.h"
 #include "nvic.h"
 
+#include <stm32h7xx_hal.h>
 #include <system_stm32h745.h>
 /****************************************************************************
  * Pre-processor Definitions
@@ -200,6 +202,40 @@ static inline void stm32h745_fpuconfig(void)
 #endif
 
 /****************************************************************************
+ * Default MPU setting
+ ****************************************************************************/
+static void stm32h745_mpu_config(void)
+{
+	MPU_Region_InitTypeDef MPU_InitStruct = {0};
+
+	/* Disables the MPU */
+	HAL_MPU_Disable();
+
+	/** Initializes and configures the Region and the memory to be protected
+	*/
+	MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+	MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+	MPU_InitStruct.BaseAddress = 0x0;
+	MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
+	MPU_InitStruct.SubRegionDisable = 0x87;
+	MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+	MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
+	MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+	MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+	MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+	MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+
+	HAL_MPU_ConfigRegion(&MPU_InitStruct);
+	/* Enables the MPU */
+	HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+}
+
+
+static void stm32h745_os_heap_init(void)
+{
+
+}
+/****************************************************************************
  * Public Functions
  ****************************************************************************/
 
@@ -210,7 +246,7 @@ static inline void stm32h745_fpuconfig(void)
  *   This is the reset entry point.
  *
  ****************************************************************************/
-
+extern HAL_StatusTypeDef HAL_Init(void);
 void __start(void)
 {
 	const uint32_t *src;
@@ -219,35 +255,31 @@ void __start(void)
 	/* Clear .bss.  We'll do this inline (vs. calling memset) just to be
 	 * certain that there are no issues with the state of global variables.
 	 */
-
-	for (dest = &_sbss; dest < &_ebss; ) {
+	for (dest = &_sbss; dest < &_ebss; )
+	{
 		*dest++ = 0;
 	}
+
 	/* Move the initialized data section from his temporary holding spot in
 	 * FLASH into the correct place in SRAM.  The correct place in SRAM is
 	 * give by _sdata and _edata.  The temporary location is in FLASH at the
 	 * end of all of the other read-only data (.text, .rodata) at _eronly.
 	 */
-
-	for (src = &_eronly, dest = &_sdata; dest < &_edata; ) {
+	for (src = &_eronly, dest = &_sdata; dest < &_edata; )
+	{
 		*dest++ = *src++;
 	}
 
 	SystemInit();
+	stm32h745_mpu_config();
 	HAL_Init();
-
+	stm32h745_os_heap_init();
 #ifdef CONFIG_ARMV7M_STACKCHECK
 	/* Set the stack limit before we attempt to call any functions */
 
 	__asm__ volatile ("sub r10, sp, %0" : : "r" (CONFIG_IDLETHREAD_STACKSIZE - 64) : );
 #endif
 
-#ifdef CONFIG_STM32L4_SRAM2_INIT
-	for (dest = (uint32_t *)SRAM2_START; dest < (uint32_t *)SRAM2_END; )
-	{
-		*dest++ = 0;
-	}
-#endif
 
 #if 1 //Dale KIM - LL Driver
 	//SystemClock_Config();
@@ -259,6 +291,7 @@ void __start(void)
 	stm32l4_lowsetup();
 #endif
 	//stm32l4_gpioinit();
+	//stm32h745_fpuconfig();
 
 #ifdef USE_EARLYSERIALINIT
 	/* Perform early serial initialization */

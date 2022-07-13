@@ -235,39 +235,39 @@ static int stm32h745_irqinfo(int irq, uintptr_t *regaddr, uint32_t *bit,
   /* Check for external interrupt */
 
   if (irq >= STM32H745_IRQ_FIRST)
-    {
+  {
       n        = irq - STM32H745_IRQ_FIRST;
       *regaddr = NVIC_IRQ_ENABLE(n) + offset;
       *bit     = (uint32_t)1 << (n & 0x1f);
-    }
+  }
 
   /* Handle processor exceptions.  Only a few can be disabled */
 
   else
-    {
+  {
       *regaddr = NVIC_SYSHCON;
       if (irq == STM32H745_IRQ_MEMFAULT)
-        {
+      {
           *bit = NVIC_SYSHCON_MEMFAULTENA;
-        }
+      }
       else if (irq == STM32H745_IRQ_BUSFAULT)
-        {
+      {
           *bit = NVIC_SYSHCON_BUSFAULTENA;
-        }
+      }
       else if (irq == STM32H745_IRQ_USAGEFAULT)
-        {
+      {
           *bit = NVIC_SYSHCON_USGFAULTENA;
-        }
+      }
       else if (irq == STM32H745_IRQ_SYSTICK)
-        {
+      {
           *regaddr = NVIC_SYSTICK_CTRL;
           *bit = NVIC_SYSTICK_CTRL_ENABLE;
-        }
+      }
       else
-        {
+      {
           return ERROR; /* Invalid or unsupported exception */
-        }
-    }
+      }
+  }
 
   return OK;
 }
@@ -399,10 +399,36 @@ void up_irqinitialize(void)
 
 void up_disable_irq(int irq)
 {
+#if 0  
     irq = irq - STM32H745_IRQ_FIRST;
 
     NVIC_DisableIRQ((IRQn_Type) irq);
     stm32h745_dumpnvic("disable", irq);
+#else
+  uintptr_t regaddr;
+  uint32_t regval;
+  uint32_t bit;
+
+  if (stm32h745_irqinfo(irq, &regaddr, &bit, NVIC_CLRENA_OFFSET) == 0)
+  {
+    /* Modify the appropriate bit in the register to disable the interrupt.
+     * For normal interrupts, we need to set the bit in the associated
+     * Interrupt Clear Enable register.  For other exceptions, we need to
+     * clear the bit in the System Handler Control and State Register.
+     */
+
+    if (irq >= STM32H745_IRQ_FIRST)
+    {
+      putreg32(bit, regaddr);
+    }
+    else
+    {
+      regval  = getreg32(regaddr);
+      regval &= ~bit;
+      putreg32(regval, regaddr);
+    }
+  }
+#endif
 }
 
 /****************************************************************************
@@ -415,10 +441,36 @@ void up_disable_irq(int irq)
 
 void up_enable_irq(int irq)
 {
+#if 0  
     irq = irq - STM32H745_IRQ_FIRST;
 
     NVIC_EnableIRQ((IRQn_Type) irq);
     stm32h745_dumpnvic("enable", irq);
+#else
+  uintptr_t regaddr;
+  uint32_t regval;
+  uint32_t bit;
+
+  if (stm32h745_irqinfo(irq, &regaddr, &bit, NVIC_ENA_OFFSET) == 0)
+  {
+    /* Modify the appropriate bit in the register to enable the interrupt.
+     * For normal interrupts, we need to set the bit in the associated
+     * Interrupt Set Enable register.  For other exceptions, we need to
+     * set the bit in the System Handler Control and State Register.
+     */
+
+    if (irq >= STM32H745_IRQ_FIRST)
+    {
+      putreg32(bit, regaddr);
+    }
+    else
+    {
+      regval  = getreg32(regaddr);
+      regval |= bit;
+      putreg32(regval, regaddr);
+    }
+  }  
+#endif    
 }
 
 /****************************************************************************
@@ -447,11 +499,45 @@ void up_ack_irq(int irq)
 #ifdef CONFIG_ARCH_IRQPRIO
 int up_prioritize_irq(int irq, int priority)
 {
+#if 0  
     irq = irq - STM32H745_IRQ_FIRST;
 
     HAL_NVIC_SetPriority((IRQn_Type)irq, priority, 0);
-
-    amebad_dumpnvic("prioritize", irq);
+    stm32h745_dumpnvic("prioritize", irq);
     return OK;
+#else
+  uint32_t regaddr;
+  uint32_t regval;
+  int shift;
+
+  DEBUGASSERT(irq >= STM32H745_IRQ_MEMFAULT && irq < NR_IRQS &&
+              (unsigned)priority <= NVIC_SYSH_PRIORITY_MIN);
+
+  if (irq < STM32H45_IRQ_FIRST)
+  {
+    /* NVIC_SYSH_PRIORITY() maps {0..15} to one of three priority
+     * registers (0-3 are invalid)
+     */
+
+    regaddr = NVIC_SYSH_PRIORITY(irq);
+    irq    -= 4;
+  }
+  else
+  {
+    /* NVIC_IRQ_PRIORITY() maps {0..} to one of many priority registers */
+
+    irq    -= STM32H745_IRQ_FIRST;
+    regaddr = NVIC_IRQ_PRIORITY(irq);
+  }
+
+  regval      = getreg32(regaddr);
+  shift       = ((irq & 3) << 3);
+  regval     &= ~(0xff << shift);
+  regval     |= (priority << shift);
+  putreg32(regval, regaddr);
+
+  stm32h745_dumpnvic("prioritize", irq);
+
+#endif
 }
 #endif

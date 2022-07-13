@@ -125,8 +125,6 @@
 
 int up_timerisr(int irq, uint32_t *regs)
 {
-    up_lowputc('t');
-    HAL_GPIO_WritePin(GPIOI, GPIO_PIN_13, GPIO_PIN_RESET);
     /* Process timer interrupt */
     sched_process_timer();
     return 0;

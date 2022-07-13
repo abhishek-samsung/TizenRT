@@ -185,8 +185,7 @@ void SystemInit (void)
      detectable by the CPU after a WFI/WFE instruction.*/
  SCB->SCR |= SCB_SCR_SEVONPEND_Msk;
 
-//#if defined(CORE_CM7)
-#if 0 
+#if defined(CORE_CM4)
   /* Reset the RCC clock configuration to the default reset state ------------*/
    /* Increasing the CPU frequency */
   if(FLASH_LATENCY_DEFAULT  > (READ_BIT((FLASH->ACR), FLASH_ACR_LATENCY)))
@@ -244,7 +243,7 @@ void SystemInit (void)
 
   /* Reset HSEBYP bit */
   RCC->CR &= 0xFFFBFFFFU;
-
+#else
   /* Disable all interrupts */
   RCC->CIER = 0x00000000;
 
@@ -258,7 +257,7 @@ void SystemInit (void)
     *((__IO uint32_t*)0x51008108) = 0x000000001U;
   }
 
-#endif /* CORE_CM7*/
+#endif /* CORE_CM4*/
 
 #if defined(CORE_CM4)
   /* Configure the Vector Table location add offset address for cortex-M4 ------------------*/
