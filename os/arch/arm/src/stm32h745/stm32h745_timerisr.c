@@ -51,7 +51,7 @@
 #include "up_arch.h"
 
 #include "chip.h"
-
+#include <stm32h7xx_hal.h>
 
 
 /****************************************************************************
@@ -82,18 +82,12 @@
  *     224-1).
  */
 
-#undef CONFIG_STM32H745_SYSTICK_HCLKd8
-
 /* REVISIT:
  *   It looks like SYSTICK for H7 is always clocked from CPUCLK and doesn't
  *   depend on the SYSTICK_CTRL_CLKSOURCE bit settings.
  */
 
-#ifdef CONFIG_STM32H745_SYSTICK_HCLKd8
-#  define STM32_SYSTICK_CLOCK  (STM32_HCLK_FREQUENCY / 8)
-#else
-#  define STM32_SYSTICK_CLOCK  (STM32_CPUCLK_FREQUENCY)
-#endif
+#define STM32_SYSTICK_CLOCK  (64000000)
 
 /* The desired timer interrupt frequency is provided by the definition
  * CLK_TCK (see include/time.h).  CLK_TCK defines the desired number of
@@ -106,7 +100,7 @@
  *   SYSTICK_RELOAD      = (27,000,000 / 100) - 1 = 269,999
  */
 
-#define SYSTICK_RELOAD ((STM32_SYSTICK_CLOCK / CLK_TCK) - 1)
+#define SYSTICK_RELOAD (0xF9FF) //((STM32_SYSTICK_CLOCK / CLK_TCK) - 1)
 
 /* The size of the reload field is 24 bits.  Verify that the reload value
  * will fit in the reload register.
@@ -131,6 +125,8 @@
 
 int up_timerisr(int irq, uint32_t *regs)
 {
+    up_lowputc('t');
+    HAL_GPIO_WritePin(GPIOI, GPIO_PIN_13, GPIO_PIN_RESET);
     /* Process timer interrupt */
     sched_process_timer();
     return 0;
@@ -179,6 +175,22 @@ void up_timer_initialize(void)
 
   /* And enable the timer interrupt */
   up_enable_irq(STM32H745_IRQ_SYSTICK);
+
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOI_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOI, GPIO_PIN_13, GPIO_PIN_SET);
+
+  /*Configure GPIO pin : PI13 */
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
 }
 
 

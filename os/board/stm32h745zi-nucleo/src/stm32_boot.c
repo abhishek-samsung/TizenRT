@@ -80,6 +80,15 @@ int up_check_proddownload(void)
 
 void board_initialize(void)
 {
+    up_lowputc('B');
+    up_lowputc('D');
+    up_lowputc(' ');
+    up_lowputc('I');
+    up_lowputc('n');
+    up_lowputc('i');
+    up_lowputc('t');
+    up_lowputc('\r');
+    up_lowputc('\n');
 }
 
 /****************************************************************************
