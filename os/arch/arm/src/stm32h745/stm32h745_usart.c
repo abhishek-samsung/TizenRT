@@ -48,7 +48,7 @@
 
 #include "chip.h"
 #include <stm32h7xx_hal.h>
-
+#include <stm32h7xx_ll_usart.h>
 
 UART_HandleTypeDef huart3;
 
@@ -174,7 +174,10 @@ void up_earlyserialinit(void)
  ****************************************************************************/
 void up_lowputc(char ch)
 {
-    HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFF);
+  LL_USART_DisableIT_TC(USART3);
+  while(!LL_USART_IsActiveFlag_TXE(USART3)){};
+  LL_USART_TransmitData8(USART3, (uint8_t)ch);
+  while(!LL_USART_IsActiveFlag_TC(USART3)){};
 }
 
 
@@ -213,9 +216,8 @@ int up_putc(int ch)
  ****************************************************************************/
 uint8_t up_getc(void)
 {
-	return 0;
+  return 0;
 }
-
 
 
 

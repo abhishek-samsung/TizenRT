@@ -290,7 +290,7 @@ void __start(void)
 	stm32l4_lowsetup();
 #endif
 	//stm32l4_gpioinit();
-	stm32h745_fpuconfig();
+	//stm32h745_fpuconfig();
 
 #ifdef USE_EARLYSERIALINIT
 	up_earlyserialinit();

@@ -89,7 +89,7 @@ static int  stm32h745_up_setup(struct uart_dev_s *dev);
 static void stm32h745_up_shutdown(struct uart_dev_s *dev);
 static int  stm32h745_up_attach(struct uart_dev_s *dev);
 static void stm32h745_up_detach(struct uart_dev_s *dev);
-static int  stm32h745_up_interrupt(int irq, void *context, FAR void *arg);
+static int  up_interrupt(int irq, void *context, FAR void *arg);
 static int  stm32h745_up_ioctl(FAR struct uart_dev_s *dev, int cmd, unsigned long arg);
 static int  stm32h745_up_receive(struct uart_dev_s *dev, uint8_t *status);
 static void stm32h745_up_rxint(struct uart_dev_s *dev, bool enable);
@@ -121,7 +121,7 @@ static const struct uart_ops_s g_uart_ops =
 static char g_uart3rxbuffer[CONFIG_USART3_RXBUFSIZE];
 static char g_uart3txbuffer[CONFIG_USART3_TXBUFSIZE];
 
-static struct stm32h745_up_dev_s g_uart3priv = 
+static struct stm32h745_up_dev_s g_uart3_priv = 
 {
 
   .parity = CONFIG_USART3_PARITY,
@@ -156,9 +156,10 @@ static uart_dev_t g_uart3 =
     .buffer = g_uart3txbuffer,
   },
   .ops  = &g_uart_ops,
-  .priv = &g_uart3priv,
+  .priv = &g_uart3_priv,
 };
 
+extern UART_HandleTypeDef huart3;
 /****************************************************************************
  * Name: up_serialinit
  *
@@ -169,10 +170,10 @@ static uart_dev_t g_uart3 =
  ****************************************************************************/
 void up_serialinit(void)
 {
-    uart_register("/dev/console", &CONSOLE_DEV);
-    //uart_register("/dev/ttyS0", &TTYS0_DEV);
-    //uart_register("/dev/ttyS1", &TTYS1_DEV);
-    //uart_register("/dev/ttyS2", &TTYS2_DEV);
+  uart_register("/dev/console", &CONSOLE_DEV);
+  //uart_register("/dev/ttyS0", &TTYS0_DEV);
+  //uart_register("/dev/ttyS1", &TTYS1_DEV);
+  //uart_register("/dev/ttyS2", &TTYS2_DEV);
 }
 
 /****************************************************************************
@@ -180,6 +181,7 @@ void up_serialinit(void)
  ****************************************************************************/
 static int  stm32h745_up_setup(struct uart_dev_s *dev)
 {
+
   return OK;
 }
 
@@ -193,9 +195,16 @@ static void stm32h745_up_shutdown(struct uart_dev_s *dev)
 /****************************************************************************
  * Private Functions - stm32h745_up_attach
  ****************************************************************************/
-static int  stm32h745_up_attach(struct uart_dev_s *dev)
+static int stm32h745_up_attach(struct uart_dev_s *dev)
 {
-  return OK;
+  int ret;
+
+  ret = irq_attach(g_uart3_priv.irq, up_interrupt, &g_uart3);
+  if (ret == OK)
+  {
+      up_enable_irq(g_uart3_priv.irq);
+  }
+  return ret;
 }
 
 /****************************************************************************
@@ -203,13 +212,63 @@ static int  stm32h745_up_attach(struct uart_dev_s *dev)
  ****************************************************************************/
 static void stm32h745_up_detach(struct uart_dev_s *dev)
 {
+  up_disable_irq(g_uart3_priv.irq);
+  irq_detach(g_uart3_priv.irq);
 }
 
 /****************************************************************************
  * Private Functions - stm32h745_up_interrupt
  ****************************************************************************/
-static int  stm32h745_up_interrupt(int irq, void *context, FAR void *arg)
+static int  up_interrupt(int irq, void *context, FAR void *arg)
 {
+  bool handled;
+  int  passes;
+
+  //HAL_UART_IRQHandler(&huart3);
+  handled = true;
+
+  for (passes = 0; passes < 256 && handled; passes++)
+  {
+    handled = false;
+    if(LL_USART_IsActiveFlag_TXE_TXFNF(USART3))
+    {
+      LL_USART_ClearFlag_TXFE(USART3);
+      uart_xmitchars((uart_dev_t *)arg);
+      handled = true;
+    }
+
+    if(LL_USART_IsActiveFlag_TC(USART3))
+    {
+      LL_USART_ClearFlag_TC(USART3);
+      LL_USART_DisableIT_TC(USART3);
+    }
+
+    if(LL_USART_IsActiveFlag_PE(USART3))
+    {
+      LL_USART_ClearFlag_PE(USART3);
+    }
+
+    if(LL_USART_IsActiveFlag_FE(USART3))
+    {
+      LL_USART_ClearFlag_FE(USART3);
+    }
+
+    if(LL_USART_IsActiveFlag_NE(USART3))
+    {
+      LL_USART_ClearFlag_NE(USART3);
+    }
+
+    if(LL_USART_IsActiveFlag_ORE(USART3))
+    {
+      LL_USART_ClearFlag_ORE(USART3);
+    }
+    
+    if(LL_USART_IsActiveFlag_UDR(USART3))
+    {
+      LL_USART_ClearFlag_UDR(USART3);
+    }    
+  }
+
   return OK;
 }
 
@@ -248,13 +307,17 @@ static bool stm32h745_up_rxavailable(struct uart_dev_s *dev)
 /****************************************************************************
  * Private Functions - stm32h745_up_send
  ****************************************************************************/
-extern UART_HandleTypeDef huart3;
 static void stm32h745_up_send(struct uart_dev_s *dev, int ch)
 {
 #if 0
   HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFF);
 #else
-  LL_USART_TransmitData8(USART3, (uint8_t)ch);
+  static int i=0;
+  static char stm32_text[2048];
+
+  stm32_text[i] = (uint8_t)ch;
+
+  LL_USART_TransmitData8(USART3, (uint8_t)stm32_text[i++]);
 #endif
 }
 
@@ -263,6 +326,51 @@ static void stm32h745_up_send(struct uart_dev_s *dev, int ch)
  ****************************************************************************/
 static void stm32h745_up_txint(struct uart_dev_s *dev, bool enable)
 {
+  irqstate_t flags;
+  flags = irqsave();
+
+  if (enable)
+  {
+    //LL_USART_EnableIT_IDLE(USART3);
+    //LL_USART_EnableIT_RXNE_RXFNE(USART3);
+    //LL_USART_EnableIT_TC(USART3);
+    LL_USART_EnableIT_TXE_TXFNF(USART3);
+    //LL_USART_EnableIT_PE(USART3);
+    //LL_USART_EnableIT_CM(USART3);
+    //LL_USART_EnableIT_RTO(USART3);
+    //LL_USART_EnableIT_EOB(USART3);
+    //LL_USART_EnableIT_TXFE(USART3);
+    //LL_USART_EnableIT_RXFF(USART3);
+    //LL_USART_EnableIT_LBD(USART3);
+    LL_USART_EnableIT_ERROR(USART3);
+    //LL_USART_EnableIT_CTS(USART3);
+    //LL_USART_EnableIT_WKUP(USART3);
+    //LL_USART_EnableIT_TXFT(USART3);
+    //LL_USART_EnableIT_TCBGT(USART3);
+    //LL_USART_EnableIT_RXFT(USART3);
+  }
+  else
+  {
+    //LL_USART_DisableIT_IDLE(USART3);
+    //LL_USART_DisableIT_RXNE_RXFNE(USART3);
+    //LL_USART_DisableIT_TC(USART3);
+    LL_USART_DisableIT_TXE_TXFNF(USART3);
+    //LL_USART_DisableIT_PE(USART3);
+    //LL_USART_DisableIT_CM(USART3);
+    //LL_USART_DisableIT_RTO(USART3);
+    //LL_USART_DisableIT_EOB(USART3);
+    //LL_USART_DisableIT_TXFE(USART3);
+    //LL_USART_DisableIT_RXFF(USART3);
+    //LL_USART_DisableIT_LBD(USART3);
+    LL_USART_DisableIT_ERROR(USART3);
+    //LL_USART_DisableIT_CTS(USART3);
+    //LL_USART_DisableIT_WKUP(USART3);
+    //LL_USART_DisableIT_TXFT(USART3);
+    //LL_USART_DisableIT_TCBGT(USART3);
+    //LL_USART_DisableIT_RXFT(USART3);
+  }
+
+  irqrestore(flags);
 }
 
 /****************************************************************************
@@ -289,7 +397,6 @@ static bool stm32h745_up_txempty(struct uart_dev_s *dev)
     return LL_USART_IsActiveFlag_TXE_TXFNF(USART3);
 #endif    
 }
-
 
 
 
