@@ -53,6 +53,7 @@
 
 #include "chip.h"
 #include <stm32h7xx_hal.h>
+#include <stm32h7xx_ll_usart.h>
 
 
 #define CONSOLE_DEV             g_uart3             /* USART3 is console */
@@ -169,9 +170,9 @@ static uart_dev_t g_uart3 =
 void up_serialinit(void)
 {
     uart_register("/dev/console", &CONSOLE_DEV);
-    uart_register("/dev/ttyS0", &TTYS0_DEV);
-    uart_register("/dev/ttyS1", &TTYS1_DEV);
-    uart_register("/dev/ttyS2", &TTYS2_DEV);
+    //uart_register("/dev/ttyS0", &TTYS0_DEV);
+    //uart_register("/dev/ttyS1", &TTYS1_DEV);
+    //uart_register("/dev/ttyS2", &TTYS2_DEV);
 }
 
 /****************************************************************************
@@ -187,7 +188,6 @@ static int  stm32h745_up_setup(struct uart_dev_s *dev)
  ****************************************************************************/
 static void stm32h745_up_shutdown(struct uart_dev_s *dev)
 {
-
 }
 
 /****************************************************************************
@@ -203,7 +203,6 @@ static int  stm32h745_up_attach(struct uart_dev_s *dev)
  ****************************************************************************/
 static void stm32h745_up_detach(struct uart_dev_s *dev)
 {
-
 }
 
 /****************************************************************************
@@ -236,7 +235,6 @@ static int  stm32h745_up_receive(struct uart_dev_s *dev, uint8_t *status)
  ****************************************************************************/
 static void stm32h745_up_rxint(struct uart_dev_s *dev, bool enable)
 {
-
 }
 
 /****************************************************************************
@@ -253,7 +251,11 @@ static bool stm32h745_up_rxavailable(struct uart_dev_s *dev)
 extern UART_HandleTypeDef huart3;
 static void stm32h745_up_send(struct uart_dev_s *dev, int ch)
 {
+#if 0
   HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFF);
+#else
+  LL_USART_TransmitData8(USART3, (uint8_t)ch);
+#endif
 }
 
 /****************************************************************************
@@ -261,7 +263,6 @@ static void stm32h745_up_send(struct uart_dev_s *dev, int ch)
  ****************************************************************************/
 static void stm32h745_up_txint(struct uart_dev_s *dev, bool enable)
 {
-
 }
 
 /****************************************************************************
@@ -269,7 +270,11 @@ static void stm32h745_up_txint(struct uart_dev_s *dev, bool enable)
  ****************************************************************************/
 static bool stm32h745_up_txready(struct uart_dev_s *dev)
 {
+#if 0
     return true;
+#else
+    return LL_USART_IsActiveFlag_TXE_TXFNF(USART3);
+#endif
 }
 
 
@@ -278,7 +283,11 @@ static bool stm32h745_up_txready(struct uart_dev_s *dev)
  ****************************************************************************/
 static bool stm32h745_up_txempty(struct uart_dev_s *dev)
 {
+#if 0  
     return true;
+#else
+    return LL_USART_IsActiveFlag_TXE_TXFNF(USART3);
+#endif    
 }
 
 

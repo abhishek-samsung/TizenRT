@@ -87,7 +87,7 @@
  *   depend on the SYSTICK_CTRL_CLKSOURCE bit settings.
  */
 
-#define STM32_SYSTICK_CLOCK  (64000000)
+#define STM32_SYSTICK_CLOCK  (400000000)
 
 /* The desired timer interrupt frequency is provided by the definition
  * CLK_TCK (see include/time.h).  CLK_TCK defines the desired number of
@@ -100,7 +100,7 @@
  *   SYSTICK_RELOAD      = (27,000,000 / 100) - 1 = 269,999
  */
 
-#define SYSTICK_RELOAD (0xF9FF) //((STM32_SYSTICK_CLOCK / CLK_TCK) - 1)
+#define SYSTICK_RELOAD ((STM32_SYSTICK_CLOCK / CLK_TCK) - 1)
 
 /* The size of the reload field is 24 bits.  Verify that the reload value
  * will fit in the reload register.
@@ -126,6 +126,7 @@
 int up_timerisr(int irq, uint32_t *regs)
 {
     /* Process timer interrupt */
+    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_13);
     sched_process_timer();
     return 0;
 }
