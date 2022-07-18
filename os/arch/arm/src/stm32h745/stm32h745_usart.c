@@ -216,7 +216,28 @@ int up_putc(int ch)
  ****************************************************************************/
 uint8_t up_getc(void)
 {
-  return 0;
+  uint8_t ch = 0x0;
+#if 0
+  //LL_USART_DisableIT_RXNE_RXFNE(USART3);
+  //LL_USART_DisableIT_PE(USART3);
+  //LL_USART_DisableIT_ERROR(USART3);
+
+  if(LL_USART_IsActiveFlag_ORE(USART3))
+  {
+    LL_USART_ClearFlag_ORE(USART3);
+  }
+
+  while(!LL_USART_IsActiveFlag_RXNE(USART3)){};
+
+  if(ch = LL_USART_ReceiveData8(USART3))
+  {
+    return ch;
+  }
+  else
+  {
+    return -1;
+  }
+#endif  
 }
 
 
