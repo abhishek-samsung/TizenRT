@@ -279,17 +279,6 @@ void __start(void)
 	__asm__ volatile ("sub r10, sp, %0" : : "r" (CONFIG_IDLETHREAD_STACKSIZE - 64) : );
 #endif
 
-
-#if 1 //Dale KIM - LL Driver
-	//SystemClock_Config();
-	//stm32l4_fpuconfig();
-	//ST_USART2_UART_Init();
-	//stm32l4_clockconfig();
-#else
-	stm32l4_fpuconfig();
-	stm32l4_lowsetup();
-#endif
-	//stm32l4_gpioinit();
 	stm32h745_fpuconfig();
 
 #ifdef USE_EARLYSERIALINIT

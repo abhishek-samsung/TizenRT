@@ -146,6 +146,7 @@ int up_timerisr(int irq, uint32_t *regs)
 
 void up_timer_initialize(void)
 {
+#if 0
   uint32_t regval;
 
   /* Configure SysTick to interrupt at the requested rate */
@@ -174,6 +175,10 @@ void up_timer_initialize(void)
 
   /* And enable the timer interrupt */
   up_enable_irq(STM32H745_IRQ_SYSTICK);
+#else
+  irq_attach(STM32H745_IRQ_SYSTICK, (xcpt_t)up_timerisr, NULL);  
+  HAL_InitTick(uwTickPrio);
+#endif
 
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
