@@ -1717,7 +1717,7 @@ typedef struct
 {
   __IO uint32_t CR;           /*!< RAMECC monitor configuration register          */
   __IO uint32_t SR;           /*!< RAMECC monitor status register                 */
-  __IO uint32_t FAR;          /*!< RAMECC monitor failing address register        */
+  __IO uint32_t FADR;          /*!< RAMECC monitor failing address register        */
   __IO uint32_t FDRL;         /*!< RAMECC monitor failing data low register       */
   __IO uint32_t FDRH;         /*!< RAMECC monitor failing data high register      */
   __IO uint32_t FECR;         /*!< RAMECC monitor failing ECC error code register */
