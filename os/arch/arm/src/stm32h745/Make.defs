@@ -133,7 +133,9 @@ CHIP_CSRCS += stm32h7xx_hal_hsem.c
 CHIP_CSRCS += stm32h7xx_hal_wwdg.c
 CHIP_CSRCS += stm32h7xx_hal_dma.c stm32h7xx_hal_dma_ex.c
 CHIP_CSRCS += stm32h7xx_hal_mdma.c
-
+CHIP_CSRCS += stm32h7xx_ll_gpio.c
+CHIP_CSRCS += stm32h7xx_ll_rcc.c
+CHIP_CSRCS += stm32h7xx_ll_usart.c
 
 CFLAGS += -I$(ARCH_SRCDIR)/chip/hal
 CFLAGS += -I$(ARCH_SRCDIR)/chip/chip

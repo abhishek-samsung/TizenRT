@@ -26,7 +26,7 @@
 
 
 void SystemInit(void);
-
+void Error_Handler(void);
 
 #ifdef __cplusplus
 }
