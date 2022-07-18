@@ -144,7 +144,7 @@ static struct stm32h745_up_dev_s g_uart3_priv =
 
 static uart_dev_t g_uart3 = 
 {
-  .isconsole = false,
+  .isconsole = true,
   .recv = 
   {
     .size   = CONFIG_USART3_RXBUFSIZE,
