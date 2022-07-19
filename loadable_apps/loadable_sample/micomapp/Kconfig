@@ -5,7 +5,8 @@
 
 menuconfig APP1_INFO
 	bool "App1 Information"
-	default y
+	default n
+	depends on APP_BINARY_SEPARATION
 	---help---
 		Set App1 Information
 
