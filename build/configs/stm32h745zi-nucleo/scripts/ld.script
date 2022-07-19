@@ -136,10 +136,6 @@ SECTIONS
 		_ebss = ABSOLUTE(.);
 	} > axi_sram
 
-    .shared_sec : {
-        *(.shared_mem)
-    } > sarm4_sram
-    
 	/* Stabs debugging sections. */
 	.stab 0 : { *(.stab) }
 	.stabstr 0 : { *(.stabstr) }

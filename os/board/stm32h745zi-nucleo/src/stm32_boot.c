@@ -81,8 +81,12 @@ int up_check_proddownload(void)
 
 void board_initialize(void)
 {
-    stm32h745_shared_memory_init();
     stm32h745_haltick_init();
+
+#ifdef CONFIG_SHARED_MEMORY
+    stm32h745_shared_memory_init();
+#endif
+    
     lldbg("Board init \r\n");
 }
 

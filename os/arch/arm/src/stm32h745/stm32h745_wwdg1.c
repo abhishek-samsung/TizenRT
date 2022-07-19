@@ -91,7 +91,7 @@ struct stm32h745_lowerhalf_s
 {
     FAR const struct watchdog_ops_s *ops;   /* Lower half operations */
     xcpt_t handler;             /* Current EWI interrupt handler */
-    systime_t timeout;          /* The actual timeout value */
+    uint32_t timeout;          /* The actual timeout value */
     uint32_t fwwdg;             /* WWDG clock frequency */
     bool started;               /* The timer has been started */
     uint8_t reload;             /* The 7-bit reload field reset value */
@@ -333,7 +333,7 @@ static xcpt_t stm32h745_capture(FAR struct watchdog_lowerhalf_s *lower, xcpt_t h
 
 static int stm32h745_ioctl(FAR struct watchdog_lowerhalf_s *lower, int cmd, unsigned long arg)
 {
-    int ret = -ENOTTY;
+    int ret=ERROR;
 
     return ret;
 }
