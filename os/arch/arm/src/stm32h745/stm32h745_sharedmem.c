@@ -1,8 +1,8 @@
-/************************************************************************************
- * arch/arm/src/stm32h745/stm32h745.h
+/****************************************************************************
+ * arch/arm/src/stm32h745/stm32h745_sharedmem.c
  *
- *   Copyright (C) 2015 Sebastien Lorquet. All rights reserved.
- *   Author: Sebastien Lorquet <sebastien@lorquet.fr>
+ *   Copyright (C) 2009, 2012 Gregory Nutt. All rights reserved.
+ *   Author: Gregory Nutt <gnutt@nuttx.org>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,15 +31,50 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- ************************************************************************************/
+ ****************************************************************************/
 
-#ifndef __ARCH_ARM_SRC_STM32H745_H
-#define __ARCH_ARM_SRC_STM32H745_H
+/****************************************************************************
+ * Included Files
+ ****************************************************************************/
+#include <tinyara/config.h>
+#include <tinyara/mm/heap_regioninfo.h>
 
-extern int stm32h745_shared_memory_init(void);
-extern int stm32h745_haltick_init(void);
+#include <stdint.h>
+#include <assert.h>
+#include <debug.h>
 
-#endif /* __ARCH_ARM_SRC_STM32H745_H */
+#include <tinyara/init.h>
+#include <arch/board/board.h>
+
+#include "up_arch.h"
+#include "up_internal.h"
+#include "nvic.h"
+
+#include <stm32h7xx_hal.h>
+#include <system_stm32h745.h>
+
+
+
+/****************************************************************************
+ * Pre-processor Definitions
+ ****************************************************************************/
+static uint8_t shared_mem[64*1024] __attribute__((section(".shared_mem")));
+
+
+
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
+int stm32h745_shared_memory_init(void)
+{
+    int i;
+
+    for(i=0; i<(64*1024); i++)
+    {
+        shared_mem[i] = 0xDD;
+    }
+}
+
 
 
 

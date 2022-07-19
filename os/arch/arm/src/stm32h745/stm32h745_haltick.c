@@ -66,7 +66,7 @@ static int stm32h745_tim17_update(int irq, FAR void *context, FAR void *arg)
 /****************************************************************************
  * Private Function prototypes
  ****************************************************************************/
-HAL_StatusTypeDef stm32h745_haltick_init(void)
+int stm32h745_haltick_init(void)
 {
     RCC_ClkInitTypeDef    clkconfig;
     uint32_t              uwTimclock;
@@ -90,7 +90,7 @@ HAL_StatusTypeDef stm32h745_haltick_init(void)
     }
     else
     {
-        return HAL_ERROR;
+        return ERROR;
     }
 
     /* Enable TIM17 clock */
@@ -122,11 +122,18 @@ HAL_StatusTypeDef stm32h745_haltick_init(void)
     if(HAL_TIM_Base_Init(&htim17) == HAL_OK)
     {
         /* Start the TIM time Base generation in interrupt mode */
-        return HAL_TIM_Base_Start_IT(&htim17);
+        if(HAL_TIM_Base_Start_IT(&htim17) == HAL_OK)
+        {
+            return OK;
+        }
+        else
+        {
+            return ERROR;
+        }
     }
 
     /* Return function status */
-    return HAL_ERROR;
+    return OK;
 }
 
 /**

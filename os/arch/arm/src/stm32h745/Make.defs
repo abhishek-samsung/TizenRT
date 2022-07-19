@@ -119,6 +119,7 @@ CHIP_CSRCS += stm32h745_hsem.c
 CHIP_CSRCS += stm32h745_idle.c
 CHIP_CSRCS += stm32h745_irq.c
 CHIP_CSRCS += stm32h745_timerisr.c
+CHIP_CSRCS += stm32h745_sharedmem.c
 CHIP_CSRCS += system_stm32h745.c
 
 CHIP_CSRCS += stm32h7xx_hal.c
