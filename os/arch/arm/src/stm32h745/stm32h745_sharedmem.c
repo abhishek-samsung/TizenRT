@@ -213,8 +213,6 @@ int stm32h745_shared_memory_read(uint32_t hsem_id, uint32_t index, uint8_t *dest
 
     while(HAL_HSEM_FastTake(hsem_id) != HAL_OK){};
 
-    HAL_HSEM_FastTake(hsem_id);
-
     memcpy(dest_addr, &shared_mem[index], size);
 
     HAL_HSEM_Release(hsem_id, 0);
