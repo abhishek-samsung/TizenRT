@@ -157,13 +157,13 @@ int stm32h745_shared_memory_init(void)
 
     shared_mem = (uint8_t *)(STM32_SHARED_MEMORY_ADDRESS);
 
-    while(hsem_statusreg != 0){};
-
     for(i=0; i<STM32_SHARED_MEMORY_LENGTH; i++)
     {
         shared_mem[i] = 0x00;
     }
 
+    __HAL_RCC_HSEM_CLK_ENABLE();
+    
     /* Enable Interrupts */
     HAL_HSEM_ActivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0));
     ret = irq_attach(STM32H745_IRQ_HSEM1, up_interrupt, NULL);
@@ -183,6 +183,7 @@ int stm32h745_shared_memory_init(void)
  ****************************************************************************/
 int stm32h745_shared_memory_write(uint32_t hsem_id, uint32_t index, uint8_t *src_addr, uint32_t size)
 {
+    //If core use cache, need to clean cache
     if(hsem_id >= HSEM_ID_MAX)
     {
         return ERROR;
@@ -193,7 +194,7 @@ int stm32h745_shared_memory_write(uint32_t hsem_id, uint32_t index, uint8_t *src
     memcpy(&shared_mem[index], src_addr, size);
 
     HAL_HSEM_Release(hsem_id, 0);
-
+    //If core use cache, need to clean cache
     return OK;
 }
 
@@ -206,6 +207,7 @@ int stm32h745_shared_memory_write(uint32_t hsem_id, uint32_t index, uint8_t *src
  ****************************************************************************/
 int stm32h745_shared_memory_read(uint32_t hsem_id, uint32_t index, uint8_t *dest_addr, uint32_t size)
 {
+    //If core use cache, need to clean cache
     if(hsem_id >= HSEM_ID_MAX)
     {
         return ERROR;
@@ -217,6 +219,7 @@ int stm32h745_shared_memory_read(uint32_t hsem_id, uint32_t index, uint8_t *dest
 
     HAL_HSEM_Release(hsem_id, 0);
 
+    //If core use cache, need to clean cache
     return OK;
 }
 

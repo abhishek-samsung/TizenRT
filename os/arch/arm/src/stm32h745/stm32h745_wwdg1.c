@@ -72,12 +72,14 @@
 #include "nvic.h"
 
 #include <stm32h7xx_hal.h>
+#include <stm32h7xx_ll_rcc.h>
+#include <stm32h7xx_ll_bus.h>
 #include <stm32h7xx_ll_wwdg.h>
 #include <system_stm32h745.h>
 
 
 #if defined(CONFIG_WATCHDOG) && defined(CONFIG_STM32_WWDG1)
-
+#define CONFIG_STM32_WWDG_SETWINDOW (127)
 
 /****************************************************************************
  * Private Types
@@ -102,26 +104,26 @@ struct stm32h745_lowerhalf_s
 /****************************************************************************
  * Private Function Prototypes
  ****************************************************************************/
-static int stm32h745_wdg_start(FAR struct watchdog_lowerhalf_s *lower);
-static int stm32h745_wdg_stop(FAR struct watchdog_lowerhalf_s *lower);
-static int stm32h745_wdg_keepalive(FAR struct watchdog_lowerhalf_s *lower);
-static int stm32h745_wdg_getstatus(FAR struct watchdog_lowerhalf_s *lower, FAR struct watchdog_status_s *status);
-static int stm32h745_wdg_settimeout(FAR struct watchdog_lowerhalf_s *lower, uint32_t timeout);
-static xcpt_t stm32h745_wdg_capture(FAR struct watchdog_lowerhalf_s *lower, xcpt_t handler);
-static int stm32h745_wdg_ioctl(FAR struct watchdog_lowerhalf_s *lower, int cmd, unsigned long arg);
+static int stm32h745_wwdg1_start(FAR struct watchdog_lowerhalf_s *lower);
+static int stm32h745_wwdg1_stop(FAR struct watchdog_lowerhalf_s *lower);
+static int stm32h745_wwdg1_keepalive(FAR struct watchdog_lowerhalf_s *lower);
+static int stm32h745_wwdg1_getstatus(FAR struct watchdog_lowerhalf_s *lower, FAR struct watchdog_status_s *status);
+static int stm32h745_wwdg1_settimeout(FAR struct watchdog_lowerhalf_s *lower, uint32_t timeout);
+static xcpt_t stm32h745_wwdg1_capture(FAR struct watchdog_lowerhalf_s *lower, xcpt_t handler);
+static int stm32h745_wwdg1_ioctl(FAR struct watchdog_lowerhalf_s *lower, int cmd, unsigned long arg);
 
 /****************************************************************************
  * Private Data
  ****************************************************************************/
 const struct watchdog_ops_s g_wdgops = 
 {
-    .start = stm32h745_wdg_start,
-    .stop = stm32h745_wdg_stop,
-    .keepalive = stm32h745_wdg_keepalive,
-    .getstatus = stm32h745_wdg_getstatus,
-    .settimeout = stm32h745_wdg_settimeout,
-    .capture = stm32h745_wdg_capture,
-    .ioctl = stm32h745_wdg_ioctl,
+    .start = stm32h745_wwdg1_start,
+    .stop = stm32h745_wwdg1_stop,
+    .keepalive = stm32h745_wwdg1_keepalive,
+    .getstatus = stm32h745_wwdg1_getstatus,
+    .settimeout = stm32h745_wwdg1_settimeout,
+    .capture = stm32h745_wwdg1_capture,
+    .ioctl = stm32h745_wwdg1_ioctl,
 };
 
 /* "Lower half" driver state */
@@ -131,6 +133,12 @@ static struct stm32h745_lowerhalf_s g_wdgdev;
 /****************************************************************************
  * Private Functions
  ****************************************************************************/
+static int  up_interrupt(int irq, void *context, FAR void *arg)
+{
+    lldbg("+++!!\n");
+    __WFI();
+    return OK;
+}
 
 /****************************************************************************
  * Name: stm32h745_setwindow
@@ -142,28 +150,18 @@ static struct stm32h745_lowerhalf_s g_wdgdev;
  *   otherwise a reset will be generated
  *
  ****************************************************************************/
-static void stm32h745_setwindow(FAR struct stm32h745_lowerhalf_s *priv, uint8_t window)
+static void stm32h745_wwdg1_setwindow(FAR struct stm32h745_lowerhalf_s *priv, uint8_t window)
 {
+    lldbg("+++!!\n");
+        
+    priv->reload = window;
+    priv->window = window;
+
+    LL_WWDG_SetCounter(WWDG1, window);
+    LL_WWDG_SetPrescaler(WWDG1, LL_WWDG_PRESCALER_128);
+    LL_WWDG_SetWindow(WWDG1, window);
 }
 
-/****************************************************************************
- * Name: stm32h745_interrupt
- *
- * Description:
- *   WWDG early warning interrupt
- *
- * Input Parameters:
- *   Usual interrupt handler arguments.
- *
- * Returned Values:
- *   Always returns OK.
- *
- ****************************************************************************/
-
-static int stm32h745_interrupt(int irq, FAR void *context)
-{
-    return OK;
-}
 
 /****************************************************************************
  * Name: stm32h745_start
@@ -180,8 +178,15 @@ static int stm32h745_interrupt(int irq, FAR void *context)
  *
  ****************************************************************************/
 
-static int stm32h745_start(FAR struct watchdog_lowerhalf_s *lower)
+static int stm32h745_wwdg1_start(FAR struct watchdog_lowerhalf_s *lower)
 {
+    lldbg("+++!!\n");
+    LL_WWDG_ClearFlag_EWKUP(WWDG1);
+    LL_WWDG_Enable(WWDG1);
+    LL_WWDG_EnableIT_EWKUP(WWDG1);
+
+    up_enable_irq(STM32H745_IRQ_WWDG);
+    stm32h745_wwdg1_keepalive(lower);
     return OK;
 }
 
@@ -201,9 +206,10 @@ static int stm32h745_start(FAR struct watchdog_lowerhalf_s *lower)
  *
  ****************************************************************************/
 
-static int stm32h745_stop(FAR struct watchdog_lowerhalf_s *lower)
+static int stm32h745_wwdg1_stop(FAR struct watchdog_lowerhalf_s *lower)
 {
-    return OK;
+    lldbg("+++!!\n");
+    return ERROR;
 }
 
 
@@ -230,8 +236,13 @@ static int stm32h745_stop(FAR struct watchdog_lowerhalf_s *lower)
  *
  ****************************************************************************/
 
-static int stm32h745_keepalive(FAR struct watchdog_lowerhalf_s *lower)
+static int stm32h745_wwdg1_keepalive(FAR struct watchdog_lowerhalf_s *lower)
 {
+    FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
+
+    lldbg("+++!!\n");
+
+    LL_WWDG_SetCounter(WWDG1, priv->reload);
     return OK;
 }
 
@@ -253,8 +264,36 @@ static int stm32h745_keepalive(FAR struct watchdog_lowerhalf_s *lower)
  *
  ****************************************************************************/
 
-static int stm32h745_getstatus(FAR struct watchdog_lowerhalf_s *lower, FAR struct watchdog_status_s *status)
+static int stm32h745_wwdg1_getstatus(FAR struct watchdog_lowerhalf_s *lower, FAR struct watchdog_status_s *status)
 {
+    FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
+    uint32_t elapsed;
+    uint16_t reload;
+
+    DEBUGASSERT(priv);
+
+    lldbg("+++!!\n");
+
+    /* Return the status bit */
+    status->flags = WDFLAGS_RESET;
+    if (priv->started) {
+        status->flags |= WDFLAGS_ACTIVE;
+    }
+
+    if (priv->handler) {
+        status->flags |= WDFLAGS_CAPTURE;
+    }
+
+    /* Return the actual timeout is milliseconds */
+
+    status->timeout = priv->timeout;
+
+    /* Get the time remaining until the watchdog expires (in milliseconds) */
+
+    reload = LL_WWDG_GetCounter(WWDG1);
+    elapsed = priv->reload - reload;
+    status->timeleft = (priv->timeout * elapsed) / (priv->reload + 1);
+
     return OK;
 }
 
@@ -275,8 +314,14 @@ static int stm32h745_getstatus(FAR struct watchdog_lowerhalf_s *lower, FAR struc
  *
  ****************************************************************************/
 
-static int stm32h745_settimeout(FAR struct watchdog_lowerhalf_s *lower, uint32_t timeout)
+static int stm32h745_wwdg1_settimeout(FAR struct watchdog_lowerhalf_s *lower, uint32_t timeout)
 {
+    FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
+
+    lldbg("+++!!\n");
+
+    priv->timeout = timeout;
+
     return OK;
 }
 
@@ -304,10 +349,45 @@ static int stm32h745_settimeout(FAR struct watchdog_lowerhalf_s *lower, uint32_t
  *
  ****************************************************************************/
 
-static xcpt_t stm32h745_capture(FAR struct watchdog_lowerhalf_s *lower, xcpt_t handler)
+static xcpt_t stm32h745_wwdg1_capture(FAR struct watchdog_lowerhalf_s *lower, xcpt_t handler)
 {
+    FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
+    irqstate_t flags;
     xcpt_t oldhandler;
+    uint16_t regval;
 
+    DEBUGASSERT(priv);
+    /* Get the old handler return value */
+
+    lldbg("+++!!\n");
+
+    flags = irqsave();
+    oldhandler = priv->handler;
+
+    /* Save the new handler */
+
+    priv->handler = handler;
+
+    /* Are we attaching or detaching the handler? */
+
+    regval = READ_REG(WWDG1->CFR);
+    if (handler) {
+        /* Attaching... Enable the EWI interrupt */
+
+        regval |= WWDG_CFR_EWI;
+
+        WRITE_REG(WWDG1->CFR, regval);
+        up_enable_irq(STM32H745_IRQ_WWDG);
+    } else {
+        /* Detaching... Disable the EWI interrupt */
+
+        regval &= ~WWDG_CFR_EWI;
+
+        WRITE_REG(WWDG1->CFR, regval);
+        up_disable_irq(STM32H745_IRQ_WWDG);
+    }
+
+    irqrestore(flags);
     return oldhandler;
 }
 
@@ -331,9 +411,11 @@ static xcpt_t stm32h745_capture(FAR struct watchdog_lowerhalf_s *lower, xcpt_t h
  *
  ****************************************************************************/
 
-static int stm32h745_ioctl(FAR struct watchdog_lowerhalf_s *lower, int cmd, unsigned long arg)
+static int stm32h745_wwdg1_ioctl(FAR struct watchdog_lowerhalf_s *lower, int cmd, unsigned long arg)
 {
     int ret=ERROR;
+
+    lldbg("+++!!\n");
 
     return ret;
 }
@@ -358,6 +440,39 @@ static int stm32h745_ioctl(FAR struct watchdog_lowerhalf_s *lower, int cmd, unsi
 
 void stm32h745_wwdginitialize(FAR const char *devpath)
 {
+    FAR struct stm32h745_lowerhalf_s *priv = &g_wdgdev;
+
+    /* NOTE we assume that clocking to the IWDG has already been provided by
+     * the RCC initialization logic.
+     */
+    lldbg("+++!!\n");
+
+    /* Initialize the driver state structure.  Here we assume: (1) the state
+     * structure lies in .bss and was zeroed at reset time.  (2) This function
+     * is only called once so it is never necessary to re-zero the structure.
+     */
+
+    priv->ops = &g_wdgops;
+
+    /* Attach our EWI interrupt handler (But don't enable it yet) */
+
+    (void)irq_attach(STM32H745_IRQ_WWDG, up_interrupt, NULL);
+
+    /* Select an arbitrary initial timeout value.  But don't start the watchdog
+     * yet. NOTE: If the "Hardware watchdog" feature is enabled through the
+     * device option bits, the watchdog is automatically enabled at power-on.
+     */
+
+    LL_RCC_WWDG1_EnableSystemReset(); //configured by M4 side*/
+    LL_APB3_GRP1_EnableClock(LL_APB3_GRP1_PERIPH_WWDG1);
+
+    stm32h745_wwdg1_setwindow(priv, CONFIG_STM32_WWDG_SETWINDOW);
+    stm32h745_wwdg1_settimeout((FAR struct watchdog_lowerhalf_s *)priv, 100);
+
+    /* Register the watchdog driver as /dev/watchdog0 */
+
+    (void)watchdog_register(devpath, (FAR struct watchdog_lowerhalf_s *)priv);
+
 }
 
 #endif

@@ -86,7 +86,10 @@ void board_initialize(void)
 #ifdef CONFIG_SHARED_MEMORY
     stm32h745_shared_memory_init();
 #endif
-    
+
+#if defined(CONFIG_WATCHDOG) && defined(CONFIG_STM32_WWDG1)
+    stm32h745_wwdginitialize(CONFIG_WATCHDOG_DEVPATH);
+#endif
     lldbg("Board init \r\n");
 }
 
