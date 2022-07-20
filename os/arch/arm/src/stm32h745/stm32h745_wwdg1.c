@@ -135,7 +135,16 @@ static struct stm32h745_lowerhalf_s g_wdgdev;
  ****************************************************************************/
 static int  up_interrupt(int irq, void *context, FAR void *arg)
 {
-    lldbg("+++!!\n");
+    FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)arg;
+
+    stm32h745_wwdg1_keepalive((FAR struct watchdog_lowerhalf_s *)priv);
+
+    lldbg("Go reset!!\n");
+    
+    up_disable_irq(STM32H745_IRQ_SYSTICK);
+    up_disable_irq(STM32H745_IRQ_TIM17);
+    up_disable_irq(STM32H745_IRQ_HSEM1);
+
     __WFI();
     return OK;
 }
@@ -153,7 +162,7 @@ static int  up_interrupt(int irq, void *context, FAR void *arg)
 static void stm32h745_wwdg1_setwindow(FAR struct stm32h745_lowerhalf_s *priv, uint8_t window)
 {
     lldbg("+++!!\n");
-        
+
     priv->reload = window;
     priv->window = window;
 
@@ -456,7 +465,7 @@ void stm32h745_wwdginitialize(FAR const char *devpath)
 
     /* Attach our EWI interrupt handler (But don't enable it yet) */
 
-    (void)irq_attach(STM32H745_IRQ_WWDG, up_interrupt, NULL);
+    (void)irq_attach(STM32H745_IRQ_WWDG, up_interrupt, priv);
 
     /* Select an arbitrary initial timeout value.  But don't start the watchdog
      * yet. NOTE: If the "Hardware watchdog" feature is enabled through the
@@ -470,9 +479,7 @@ void stm32h745_wwdginitialize(FAR const char *devpath)
     stm32h745_wwdg1_settimeout((FAR struct watchdog_lowerhalf_s *)priv, 100);
 
     /* Register the watchdog driver as /dev/watchdog0 */
-
     (void)watchdog_register(devpath, (FAR struct watchdog_lowerhalf_s *)priv);
-
 }
 
 #endif

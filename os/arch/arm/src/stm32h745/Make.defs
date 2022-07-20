@@ -111,6 +111,7 @@ CHIP_CSRCS += stm32h745_haltick.c
 CHIP_CSRCS += stm32h745_rcc.c
 CHIP_CSRCS += stm32h745_gpio.c
 CHIP_CSRCS += stm32h745_wwdg1.c
+CHIP_CSRCS += stm32h745_systemreset.c
 CHIP_CSRCS += stm32h745_usart.c
 CHIP_CSRCS += stm32h745_serial.c
 CHIP_CSRCS += stm32h745_flash.c
