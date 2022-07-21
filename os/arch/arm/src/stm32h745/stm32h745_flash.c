@@ -178,6 +178,7 @@ static ssize_t stm32h745_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, siz
             result = ERROR;
             break;
         }
+        buf = buf + STM32H745_FLASH_BLOCK_SIZE;
         address = address + STM32H745_FLASH_BLOCK_SIZE;
     }
     HAL_FLASH_Lock();
