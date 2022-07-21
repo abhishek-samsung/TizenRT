@@ -71,9 +71,7 @@
 static void up_systemreset(void)
 {
 	/* Wait for the reset using wwdg1*/
-	up_disable_irq(STM32H745_IRQ_SYSTICK);
-    up_disable_irq(STM32H745_IRQ_TIM17);
-    up_disable_irq(STM32H745_IRQ_HSEM1);
+	__disable_irq();
 
 	for (;;)
 	{
