@@ -139,8 +139,14 @@ static int  up_interrupt(int irq, void *context, FAR void *arg)
 
     stm32h745_wwdg1_keepalive((FAR struct watchdog_lowerhalf_s *)priv);
 
+    if(priv->started == false)
+    {
+        lldbg("WWDG refresh\n");
+        return OK;
+    }
+
     lldbg("Go reset!!\n");
-    
+
     up_disable_irq(STM32H745_IRQ_SYSTICK);
     up_disable_irq(STM32H745_IRQ_TIM17);
     up_disable_irq(STM32H745_IRQ_HSEM1);
@@ -189,13 +195,15 @@ static void stm32h745_wwdg1_setwindow(FAR struct stm32h745_lowerhalf_s *priv, ui
 
 static int stm32h745_wwdg1_start(FAR struct watchdog_lowerhalf_s *lower)
 {
-    lldbg("+++!!\n");
+    FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
+
     LL_WWDG_ClearFlag_EWKUP(WWDG1);
     LL_WWDG_Enable(WWDG1);
     LL_WWDG_EnableIT_EWKUP(WWDG1);
 
     up_enable_irq(STM32H745_IRQ_WWDG);
     stm32h745_wwdg1_keepalive(lower);
+    priv->started = true;
     return OK;
 }
 
@@ -217,8 +225,12 @@ static int stm32h745_wwdg1_start(FAR struct watchdog_lowerhalf_s *lower)
 
 static int stm32h745_wwdg1_stop(FAR struct watchdog_lowerhalf_s *lower)
 {
-    lldbg("+++!!\n");
-    return ERROR;
+    FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
+
+    stm32h745_wwdg1_keepalive(lower);
+    
+    priv->started = false;
+    return OK;
 }
 
 
