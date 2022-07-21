@@ -56,6 +56,7 @@
 #endif
 
 #include "up_arch.h"
+#include "up_internal.h"
 #include <stm32h745.h>
 
 #ifdef CONFIG_PRODCONFIG

@@ -270,6 +270,13 @@ void __start(void)
 		*dest++ = *src++;
 	}
 
+#ifdef CONFIG_ARCH_RAMFUNCS
+	for (src = &_framfuncs, dest = &_sramfuncs; dest < &_eramfuncs;)
+	{
+		*dest++ = *src++;
+	}
+#endif
+
 	SystemInit();
 	stm32h745_mpu_config();
 	HAL_Init();
@@ -286,9 +293,11 @@ void __start(void)
 #endif
 	showprogress('S');
 	showprogress('T');
-	showprogress('A');
-	showprogress('R');
-	showprogress('T');
+	showprogress('M');
+	showprogress('3');
+	showprogress('2');
+	showprogress('H');
+	showprogress('7');
 	showprogress('\r');
 	showprogress('\n');
 

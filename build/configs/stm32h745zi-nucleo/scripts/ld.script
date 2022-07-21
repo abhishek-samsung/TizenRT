@@ -127,6 +127,15 @@ SECTIONS
 		CONSTRUCTORS
 		_edata = ABSOLUTE(.);
 	} > axi_sram AT > flash
+    
+    .ramfunc ALIGN(4):
+    {
+        _sramfuncs = ABSOLUTE(.);
+        *(.ramfunc  .ramfunc.*)
+        _eramfuncs = ABSOLUTE(.);
+    } > axi_sram AT > flash
+
+    _framfuncs = LOADADDR(.ramfunc);
 
 	.bss : {
 		_sbss = ABSOLUTE(.);

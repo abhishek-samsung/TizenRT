@@ -104,18 +104,18 @@ struct stm32h745_lowerhalf_s
 /****************************************************************************
  * Private Function Prototypes
  ****************************************************************************/
-static int stm32h745_wwdg1_start(FAR struct watchdog_lowerhalf_s *lower);
-static int stm32h745_wwdg1_stop(FAR struct watchdog_lowerhalf_s *lower);
-static int stm32h745_wwdg1_keepalive(FAR struct watchdog_lowerhalf_s *lower);
-static int stm32h745_wwdg1_getstatus(FAR struct watchdog_lowerhalf_s *lower, FAR struct watchdog_status_s *status);
-static int stm32h745_wwdg1_settimeout(FAR struct watchdog_lowerhalf_s *lower, uint32_t timeout);
-static xcpt_t stm32h745_wwdg1_capture(FAR struct watchdog_lowerhalf_s *lower, xcpt_t handler);
-static int stm32h745_wwdg1_ioctl(FAR struct watchdog_lowerhalf_s *lower, int cmd, unsigned long arg);
+static int __ramfunc__ stm32h745_wwdg1_start(FAR struct watchdog_lowerhalf_s *lower);
+static int __ramfunc__ stm32h745_wwdg1_stop(FAR struct watchdog_lowerhalf_s *lower);
+static int __ramfunc__ stm32h745_wwdg1_keepalive(FAR struct watchdog_lowerhalf_s *lower);
+static int __ramfunc__ stm32h745_wwdg1_getstatus(FAR struct watchdog_lowerhalf_s *lower, FAR struct watchdog_status_s *status);
+static int __ramfunc__ stm32h745_wwdg1_settimeout(FAR struct watchdog_lowerhalf_s *lower, uint32_t timeout);
+static xcpt_t __ramfunc__ stm32h745_wwdg1_capture(FAR struct watchdog_lowerhalf_s *lower, xcpt_t handler);
+static int __ramfunc__ stm32h745_wwdg1_ioctl(FAR struct watchdog_lowerhalf_s *lower, int cmd, unsigned long arg);
 
 /****************************************************************************
  * Private Data
  ****************************************************************************/
-const struct watchdog_ops_s g_wdgops = 
+struct watchdog_ops_s g_wdgops = 
 {
     .start = stm32h745_wwdg1_start,
     .stop = stm32h745_wwdg1_stop,
@@ -133,7 +133,7 @@ static struct stm32h745_lowerhalf_s g_wdgdev;
 /****************************************************************************
  * Private Functions
  ****************************************************************************/
-static int  up_interrupt(int irq, void *context, FAR void *arg)
+static int __ramfunc__ up_interrupt(int irq, void *context, FAR void *arg)
 {
     FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)arg;
 
@@ -165,7 +165,7 @@ static int  up_interrupt(int irq, void *context, FAR void *arg)
  *   otherwise a reset will be generated
  *
  ****************************************************************************/
-static void stm32h745_wwdg1_setwindow(FAR struct stm32h745_lowerhalf_s *priv, uint8_t window)
+static void __ramfunc__ stm32h745_wwdg1_setwindow(FAR struct stm32h745_lowerhalf_s *priv, uint8_t window)
 {
     lldbg("+++!!\n");
 
@@ -193,7 +193,7 @@ static void stm32h745_wwdg1_setwindow(FAR struct stm32h745_lowerhalf_s *priv, ui
  *
  ****************************************************************************/
 
-static int stm32h745_wwdg1_start(FAR struct watchdog_lowerhalf_s *lower)
+static int __ramfunc__ stm32h745_wwdg1_start(FAR struct watchdog_lowerhalf_s *lower)
 {
     FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
 
@@ -223,12 +223,12 @@ static int stm32h745_wwdg1_start(FAR struct watchdog_lowerhalf_s *lower)
  *
  ****************************************************************************/
 
-static int stm32h745_wwdg1_stop(FAR struct watchdog_lowerhalf_s *lower)
+static int __ramfunc__ stm32h745_wwdg1_stop(FAR struct watchdog_lowerhalf_s *lower)
 {
     FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
 
     stm32h745_wwdg1_keepalive(lower);
-    
+
     priv->started = false;
     return OK;
 }
@@ -257,7 +257,7 @@ static int stm32h745_wwdg1_stop(FAR struct watchdog_lowerhalf_s *lower)
  *
  ****************************************************************************/
 
-static int stm32h745_wwdg1_keepalive(FAR struct watchdog_lowerhalf_s *lower)
+static int __ramfunc__ stm32h745_wwdg1_keepalive(FAR struct watchdog_lowerhalf_s *lower)
 {
     FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
 
@@ -285,7 +285,7 @@ static int stm32h745_wwdg1_keepalive(FAR struct watchdog_lowerhalf_s *lower)
  *
  ****************************************************************************/
 
-static int stm32h745_wwdg1_getstatus(FAR struct watchdog_lowerhalf_s *lower, FAR struct watchdog_status_s *status)
+static int __ramfunc__ stm32h745_wwdg1_getstatus(FAR struct watchdog_lowerhalf_s *lower, FAR struct watchdog_status_s *status)
 {
     FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
     uint32_t elapsed;
@@ -335,7 +335,7 @@ static int stm32h745_wwdg1_getstatus(FAR struct watchdog_lowerhalf_s *lower, FAR
  *
  ****************************************************************************/
 
-static int stm32h745_wwdg1_settimeout(FAR struct watchdog_lowerhalf_s *lower, uint32_t timeout)
+static int __ramfunc__ stm32h745_wwdg1_settimeout(FAR struct watchdog_lowerhalf_s *lower, uint32_t timeout)
 {
     FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
 
@@ -370,7 +370,7 @@ static int stm32h745_wwdg1_settimeout(FAR struct watchdog_lowerhalf_s *lower, ui
  *
  ****************************************************************************/
 
-static xcpt_t stm32h745_wwdg1_capture(FAR struct watchdog_lowerhalf_s *lower, xcpt_t handler)
+static xcpt_t __ramfunc__ stm32h745_wwdg1_capture(FAR struct watchdog_lowerhalf_s *lower, xcpt_t handler)
 {
     FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
     irqstate_t flags;
@@ -432,7 +432,7 @@ static xcpt_t stm32h745_wwdg1_capture(FAR struct watchdog_lowerhalf_s *lower, xc
  *
  ****************************************************************************/
 
-static int stm32h745_wwdg1_ioctl(FAR struct watchdog_lowerhalf_s *lower, int cmd, unsigned long arg)
+static int __ramfunc__ stm32h745_wwdg1_ioctl(FAR struct watchdog_lowerhalf_s *lower, int cmd, unsigned long arg)
 {
     int ret=ERROR;
 
@@ -459,7 +459,7 @@ static int stm32h745_wwdg1_ioctl(FAR struct watchdog_lowerhalf_s *lower, int cmd
  *
  ****************************************************************************/
 
-void stm32h745_wwdginitialize(FAR const char *devpath)
+void __ramfunc__ stm32h745_wwdginitialize(FAR const char *devpath)
 {
     FAR struct stm32h745_lowerhalf_s *priv = &g_wdgdev;
 

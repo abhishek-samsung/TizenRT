@@ -38,6 +38,7 @@
 
 extern int stm32h745_shared_memory_init(void);
 extern int stm32h745_haltick_init(void);
+extern void __ramfunc__ stm32h745_wwdginitialize(FAR const char *devpath);
 
 #endif /* __ARCH_ARM_SRC_STM32H745_H */
 
