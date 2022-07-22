@@ -243,10 +243,9 @@ void SystemInit (void)
 
   /* Reset HSEBYP bit */
   RCC->CR &= 0xFFFBFFFFU;
-#else
   /* Disable all interrupts */
   RCC->CIER = 0x00000000;
-
+#else
   /* Enable CortexM7 HSEM EXTI line (line 78)*/
   EXTI_D2->EMR3 |= 0x4000UL;
 

@@ -66,13 +66,15 @@
 /****************************************************************************
  * Pre-processor Definitions
  ************************************************************************************/
-#define STM32H745_FLASH_TOTAL_SIZE   (1204 * 1024)
-#define STM32H745_FLASH_BLOCK_SIZE   (16)
-#define STM32H745_FLASH_ERASE_SIZE   (128 * 1024)
+#define STM32H745_FLASH_TOTAL_SIZE   (1024 * 1024)  /*Should be changed as a using*/
+#define STM32H745_FLASH_BLOCK_SIZE   (32)           /*Should be changed as a using*/
+#define STM32H745_FLASH_ERASE_SIZE   (128 * 1024)   /*Should be changed as a using*/
 #define STM32H745_FLASH_SECTOR_NB    (STM32H745_FLASH_TOTAL_SIZE / STM32H745_FLASH_ERASE_SIZE)
 
-#define STM32H745_FLASH_BASE_ADDRESS (0x08000000)
+#define STM32H745_FLASH_BASE_ADDRESS (0x08000000)   /*Should be changed as a using*/
 #define STM32H745_FLASH_MAX_ADDRESS  (STM32H745_FLASH_BASE_ADDRESS + STM32H745_FLASH_TOTAL_SIZE)
+
+#define STM32H745_FLASH_
 /************************************************************************************
  * Private Types
  ************************************************************************************/
@@ -95,12 +97,12 @@ static struct stm32h745_mtd_dev_s g_dev_s;
 /* MTD driver methods */
 static int stm32h745_erase(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks);
 static ssize_t stm32h745_bread(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks, FAR uint8_t *buf);
-static ssize_t stm32h745_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks, FAR const uint8_t *buf);
+static ssize_t stm32h745_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks, FAR uint8_t *buf);
 static ssize_t stm32h745_read(FAR struct mtd_dev_s *dev, off_t offset, size_t nbytes, FAR uint8_t *buffer);
 static int stm32h745_ioctl(FAR struct mtd_dev_s *dev, int cmd, unsigned long arg);
 
 #if defined(CONFIG_MTD_BYTE_WRITE)
-static ssize_t stm32h745_write(FAR struct mtd_dev_s *dev, off_t offset, size_t nbytes, FAR const uint8_t *buffer);
+static ssize_t stm32h745_write(FAR struct mtd_dev_s *dev, off_t offset, size_t nbytes, FAR uint8_t *buffer);
 #endif
 
 /****************************************************************************
@@ -159,7 +161,7 @@ static ssize_t stm32h745_bread(FAR struct mtd_dev_s *dev, off_t startblock, size
 /************************************************************************************
  * Name: stm32h745_bwrite
  ************************************************************************************/
-static ssize_t stm32h745_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks, FAR const uint8_t *buf)
+static ssize_t stm32h745_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks, FAR uint8_t *buf)
 {
     ssize_t result=OK;
     uint32_t address;
@@ -184,7 +186,7 @@ static ssize_t stm32h745_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, siz
     HAL_FLASH_Lock();
     __enable_irq();
 
-    return result;
+    return nblocks;
 }
 
 /************************************************************************************
@@ -231,7 +233,7 @@ static int stm32h745_ioctl(FAR struct mtd_dev_s *dev, int cmd, unsigned long arg
         case MTDIOC_BULKERASE: 
         {
             /* Erase the entire device */
-            ret = stm32h745_erase(dev, 0, priv->nsectors);
+            ret = stm32h745_erase(dev, 6, 2);
         }
         break;
 
@@ -248,7 +250,7 @@ static int stm32h745_ioctl(FAR struct mtd_dev_s *dev, int cmd, unsigned long arg
 /************************************************************************************
  * Name: stm32h745_write
  ************************************************************************************/
-static ssize_t stm32h745_write(FAR struct mtd_dev_s *dev, off_t offset, size_t nbytes, FAR const uint8_t *buffer)
+static ssize_t stm32h745_write(FAR struct mtd_dev_s *dev, off_t offset, size_t nbytes, FAR uint8_t *buffer)
 {
     return ERROR;
 }

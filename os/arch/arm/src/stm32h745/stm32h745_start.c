@@ -251,6 +251,13 @@ void __start(void)
 {
 	const uint32_t *src;
 	uint32_t *dest;
+	volatile uint32_t delay=0xFFFFFF;
+
+	/* Add delay to wait for M4 System clock completed 10msec */
+	while(delay--)
+	{
+		__NOP();
+	}
 
 	/* Clear .bss.  We'll do this inline (vs. calling memset) just to be
 	 * certain that there are no issues with the state of global variables.

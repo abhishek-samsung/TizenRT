@@ -167,8 +167,6 @@ static int __ramfunc__ up_interrupt(int irq, void *context, FAR void *arg)
  ****************************************************************************/
 static void __ramfunc__ stm32h745_wwdg1_setwindow(FAR struct stm32h745_lowerhalf_s *priv, uint8_t window)
 {
-    lldbg("+++!!\n");
-
     priv->reload = window;
     priv->window = window;
 
@@ -261,8 +259,6 @@ static int __ramfunc__ stm32h745_wwdg1_keepalive(FAR struct watchdog_lowerhalf_s
 {
     FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
 
-    lldbg("+++!!\n");
-
     LL_WWDG_SetCounter(WWDG1, priv->reload);
     return OK;
 }
@@ -292,8 +288,6 @@ static int __ramfunc__ stm32h745_wwdg1_getstatus(FAR struct watchdog_lowerhalf_s
     uint16_t reload;
 
     DEBUGASSERT(priv);
-
-    lldbg("+++!!\n");
 
     /* Return the status bit */
     status->flags = WDFLAGS_RESET;
@@ -339,8 +333,6 @@ static int __ramfunc__ stm32h745_wwdg1_settimeout(FAR struct watchdog_lowerhalf_
 {
     FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
 
-    lldbg("+++!!\n");
-
     priv->timeout = timeout;
 
     return OK;
@@ -379,8 +371,6 @@ static xcpt_t __ramfunc__ stm32h745_wwdg1_capture(FAR struct watchdog_lowerhalf_
 
     DEBUGASSERT(priv);
     /* Get the old handler return value */
-
-    lldbg("+++!!\n");
 
     flags = irqsave();
     oldhandler = priv->handler;
@@ -436,8 +426,6 @@ static int __ramfunc__ stm32h745_wwdg1_ioctl(FAR struct watchdog_lowerhalf_s *lo
 {
     int ret=ERROR;
 
-    lldbg("+++!!\n");
-
     return ret;
 }
 
@@ -466,8 +454,6 @@ void __ramfunc__ stm32h745_wwdginitialize(FAR const char *devpath)
     /* NOTE we assume that clocking to the IWDG has already been provided by
      * the RCC initialization logic.
      */
-    lldbg("+++!!\n");
-
     /* Initialize the driver state structure.  Here we assume: (1) the state
      * structure lies in .bss and was zeroed at reset time.  (2) This function
      * is only called once so it is never necessary to re-zero the structure.
