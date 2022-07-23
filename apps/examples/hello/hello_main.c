@@ -67,6 +67,9 @@ int main(int argc, FAR char *argv[])
 int hello_main(int argc, char *argv[])
 #endif
 {
-	printf("Hello, World!!\n");
+	printf("Hello, Abhishek!!\n");
+	int argc1 = 0;
+	char *argv1 = NULL;
+	mtdpart_main(argc1, argv1);
 	return 0;
 }

@@ -74,8 +74,8 @@
  * Pre-processor Definitions
  ************************************************************************************/
 #define PAGE_SHIFT (8)
-#define FLASH_FS_START CONFIG_AMEBAD_FLASH_BASE
-#define AMEBAD_NSECTORS (CONFIG_AMEBAD_FLASH_CAPACITY / CONFIG_AMEBAD_FLASH_BLOCK_SIZE)
+#define FLASH_FS_START 0x8402000
+#define AMEBAD_NSECTORS (4080*1024 / CONFIG_AMEBAD_FLASH_BLOCK_SIZE)
 #define AMEBAD_START_SECOTR (FLASH_FS_START / CONFIG_AMEBAD_FLASH_BLOCK_SIZE)
 
 /************************************************************************************
@@ -137,6 +137,8 @@ static ssize_t amebad_erase_page(size_t page)
 
 static int amebad_erase(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks)
 {
+	lldbg("mtd erase\n");
+	return 0;
 	ssize_t result;
 	startblock += AMEBAD_START_SECOTR;
 
@@ -227,6 +229,7 @@ ssize_t amebad_flash_read(size_t addr, void *buf, size_t length)
  ************************************************************************************/
 static ssize_t amebad_bread(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks, FAR uint8_t *buffer)
 {
+	lldbg("mtd bread\n");
 	ssize_t result;
 	result = amebad_flash_read(CONFIG_AMEBAD_FLASH_BASE + (startblock << PAGE_SHIFT), buffer, nblocks << PAGE_SHIFT);
 	return result < 0 ? result : nblocks;
@@ -238,6 +241,7 @@ static ssize_t amebad_bread(FAR struct mtd_dev_s *dev, off_t startblock, size_t 
  ************************************************************************************/
 static ssize_t amebad_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks, FAR const uint8_t *buffer)
 {
+	lldbg("mtd bwrite\n");
 	ssize_t result;
 	result = amebad_flash_write(CONFIG_AMEBAD_FLASH_BASE + (startblock << PAGE_SHIFT), buffer, nblocks << PAGE_SHIFT);
 	return result < 0 ? result : nblocks;
@@ -250,6 +254,7 @@ static ssize_t amebad_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, size_t
 
 static ssize_t amebad_read(FAR struct mtd_dev_s *dev, off_t offset, size_t nbytes, FAR uint8_t *buffer)
 {
+	lldbg("mtd read\n");
 	ssize_t result;
 	result = amebad_flash_read(CONFIG_AMEBAD_FLASH_BASE + offset, buffer, nbytes);
 	return result < 0 ? result : nbytes;
@@ -278,6 +283,7 @@ static ssize_t amebad_write(FAR struct mtd_dev_s *dev, off_t offset, size_t nbyt
 
 static int amebad_ioctl(FAR struct mtd_dev_s *dev, int cmd, unsigned long arg)
 {
+	lldbg("mtd ioctl\n");
 	int ret = -EINVAL;			/* Assume good command with bad parameters */
 	FAR struct amebad_dev_s *priv = (FAR struct amebad_dev_s *)dev;
 
@@ -321,8 +327,9 @@ static int amebad_ioctl(FAR struct mtd_dev_s *dev, int cmd, unsigned long arg)
  *
  ************************************************************************************/
 
-FAR struct mtd_dev_s *up_flashinitialize(void)
+FAR struct mtd_dev_s *mtdpart_archinitialize(void)
 {
+	lldbg("mtd init\n");
 	FAR struct amebad_dev_s *priv;
 	priv = (FAR struct amebad_dev_s *)kmm_zalloc(sizeof(struct amebad_dev_s));
 

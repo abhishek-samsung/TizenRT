@@ -177,13 +177,14 @@ int mtdpart_main(int argc, char *argv[])
 	int k;
 	int ret;
 	size_t blocksize;
-
+#ifndef CONFIG_EXAMPLES_MTDPART_ARCHINIT
 	g_simflash = malloc(MTDPART_BUFSIZE);
 	if (!g_simflash) {
 		printf(" fail to malloc rammtd\n");
 		fflush(stdout);
 		goto out_without_free;
 	}
+#endif
 
 	/* Create and initialize a RAM MTD FLASH driver instance */
 
@@ -524,7 +525,9 @@ int mtdpart_main(int argc, char *argv[])
 out_free_buffer:
 	free(buffer);
 out:
+#ifndef CONFIG_EXAMPLES_MTDPART_ARCHINIT
 	free(g_simflash);
+#endif
 out_without_free:
 
 	for (i = 0; i <= CONFIG_EXAMPLES_MTDPART_NPARTITIONS; i++) {
