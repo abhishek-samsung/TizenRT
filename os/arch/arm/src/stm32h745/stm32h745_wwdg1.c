@@ -470,8 +470,7 @@ void __ramfunc__ stm32h745_wwdginitialize(FAR const char *devpath)
      * yet. NOTE: If the "Hardware watchdog" feature is enabled through the
      * device option bits, the watchdog is automatically enabled at power-on.
      */
-
-    LL_RCC_WWDG1_EnableSystemReset(); //configured by M4 side*/
+    //LL_RCC_WWDG1_EnableSystemReset();
     LL_APB3_GRP1_EnableClock(LL_APB3_GRP1_PERIPH_WWDG1);
 
     stm32h745_wwdg1_setwindow(priv, CONFIG_STM32_WWDG_SETWINDOW);

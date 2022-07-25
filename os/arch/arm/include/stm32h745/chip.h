@@ -46,7 +46,7 @@
 
 
 #if defined(CONFIG_STM32H745_STM32H745ZI)
-#  define STM32H745_SRAM1_SIZE       (512*1024)  /* 192Kb SRAM1 on AHB bus Matrix */
+#  define STM32H745_SRAM1_SIZE       (512*1024)  /* 512Kb SRAM1 on AHB bus Matrix */
 #else
 #  error "Unsupported STM32H745 chip"
 #endif

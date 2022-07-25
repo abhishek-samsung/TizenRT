@@ -114,7 +114,7 @@ static ssize_t stm32h745_write(FAR struct mtd_dev_s *dev, off_t offset, size_t n
 
 /************************************************************************************
  * Name: stm32h745_erase
- ************************************************************************************/
+ ************************************************************************************/\
 static int stm32h745_erase(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks)
 {
     ssize_t result=OK;
@@ -124,7 +124,8 @@ static int stm32h745_erase(FAR struct mtd_dev_s *dev, off_t startblock, size_t n
     __DSB();
     __ISB();
 
-    //__disable_irq();
+    __disable_irq();
+    stm32h745_irq_clear_pending_all();
     HAL_FLASH_Unlock();
     /* Fill EraseInit structure*/
     EraseInitStruct.TypeErase     = FLASH_TYPEERASE_SECTORS;
@@ -139,7 +140,7 @@ static int stm32h745_erase(FAR struct mtd_dev_s *dev, off_t startblock, size_t n
         result = ERROR;
     }
     HAL_FLASH_Lock();
-    //__enable_irq();
+    __enable_irq();
     return result;
 }
 
@@ -173,7 +174,7 @@ static ssize_t stm32h745_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, siz
 
     address = STM32H745_FLASH_BASE_ADDRESS + (startblock * STM32H745_FLASH_BLOCK_SIZE);
 
-    uint8_t *buf2 = buf;
+    uint8_t *buf2 = (uint8_t *)buf;
 
     for(int i=0; i<nblocks; i++)
     {
@@ -274,8 +275,6 @@ static ssize_t stm32h745_write(FAR struct mtd_dev_s *dev, off_t offset, size_t n
 
 FAR struct mtd_dev_s *mtdpart_archinitialize(void)
 {
-    int i=0;
-
     g_dev_s.nsectors   = STM32H745_FLASH_SECTOR_NB;
     g_dev_s.mtd.erase  = stm32h745_erase;
     g_dev_s.mtd.bread  = stm32h745_bread;

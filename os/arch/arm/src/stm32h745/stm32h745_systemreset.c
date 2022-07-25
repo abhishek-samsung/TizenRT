@@ -60,7 +60,12 @@
 #include <tinyara/reboot_reason.h>
 #include "up_arch.h"
 
+#include <stm32h7xx_ll_rcc.h>
+#include <stm32h7xx_ll_bus.h>
+#include <stm32h7xx_ll_wwdg.h>
 #include <stm32h7xx_hal.h>
+#include <stm32h745_systemreset.h>
+
 /****************************************************************************
  * Name: up_systemreset
  *
@@ -68,17 +73,82 @@
  *   Internal, reset logic.
  *
  ****************************************************************************/
+#define CONFIG_STM32_WWDG_SETWINDOW (63)
 static void up_systemreset(void)
 {
-	/* Wait for the reset using wwdg1*/
-	__disable_irq();
+    /* Should start wwdg1 before system reset */
+    LL_APB3_GRP1_EnableClock(LL_APB3_GRP1_PERIPH_WWDG1);
+    LL_WWDG_SetCounter(WWDG1, CONFIG_STM32_WWDG_SETWINDOW);
+    LL_WWDG_SetPrescaler(WWDG1, LL_WWDG_PRESCALER_128);
+    LL_WWDG_SetWindow(WWDG1, CONFIG_STM32_WWDG_SETWINDOW);
+    LL_WWDG_ClearFlag_EWKUP(WWDG1);
+    LL_WWDG_Enable(WWDG1);
 
+	__disable_irq();
 	for (;;)
 	{
 		__WFI();
 	}
 }
 
+#ifdef CONFIG_SYSTEM_REBOOT_REASON
+/****************************************************************************
+ * Name: stm32h745_reboot_reason_get_hw_value
+ *
+ * Description:
+ *   Internal, reset logic.
+ *
+ ****************************************************************************/
+static reboot_reason_code_t reboot_reason;
+static reboot_reason_code_t stm32h745_reboot_reason_get_hw_value(void)
+{
+    if(__HAL_RCC_C1_GET_FLAG(RCC_FLAG_IWDG1RST))
+    {
+        return REBOOT_SYSTEM_WATCHDOG;
+    }
+
+    if(__HAL_RCC_C1_GET_FLAG(RCC_FLAG_IWDG2RST))
+    {
+        return REBOOT_SYSTEM_WATCHDOG;
+    }
+
+    if(__HAL_RCC_C1_GET_FLAG(RCC_FLAG_WWDG2RST))
+    {
+        return REBOOT_SYSTEM_WATCHDOG;
+    }
+
+    if(__HAL_RCC_C1_GET_FLAG(RCC_FLAG_WWDG1RST))
+    {
+        return REBOOT_SYSTEM_WATCHDOG;
+    }
+
+    if(__HAL_RCC_C1_GET_FLAG(RCC_FLAG_SFTR1ST))
+    {
+        return REBOOT_SYSTEM_SFTR1ST_RESET;
+    }
+
+    if(__HAL_RCC_C1_GET_FLAG(RCC_FLAG_SFTR2ST))
+    {
+        return REBOOT_SYSTEM_SFTR2ST_RESET;
+    }
+
+    if(__HAL_RCC_C1_GET_FLAG(RCC_FLAG_PINRST))
+    {
+        return REBOOT_SYSTEM_HW_RESET;
+    }
+
+    if(__HAL_RCC_C1_GET_FLAG(RCC_FLAG_PORRST))
+    {
+        return REBOOT_SYSTEM_HW_RESET;
+    }
+
+    if(__HAL_RCC_C1_GET_FLAG(RCC_FLAG_BORRST))
+    {
+        return REBOOT_SYSTEM_BOR_RESET;
+    }
+
+    return REBOOT_UNKNOWN;
+}
 /****************************************************************************
  * Public functions
  ****************************************************************************/
@@ -87,7 +157,8 @@ static void up_systemreset(void)
  ****************************************************************************/
 void up_reboot_reason_init(void)
 {
-
+    reboot_reason = stm32h745_reboot_reason_get_hw_value();
+    __HAL_RCC_C1_CLEAR_RESET_FLAGS();
 }
 
 /****************************************************************************
@@ -95,7 +166,7 @@ void up_reboot_reason_init(void)
  ****************************************************************************/
 reboot_reason_code_t up_reboot_reason_read(void)
 {
-
+    return reboot_reason;
 }
 
 /****************************************************************************
@@ -103,7 +174,7 @@ reboot_reason_code_t up_reboot_reason_read(void)
  ****************************************************************************/
 void up_reboot_reason_write(reboot_reason_code_t reason)
 {
-
+    reboot_reason = reason;
 }
 
 /****************************************************************************
@@ -119,7 +190,8 @@ void reboot_reason_write_user_intended(void)
  ****************************************************************************/
 void up_reboot_reason_clear(void)
 {
-
+    __HAL_RCC_C1_CLEAR_RESET_FLAGS();
+    up_reboot_reason_write(REBOOT_REASON_INITIALIZED);
 }
 
 /****************************************************************************
@@ -127,9 +199,15 @@ void up_reboot_reason_clear(void)
  ****************************************************************************/
 bool up_reboot_reason_is_written(void)
 {
+    if(reboot_reason == REBOOT_REASON_INITIALIZED)
+    {
+        return false;
+    }
 
+    return true;
 }
 
+#endif
 
 /****************************************************************************
  * Name: board_reset
@@ -154,7 +232,6 @@ int board_reset(int status)
 	up_systemreset();
 	return 0;
 }
-
 
 
 

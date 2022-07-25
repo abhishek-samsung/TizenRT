@@ -76,6 +76,7 @@ CONFIG_ARCH_FPU=y
 # Exception stack options
 #
 # CONFIG_ARCH_HAVE_DABORTSTACK is not set
+CONFIG_SYSTEM_REBOOT_REASON=y
 
 #
 # ARMV7M Configuration Options
