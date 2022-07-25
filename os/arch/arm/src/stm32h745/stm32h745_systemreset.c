@@ -73,9 +73,12 @@
  *   Internal, reset logic.
  *
  ****************************************************************************/
-#define CONFIG_STM32_WWDG_SETWINDOW (63)
+#define CONFIG_STM32_WWDG_SETWINDOW (100)
 static void up_systemreset(void)
 {
+    /* DeInit peripheral before reset */
+    HAL_SuspendTick();
+
     /* Should start wwdg1 before system reset */
     LL_APB3_GRP1_EnableClock(LL_APB3_GRP1_PERIPH_WWDG1);
     LL_WWDG_SetCounter(WWDG1, CONFIG_STM32_WWDG_SETWINDOW);
@@ -84,10 +87,16 @@ static void up_systemreset(void)
     LL_WWDG_ClearFlag_EWKUP(WWDG1);
     LL_WWDG_Enable(WWDG1);
 
+    while(!LL_WWDG_IsEnabled(WWDG1)){};
+
 	__disable_irq();
+
+    __DSB();
+    __ISB();
+
 	for (;;)
 	{
-		__WFI();
+        __WFI();
 	}
 }
 

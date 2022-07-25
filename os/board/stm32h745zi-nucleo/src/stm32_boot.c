@@ -115,9 +115,6 @@ void board_initialize(void)
     //up_flashinitialize();
 
     lldbg("Board init \r\n");
-
-    mtdpart_archinitialize();
-    //board_reset(); //under testing...
 }
 
 /****************************************************************************
