@@ -519,7 +519,7 @@ static int  up_interrupt(int irq, void *context, FAR void *arg)
     if(LL_USART_IsActiveFlag_UDR(priv->USART))
     {
       LL_USART_ClearFlag_UDR(priv->USART);
-    }    
+    }
   }
 
   return OK;
