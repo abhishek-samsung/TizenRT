@@ -178,12 +178,14 @@ int mtdpart_main(int argc, char *argv[])
 	int ret;
 	size_t blocksize;
 
+#ifndef CONFIG_EXAMPLES_MTDPART_ARCHINIT
 	g_simflash = malloc(MTDPART_BUFSIZE);
 	if (!g_simflash) {
 		printf(" fail to malloc rammtd\n");
 		fflush(stdout);
 		goto out_without_free;
 	}
+#endif
 
 	/* Create and initialize a RAM MTD FLASH driver instance */
 
@@ -319,6 +321,7 @@ int mtdpart_main(int argc, char *argv[])
 
 	offset = 0;
 	for (i = 0; i < geo.neraseblocks; i++) {
+		lldbg("filling earse block : %d\n", i);
 		for (j = 0; j < blkpererase; j++) {
 			/* Fill the block with the offset */
 
@@ -328,7 +331,7 @@ int mtdpart_main(int argc, char *argv[])
 			}
 
 			/* And write it using the character driver */
-
+			lldbg("filling block nubmber : %d for eblock %d\n", j, i);
 			nbytes = write(fd, buffer, (size_t)(blocksize));
 			if (nbytes < 0) {
 				printf("ERROR: write to /dev/mtd2 failed: %d\n", errno);
@@ -344,7 +347,7 @@ int mtdpart_main(int argc, char *argv[])
 
 	printf("Checking partitions:\n");
 
-	for (offset = 0, i = 1; i <= CONFIG_EXAMPLES_MTDPART_NPARTITIONS; offset += partsize, i++) {
+	for (offset = 0, i = 0; i < CONFIG_EXAMPLES_MTDPART_NPARTITIONS; offset += partsize, i++) {
 		printf("  Partition %d. Byte offset=%lu, size=%lu\n", i, (unsigned long)offset, (unsigned long)partsize);
 
 		/* Open the master MTD partition character driver for writing */
@@ -524,7 +527,9 @@ int mtdpart_main(int argc, char *argv[])
 out_free_buffer:
 	free(buffer);
 out:
+#ifndef CONFIG_EXAMPLES_MTDPART_ARCHINIT
 	free(g_simflash);
+#endif
 out_without_free:
 
 	for (i = 0; i <= CONFIG_EXAMPLES_MTDPART_NPARTITIONS; i++) {
