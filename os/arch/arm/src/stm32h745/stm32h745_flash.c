@@ -66,13 +66,17 @@
 /****************************************************************************
  * Pre-processor Definitions
  ************************************************************************************/
-#define STM32H745_FLASH_TOTAL_SIZE   (256 * 1024)  /*Should be changed as a using*/
+#define STM32H745_FLASH_TOTAL_SIZE   (1024)  /*Should be changed as a using*/
 #define STM32H745_FLASH_BLOCK_SIZE   (32)           /*Should be changed as a using*/
-#define STM32H745_FLASH_ERASE_SIZE   (128 * 1024)   /*Should be changed as a using*/
+#define STM32H745_FLASH_ERASE_SIZE   (1024)   /*Should be changed as a using*/
 #define STM32H745_FLASH_SECTOR_NB    (STM32H745_FLASH_TOTAL_SIZE / STM32H745_FLASH_ERASE_SIZE)
 
-#define STM32H745_FLASH_BASE_ADDRESS (0x080C0000)   /*Should be changed as a using*/
-#define STM32H745_FLASH_MAX_ADDRESS  (STM32H745_FLASH_BASE_ADDRESS + STM32H745_FLASH_TOTAL_SIZE)
+#define STM32H745_FLASH_FIRST_ADDRESS (0x08000000)
+#define STM32H745_FLASH_BASE_ADDRESS  (0x080C0000)   /*Should be changed as a using*/
+#define STM32H745_FLASH_MAX_ADDRESS   (STM32H745_FLASH_BASE_ADDRESS + STM32H745_FLASH_TOTAL_SIZE)
+
+#define STM32H745_FLASH_SECTOR_SIZE   (128 * 1024)
+#define STM32H745_FLASH_FIRST_SECTOR  ((STM32H745_FLASH_BASE_ADDRESS - STM32H745_FLASH_FIRST_ADDRESS) / STM32H745_FLASH_SECTOR_SIZE)
 
 /************************************************************************************
  * Private Types
@@ -96,7 +100,7 @@ static struct stm32h745_mtd_dev_s g_dev_s;
 /* MTD driver methods */
 static int stm32h745_erase(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks);
 static ssize_t stm32h745_bread(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks, FAR uint8_t *buf);
-static ssize_t stm32h745_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks, FAR uint8_t *buf);
+static ssize_t stm32h745_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks, FAR const uint8_t *buf);
 static ssize_t stm32h745_read(FAR struct mtd_dev_s *dev, off_t offset, size_t nbytes, FAR uint8_t *buffer);
 static int stm32h745_ioctl(FAR struct mtd_dev_s *dev, int cmd, unsigned long arg);
 
@@ -126,7 +130,7 @@ static int stm32h745_erase(FAR struct mtd_dev_s *dev, off_t startblock, size_t n
     EraseInitStruct.TypeErase     = FLASH_TYPEERASE_SECTORS;
     EraseInitStruct.VoltageRange  = FLASH_VOLTAGE_RANGE_2;
     EraseInitStruct.Banks         = FLASH_BANK_1;
-    EraseInitStruct.Sector        = 6 + startblock;
+    EraseInitStruct.Sector        = STM32H745_FLASH_FIRST_SECTOR + startblock;
     EraseInitStruct.NbSectors     = nblocks;
 
     if(HAL_FLASHEx_Erase(&EraseInitStruct, &SECTORError) != HAL_OK)
@@ -149,7 +153,7 @@ static ssize_t stm32h745_bread(FAR struct mtd_dev_s *dev, off_t startblock, size
 
     memcpy(buf,     /* dest buf */
            (uint8_t *)(STM32H745_FLASH_BASE_ADDRESS + (startblock * STM32H745_FLASH_BLOCK_SIZE)), /* src address*/
-           (nblocks)); /* size */
+           (nblocks * STM32H745_FLASH_BLOCK_SIZE)); /* size */
 
     return nblocks;
 }
@@ -157,7 +161,7 @@ static ssize_t stm32h745_bread(FAR struct mtd_dev_s *dev, off_t startblock, size
 /************************************************************************************
  * Name: stm32h745_bwrite
  ************************************************************************************/
-static ssize_t stm32h745_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks, FAR uint8_t *buf)
+static ssize_t stm32h745_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks, FAR const uint8_t *buf)
 {
     ssize_t result=OK;
     uint32_t address;
@@ -169,14 +173,16 @@ static ssize_t stm32h745_bwrite(FAR struct mtd_dev_s *dev, off_t startblock, siz
 
     address = STM32H745_FLASH_BASE_ADDRESS + (startblock * STM32H745_FLASH_BLOCK_SIZE);
 
+    uint8_t *buf2 = buf;
+
     for(int i=0; i<nblocks; i++)
     {
-        if(HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, address, (uint32_t)buf) != HAL_OK)
+        if(HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, address, (uint32_t)buf2) != HAL_OK)
         {
             result = ERROR;
             break;
         }
-        buf = buf + STM32H745_FLASH_BLOCK_SIZE;
+        buf2 = buf2 + STM32H745_FLASH_BLOCK_SIZE;
         address = address + STM32H745_FLASH_BLOCK_SIZE;
     }
     HAL_FLASH_Lock();
@@ -266,7 +272,7 @@ static ssize_t stm32h745_write(FAR struct mtd_dev_s *dev, off_t offset, size_t n
  *
  ************************************************************************************/
 
-FAR struct mtd_dev_s *up_flashinitialize(void)
+FAR struct mtd_dev_s *mtdpart_archinitialize(void)
 {
     int i=0;
 

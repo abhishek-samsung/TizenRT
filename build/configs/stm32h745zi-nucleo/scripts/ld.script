@@ -126,14 +126,14 @@ SECTIONS
 		*(.gnu.linkonce.d.*)
 		CONSTRUCTORS
 		_edata = ABSOLUTE(.);
-	} > axi_sram AT > flash
+	} > dtcm_sram AT > flash
     
     .ramfunc ALIGN(4):
     {
         _sramfuncs = ABSOLUTE(.);
         *(.ramfunc  .ramfunc.*)
         _eramfuncs = ABSOLUTE(.);
-    } > axi_sram AT > flash
+    } > dtcm_sram AT > flash
 
     _framfuncs = LOADADDR(.ramfunc);
 
@@ -143,7 +143,7 @@ SECTIONS
 		*(.gnu.linkonce.b.*)
 		*(COMMON)
 		_ebss = ABSOLUTE(.);
-	} > axi_sram
+	} > dtcm_sram
 
 	/* Stabs debugging sections. */
 	.stab 0 : { *(.stab) }

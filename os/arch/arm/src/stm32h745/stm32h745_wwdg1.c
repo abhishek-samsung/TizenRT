@@ -464,6 +464,7 @@ void __ramfunc__ stm32h745_wwdginitialize(FAR const char *devpath)
     /* Attach our EWI interrupt handler (But don't enable it yet) */
 
     (void)irq_attach(STM32H745_IRQ_WWDG, up_interrupt, priv);
+    (void)up_prioritize_irq(STM32H745_IRQ_WWDG, NVIC_SYSH_PRIORITY_MAX);
 
     /* Select an arbitrary initial timeout value.  But don't start the watchdog
      * yet. NOTE: If the "Hardware watchdog" feature is enabled through the

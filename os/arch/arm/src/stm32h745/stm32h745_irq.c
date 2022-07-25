@@ -351,7 +351,7 @@ void up_irqinitialize(void)
   /* Set the priority of the SVCall interrupt */
 
 #ifdef CONFIG_ARCH_IRQPRIO
-  /* up_prioritize_irq(STM32H745_IRQ_PENDSV, NVIC_SYSH_PRIORITY_MIN); */
+  up_prioritize_irq(STM32H745_IRQ_PENDSV, NVIC_SYSH_PRIORITY_MIN);
 #endif
 #ifdef CONFIG_ARMV7M_USEBASEPRI
   stm32h745_prioritize_syscall(NVIC_SYSH_SVCALL_PRIORITY);
@@ -513,7 +513,7 @@ int up_prioritize_irq(int irq, int priority)
   DEBUGASSERT(irq >= STM32H745_IRQ_MEMFAULT && irq < NR_IRQS &&
               (unsigned)priority <= NVIC_SYSH_PRIORITY_MIN);
 
-  if (irq < STM32H45_IRQ_FIRST)
+  if (irq < STM32H745_IRQ_FIRST)
   {
     /* NVIC_SYSH_PRIORITY() maps {0..15} to one of three priority
      * registers (0-3 are invalid)
