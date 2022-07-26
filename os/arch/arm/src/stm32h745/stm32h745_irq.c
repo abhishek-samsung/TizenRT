@@ -289,7 +289,6 @@ void stm32h745_irq_clear_pending_all(void)
 /****************************************************************************
  * Name: up_irqinitialize
  ****************************************************************************/
-
 void up_irqinitialize(void)
 {
   uint32_t regaddr;
@@ -361,7 +360,7 @@ void up_irqinitialize(void)
   /* Set the priority of the SVCall interrupt */
 
 #ifdef CONFIG_ARCH_IRQPRIO
-  up_prioritize_irq(STM32H745_IRQ_PENDSV, NVIC_SYSH_PRIORITY_MIN);
+  /* up_prioritize_irq(STM32H745_IRQ_PENDSV, NVIC_SYSH_PRIORITY_MIN); */
 #endif
 #ifdef CONFIG_ARMV7M_USEBASEPRI
   stm32h745_prioritize_syscall(NVIC_SYSH_SVCALL_PRIORITY);

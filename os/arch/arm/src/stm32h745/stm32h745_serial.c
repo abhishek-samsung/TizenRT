@@ -151,7 +151,7 @@ static struct stm32h745_up_dev_s g_uart2_priv =
 
 static uart_dev_t g_uart2 = 
 {
-  .isconsole = true,
+  .isconsole = false,
   .recv = 
   {
     .size   = CONFIG_USART2_RXBUFSIZE,
@@ -240,7 +240,7 @@ static struct stm32h745_up_dev_s g_uart6_priv =
 
 static uart_dev_t g_uart6 = 
 {
-  .isconsole = true,
+  .isconsole = false,
   .recv = 
   {
     .size   = CONFIG_USART6_RXBUFSIZE,
@@ -266,6 +266,9 @@ static uart_dev_t g_uart6 =
 void up_serialinit(void)
 {
 #ifdef CONFIG_ARCH_HAVE_USART3
+  CONSOLE_DEV.isconsole = true;
+  stm32h745_up_setup(&CONSOLE_DEV);
+
   uart_register("/dev/console", &CONSOLE_DEV);
 #endif  
 
@@ -432,6 +435,7 @@ static int  stm32h745_up_setup(struct uart_dev_s *dev)
  ****************************************************************************/
 static void stm32h745_up_shutdown(struct uart_dev_s *dev)
 {
+  lldbg("\n");
 }
 
 /****************************************************************************
@@ -477,23 +481,26 @@ static int  up_interrupt(int irq, void *context, FAR void *arg)
   for (passes = 0; passes < 256 && handled; passes++)
   {
     handled = false;
-    if(LL_USART_IsActiveFlag_TXE_TXFNF(priv->USART))
+
+    if(LL_USART_IsActiveFlag_TXE_TXFNF(priv->USART) && 
+      LL_USART_IsEnabledIT_TXE_TXFNF(priv->USART))
     {
-      LL_USART_ClearFlag_TXFE(priv->USART);
       uart_xmitchars(dev);
       handled = true;
     }
 
-    if(LL_USART_IsActiveFlag_TC(priv->USART))
-    {
-      LL_USART_ClearFlag_TC(priv->USART);
-      LL_USART_DisableIT_TC(priv->USART);
-    }
-
-    if(LL_USART_IsActiveFlag_RXNE_RXFNE(priv->USART))
+    if(LL_USART_IsActiveFlag_RXNE_RXFNE(priv->USART) && 
+      LL_USART_IsEnabledIT_RXNE_RXFNE(priv->USART))
     {
       uart_recvchars(dev);
       handled = true;
+    }
+
+    if(LL_USART_IsActiveFlag_TC(priv->USART) &&
+      LL_USART_IsEnabledIT_TC(priv->USART))
+    {
+      LL_USART_ClearFlag_TC(priv->USART);
+      LL_USART_DisableIT_TC(priv->USART);
     }
 
     if(LL_USART_IsActiveFlag_PE(priv->USART))
@@ -532,7 +539,9 @@ static int  stm32h745_up_ioctl(FAR struct uart_dev_s *dev, int cmd, unsigned lon
 {
   struct stm32h745_up_dev_s *priv = (struct stm32h745_up_dev_s *)dev->priv;
 
-  return OK;
+  lldbg("\n");
+
+  return ERROR;
 }
 
 
@@ -594,13 +603,11 @@ static void stm32h745_up_rxint(struct uart_dev_s *dev, bool enable)
   if (enable)
   {
     LL_USART_EnableIT_RXNE_RXFNE(priv->USART);
-    LL_USART_EnableIT_RXFF(priv->USART);
     LL_USART_EnableIT_ERROR(priv->USART);
   }
   else
   {
     LL_USART_DisableIT_RXNE_RXFNE(priv->USART);
-    LL_USART_DisableIT_RXFF(priv->USART);
     LL_USART_DisableIT_ERROR(priv->USART);
   }
 

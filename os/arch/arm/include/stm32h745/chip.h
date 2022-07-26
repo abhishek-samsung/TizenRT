@@ -44,26 +44,6 @@
 
 #include <tinyara/config.h>
 
-
-#if defined(CONFIG_STM32H745_STM32H745ZI)
-#  define STM32H745_SRAM1_SIZE       (512*1024)  /* 512Kb SRAM1 on AHB bus Matrix */
-#else
-#  error "Unsupported STM32H745 chip"
-#endif
-
-#if defined(CONFIG_STM32H745_STM32H745ZI)
-#  define STM32H745_NATIM                    2   /* Two advanced timers TIM1 and 8 */
-#  define STM32H745_NGTIM32                  2   /* 32-bit general timers TIM2 and 5 with DMA */
-#  define STM32H745_NGTIM16                  2   /* 16-bit general timers TIM3 and 4 with DMA */
-#  define STM32H745_NGTIMNDMA                3   /* 16-bit general timers TIM15-17 without DMA */
-#  define STM32H745_NBTIM                    2   /* Two basic timers, TIM6-7 */
-#  define STM32H745_NUART                    2   /* UART 4-5 */
-#  define STM32H745_NUSART                   3   /* USART 1-3 */
-#  define STM32H745_NPORTS                   9   /* 9 GPIO ports, GPIOA-I */
-#  define STM32H745_NCRC                     1   /* CRC */
-#endif /* CONFIG_STM32H745_STM32H745ZI */
-
-
 /* NVIC priority levels *************************************************************/
 /* 16 Programmable interrupt levels */
 

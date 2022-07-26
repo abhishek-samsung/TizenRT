@@ -1418,7 +1418,7 @@ HAL_StatusTypeDef HAL_TIM_PWM_DeInit(TIM_HandleTypeDef *htim)
   * @param  htim TIM PWM handle
   * @retval None
   */
-__weak void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
+__weak void __weak_HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(htim);
@@ -1433,7 +1433,7 @@ __weak void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
   * @param  htim TIM PWM handle
   * @retval None
   */
-__weak void HAL_TIM_PWM_MspDeInit(TIM_HandleTypeDef *htim)
+__weak void __weak_HAL_TIM_PWM_MspDeInit(TIM_HandleTypeDef *htim)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(htim);

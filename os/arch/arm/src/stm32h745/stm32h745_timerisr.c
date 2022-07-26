@@ -126,7 +126,6 @@
 int up_timerisr(int irq, uint32_t *regs)
 {
     /* Process timer interrupt */
-    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_13);
     sched_process_timer();
     return 0;
 }
@@ -179,22 +178,6 @@ void up_timer_initialize(void)
   irq_attach(STM32H745_IRQ_SYSTICK, (xcpt_t)up_timerisr, NULL);  
   HAL_InitTick(uwTickPrio);
 #endif
-
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOI_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOI, GPIO_PIN_13, GPIO_PIN_SET);
-
-  /*Configure GPIO pin : PI13 */
-  GPIO_InitStruct.Pin = GPIO_PIN_13;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
 }
 
 
