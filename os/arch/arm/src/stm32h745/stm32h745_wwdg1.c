@@ -78,7 +78,7 @@
 #include <system_stm32h745.h>
 
 
-#if defined(CONFIG_WATCHDOG) && defined(CONFIG_STM32_WWDG1)
+#if defined(CONFIG_WATCHDOG) && defined(CONFIG_STM32H745_WWDG1)
 #define CONFIG_STM32_WWDG_SETWINDOW (127)
 
 /****************************************************************************

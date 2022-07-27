@@ -164,7 +164,7 @@ uint8_t up_getc(void)
 
   while(!LL_USART_IsActiveFlag_RXNE(USART3)){};
 
-  if(ch = LL_USART_ReceiveData8(USART3))
+  if(ch == LL_USART_ReceiveData8(USART3))
   {
     return ch;
   }
