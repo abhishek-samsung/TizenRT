@@ -284,6 +284,12 @@ void __start(void)
 	}
 #endif
 
+	/* clear axi sram */
+	for(dest = 0x24000000; dest < (0x24000000 + (512 * 1024)); )
+	{
+		*dest++ = 0;
+	}
+
 	SystemInit();
 	stm32h745_mpu_config();
 	HAL_Init();

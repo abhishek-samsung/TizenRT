@@ -508,7 +508,7 @@ void up_ack_irq(int irq)
 #ifdef CONFIG_ARCH_IRQPRIO
 int up_prioritize_irq(int irq, int priority)
 {
-#if 0  
+#if 0
     irq = irq - STM32H745_IRQ_FIRST;
 
     HAL_NVIC_SetPriority((IRQn_Type)irq, priority, 0);

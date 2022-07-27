@@ -175,8 +175,14 @@ void up_timer_initialize(void)
   /* And enable the timer interrupt */
   up_enable_irq(STM32H745_IRQ_SYSTICK);
 #else
-  irq_attach(STM32H745_IRQ_SYSTICK, (xcpt_t)up_timerisr, NULL);  
+  irq_attach(STM32H745_IRQ_SYSTICK, (xcpt_t)up_timerisr, NULL);
+
+  /* Configure the SysTick to have interrupt in 1ms time basis*/
+#if 1
+  HAL_SYSTICK_Config(STM32_SYSTICK_CLOCK / (1000UL / (uint32_t)HAL_TICK_FREQ_DEFAULT));
+#else
   HAL_InitTick(uwTickPrio);
+#endif
 #endif
 }
 
