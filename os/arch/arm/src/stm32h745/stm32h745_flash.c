@@ -124,8 +124,8 @@ static int stm32h745_erase(FAR struct mtd_dev_s *dev, off_t startblock, size_t n
     __DSB();
     __ISB();
 
-    __disable_irq();
-    stm32h745_irq_clear_pending_all();
+//    __disable_irq();
+//    stm32h745_irq_clear_pending_all();
     HAL_FLASH_Unlock();
     /* Fill EraseInit structure*/
     EraseInitStruct.TypeErase     = FLASH_TYPEERASE_SECTORS;
@@ -140,7 +140,7 @@ static int stm32h745_erase(FAR struct mtd_dev_s *dev, off_t startblock, size_t n
         result = ERROR;
     }
     HAL_FLASH_Lock();
-    __enable_irq();
+//    __enable_irq();
     return result;
 }
 
