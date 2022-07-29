@@ -36,10 +36,11 @@
 #ifndef __ARCH_ARM_SRC_STM32H745_H
 #define __ARCH_ARM_SRC_STM32H745_H
 
-extern int stm32h745_shared_memory_init(void);
-extern int stm32h745_haltick_init(void);
+extern int  stm32h745_shared_memory_init(void);
+extern int  stm32h745_haltick_init(void);
 extern void __ramfunc__ stm32h745_wwdginitialize(FAR const char *devpath);
 extern void stm32h745_tim4_init(void);
+extern int  stm32h745_switch_boot_address(uint32_t address);
 
 #endif /* __ARCH_ARM_SRC_STM32H745_H */
 
