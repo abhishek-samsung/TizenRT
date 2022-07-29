@@ -253,6 +253,20 @@ static int stm32h745_ioctl(FAR struct mtd_dev_s *dev, int cmd, unsigned long arg
  ************************************************************************************/
 static ssize_t stm32h745_write(FAR struct mtd_dev_s *dev, off_t offset, size_t nbytes, FAR uint8_t *buffer)
 {
+    uint8_t block_buffer[32];
+    int block_size;
+    uint32_t addr;
+
+
+    if((offset < FLASH_BANK1_BASE) || (offset > FLASH_BANK2_BASE))
+    {
+        lldbg("Flash address may be under or overflow !!\n");
+        return ERROR;
+    }
+
+    block_size = (int)(nbytes / 32);
+
+
     return ERROR;
 }
 #endif

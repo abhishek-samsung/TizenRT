@@ -76,10 +76,85 @@
 /****************************************************************************
  * Private Functions
  ****************************************************************************/
+
 /************************************************************************************
- * Name: stm32h745_erase
+ * Public Functions
  ************************************************************************************/
 
+/************************************************************************************
+ * Name: stm32h745_switch_boot_address
+ *
+ * Description:
+ *   switch boot address after reset
+ ************************************************************************************/
+int stm32h745_switch_boot_address(uint32_t address)
+{
+    int result = ERROR;
+    int timeout = 0x10000;
+    FLASH_OBProgramInitTypeDef OBInit;
+
+    if((address < FLASH_BANK1_BASE) || (address > FLASH_BANK2_BASE))
+    {
+        lldbg("Option byte address may be under or overflow !!\n");
+        return ERROR;
+    }
+
+    OBInit.Banks = FLASH_BANK_1;
+    HAL_FLASHEx_OBGetConfig(&OBInit);
+
+    __DSB();
+    __ISB();
+
+    __disable_irq();
+    stm32h745_irq_clear_pending_all();
+
+    HAL_FLASH_Unlock();
+    HAL_FLASH_OB_Unlock();
+
+    OBInit.BootAddr0 = address;
+    OBInit.BootConfig |= OB_BOOT_ADD0;
+
+    if(HAL_FLASHEx_OBProgram(&OBInit) == HAL_ERROR)
+    {
+        result = ERROR;
+    }
+    else
+    {
+        if(HAL_FLASH_OB_Launch() == HAL_ERROR)
+        {
+            result = ERROR;
+        }
+        else
+        {
+            result = OK;
+        }
+    }
+
+
+    /* If the I-Cache is enabled, Instruction cache must be invalidated after bank switching
+       to ensure that CPU will fetch correct instructions from the flash */
+    //SCB_InvalidateICache();
+    result = ERROR;
+    for(int i=0; i<timeout; i++)
+    {
+        HAL_FLASHEx_OBGetConfig(&OBInit);
+        if(OBInit.BootAddr0 == address)
+        {
+            result = OK;
+            break;
+        }        
+    }
+
+    HAL_FLASH_OB_Lock();
+    HAL_FLASH_Lock();
+
+    __enable_irq();
+
+    /* To apply board reset required */
+    //board_reset();
+
+    return result;
+}
 
 
 
