@@ -66,13 +66,13 @@
 /****************************************************************************
  * Pre-processor Definitions
  ************************************************************************************/
-#define STM32H745_FLASH_TOTAL_SIZE   (1024)  /*Should be changed as a using*/
+#define STM32H745_FLASH_TOTAL_SIZE   (1024 * 1024)  /*Should be changed as a using*/
 #define STM32H745_FLASH_BLOCK_SIZE   (32)           /*Should be changed as a using*/
-#define STM32H745_FLASH_ERASE_SIZE   (1024)   /*Should be changed as a using*/
+#define STM32H745_FLASH_ERASE_SIZE   (128 * 1024)   /*Should be changed as a using*/
 #define STM32H745_FLASH_SECTOR_NB    (STM32H745_FLASH_TOTAL_SIZE / STM32H745_FLASH_ERASE_SIZE)
 
 #define STM32H745_FLASH_FIRST_ADDRESS (0x08000000)
-#define STM32H745_FLASH_BASE_ADDRESS  (0x080C0000)   /*Should be changed as a using*/
+#define STM32H745_FLASH_BASE_ADDRESS  (0x08000000)   /*Should be changed as a using*/
 #define STM32H745_FLASH_MAX_ADDRESS   (STM32H745_FLASH_BASE_ADDRESS + STM32H745_FLASH_TOTAL_SIZE)
 
 #define STM32H745_FLASH_SECTOR_SIZE   (128 * 1024)
@@ -199,7 +199,6 @@ static ssize_t stm32h745_read(FAR struct mtd_dev_s *dev, off_t offset, size_t nb
 {
     __DSB();
     __ISB();
-
     memcpy(buffer,     /* dest buf */
            (uint8_t *)(STM32H745_FLASH_BASE_ADDRESS + offset), /* src address*/
            nbytes); /* size */
@@ -253,20 +252,8 @@ static int stm32h745_ioctl(FAR struct mtd_dev_s *dev, int cmd, unsigned long arg
  ************************************************************************************/
 static ssize_t stm32h745_write(FAR struct mtd_dev_s *dev, off_t offset, size_t nbytes, FAR uint8_t *buffer)
 {
-    uint8_t block_buffer[32];
-    int block_size;
-    uint32_t addr;
-
-
-    if((offset < FLASH_BANK1_BASE) || (offset > FLASH_BANK2_BASE))
-    {
-        lldbg("Flash address may be under or overflow !!\n");
-        return ERROR;
-    }
-
-    block_size = (int)(nbytes / 32);
-
-
+    /* Not supported */
+    
     return ERROR;
 }
 #endif
@@ -287,7 +274,7 @@ static ssize_t stm32h745_write(FAR struct mtd_dev_s *dev, off_t offset, size_t n
  *
  ************************************************************************************/
 
-FAR struct mtd_dev_s *mtdpart_archinitialize(void)
+FAR struct mtd_dev_s *up_flashinitialize(void)
 {
     g_dev_s.nsectors   = STM32H745_FLASH_SECTOR_NB;
     g_dev_s.mtd.erase  = stm32h745_erase;

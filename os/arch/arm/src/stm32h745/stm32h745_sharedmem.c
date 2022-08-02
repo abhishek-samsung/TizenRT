@@ -50,6 +50,7 @@
 #include "up_internal.h"
 #include "nvic.h"
 
+#include <stm32h745.h>
 #include <stm32h7xx_hal.h>
 #include <system_stm32h745.h>
 
@@ -81,41 +82,6 @@
     #define STM32_SHARED_MEMORY_LENGTH    (64*1024)
 
 #endif
-
-#define HSEM_ID_0 (0U)
-#define HSEM_ID_1 (1U)
-#define HSEM_ID_2 (2U)
-#define HSEM_ID_3 (3U)
-#define HSEM_ID_4 (4U)
-#define HSEM_ID_5 (5U)
-#define HSEM_ID_6 (6U)
-#define HSEM_ID_7 (7U)
-#define HSEM_ID_8 (8U)
-#define HSEM_ID_9 (9U)
-#define HSEM_ID_10 (10U)
-#define HSEM_ID_11 (11U)
-#define HSEM_ID_12 (12U)
-#define HSEM_ID_13 (13U)
-#define HSEM_ID_14 (14U)
-#define HSEM_ID_15 (15U)
-#define HSEM_ID_16 (16U)
-#define HSEM_ID_17 (17U)
-#define HSEM_ID_18 (18U)
-#define HSEM_ID_19 (19U)
-#define HSEM_ID_20 (20U)
-#define HSEM_ID_21 (21U)
-#define HSEM_ID_22 (22U)
-#define HSEM_ID_23 (23U)
-#define HSEM_ID_24 (24U)
-#define HSEM_ID_25 (25U)
-#define HSEM_ID_26 (26U)
-#define HSEM_ID_27 (27U)
-#define HSEM_ID_28 (28U)
-#define HSEM_ID_29 (29U)
-#define HSEM_ID_30 (30U)
-#define HSEM_ID_31 (31U)
-#define HSEM_ID_MAX HSEM_ID_31
-
 
 static uint8_t *shared_mem;
 static uint32_t hsem_statusreg = 0x00000000;

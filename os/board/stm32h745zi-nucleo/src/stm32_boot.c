@@ -86,18 +86,18 @@ void board_initialize(void)
     stm32h745_haltick_init();
 
 #ifdef CONFIG_FLASH_PARTITION
-//    int ret;
-//    struct mtd_dev_s *mtd;
-//    partition_info_t partinfo;
+    int ret;
+    struct mtd_dev_s *mtd;
+    partition_info_t partinfo;
 
-//    mtd = (FAR struct mtd_dev_s *)mtd_initialize();
-//    /* Configure mtd partitions */
-//    ret = configure_mtd_partitions(mtd, &g_flash_part_data, &partinfo);
-//    if (ret != OK) 
-//    {
-//        lldbg("ERROR: configure_mtd_partitions failed\n");
-//        return;
-//    }
+    mtd = (FAR struct mtd_dev_s *)mtd_initialize();
+    /* Configure mtd partitions */
+    ret = configure_mtd_partitions(mtd, &g_flash_part_data, &partinfo);
+    if (ret != OK) 
+    {
+        lldbg("ERROR: configure_mtd_partitions failed\n");
+        return;
+    }
 
 #ifdef CONFIG_AUTOMOUNT
 //    automount_fs_partition(&partinfo);
