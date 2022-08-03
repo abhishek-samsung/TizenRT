@@ -80,6 +80,40 @@
 
 #if defined(CONFIG_WATCHDOG) && defined(CONFIG_STM32H745_WWDG1)
 #define CONFIG_STM32_WWDG_SETWINDOW (127)
+#define CONFIG_STM32_WWDG_TIMEOUT   (300)
+/* Control Register (32-bit) */
+
+#define STM32H745_WWDG_CR_T_SHIFT        (0)       /* Bits 6:0 T[6:0]: 7-bit counter (MSB to LSB) */
+#define STM32H745_WWDG_CR_T_MASK         (0x7f << STM32H745_WWDG_CR_T_SHIFT)
+#define STM32H745_WWDG_CR_T_MAX          (0x7f << STM32H745_WWDG_CR_T_SHIFT)
+#define STM32H745_WWDG_CR_T_RESET        (0x40 << STM32H745_WWDG_CR_T_SHIFT)
+#define STM32H745_WWDG_CR_WDGA           (1 << 7)  /* Bit 7: Activation bit */
+
+/* Configuration register (32-bit) */
+
+#define STM32H745_WWDG_CFR_W_SHIFT       (0)       /* Bits 6:0 W[6:0] 7-bit window value */
+#define STM32H745_WWDG_CFR_W_MASK        (0x7f << STM32H745_WWDG_CFR_W_SHIFT)
+#define STM32H745_WWDG_CFR_WDGTB_SHIFT   (11)       /* Bits 13:11 [2:0]: Timer Base */
+#define STM32H745_WWDG_CFR_WDGTB_MASK    (7 << STM32H745_WWDG_CFR_WDGTB_SHIFT)
+#define STM32H745_WWDG_CFR_APB3          (0 << STM32H745_WWDG_CFR_WDGTB_SHIFT) /* 000: CK Counter Clock (PCLK1 div 4096) div 1 */
+#define STM32H745_WWDG_CFR_APB3d2        (1 << STM32H745_WWDG_CFR_WDGTB_SHIFT) /* 001: CK Counter Clock (PCLK1 div 4096) div 2 */
+#define STM32H745_WWDG_CFR_APB3d4        (2 << STM32H745_WWDG_CFR_WDGTB_SHIFT) /* 010: CK Counter Clock (PCLK1 div 4096) div 4 */
+#define STM32H745_WWDG_CFR_APB3d8        (3 << STM32H745_WWDG_CFR_WDGTB_SHIFT) /* 011: CK Counter Clock (PCLK1 div 4096) div 8 */
+#define STM32H745_WWDG_CFR_APB3d16       (4 << STM32H745_WWDG_CFR_WDGTB_SHIFT) /* 100: CK Counter Clock (PCLK1 div 4096) div 16 */
+#define STM32H745_WWDG_CFR_APB3d32       (5 << STM32H745_WWDG_CFR_WDGTB_SHIFT) /* 101: CK Counter Clock (PCLK1 div 4096) div 32 */
+#define STM32H745_WWDG_CFR_APB3d64       (6 << STM32H745_WWDG_CFR_WDGTB_SHIFT) /* 110: CK Counter Clock (PCLK1 div 4096) div 64 */
+#define STM32H745_WWDG_CFR_APB3d128      (7 << STM32H745_WWDG_CFR_WDGTB_SHIFT) /* 111: CK Counter Clock (PCLK1 div 4096) div 128 */
+#define STM32H745_WWDG_CFR_EWI           (1 << 9)  /* Bit 9: Early Wakeup Interrupt */
+
+/* Status register (32-bit) */
+#define STM32H745_WWDG_SR_EWIF           (1 << 0)  /* Bit 0: Early Wakeup Interrupt Flag */
+
+#define STM32H745_APB3_FREQUENCY  (100000000ul)
+//#define STM32H745_WWDG_MAXTIMEOUT ((1/(STM32H745_APB3_FREQUENCY/1000)) * 4096 * 128 * (127+1))
+
+
+#define STM32H745_WWDG_FMIN       (STM32H745_APB3_FREQUENCY / 4096 / 128)
+#define STM32H745_WWDG_MAXTIMEOUT (1000 * (STM32H745_WWDG_CR_T_MAX+1) / STM32H745_WWDG_FMIN)
 
 /****************************************************************************
  * Private Types
@@ -137,21 +171,38 @@ static int __ramfunc__ up_interrupt(int irq, void *context, FAR void *arg)
 {
     FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)arg;
 
+/* Decide to use this is way to handler than static way */
+#if 1  
+    /* To normal opertion, it needs to remove keep alive */
+    stm32h745_wwdg1_keepalive((FAR struct watchdog_lowerhalf_s *)priv);
+    if (priv->handler)
+    {
+      /* Yes... NOTE:  This interrupt service routine (ISR) must reload
+       * the WWDG counter to prevent the reset.  Otherwise, we will reset
+       * upon return.
+       */
+
+      priv->handler(irq, context, arg);
+    }
+    LL_WWDG_ClearFlag_EWKUP(WWDG1);
+#else
+    LL_WWDG_ClearFlag_EWKUP(WWDG1);
     stm32h745_wwdg1_keepalive((FAR struct watchdog_lowerhalf_s *)priv);
 
     if(priv->started == false)
     {
-        lldbg("WWDG refresh\n");
         return OK;
     }
 
     lldbg("Go reset!!\n");
 
+    /* These interrupt must be disabled before the M7 reset to prevent IRQ irq_unexpected_isr Hardfault */
     up_disable_irq(STM32H745_IRQ_SYSTICK);
     up_disable_irq(STM32H745_IRQ_TIM17);
     up_disable_irq(STM32H745_IRQ_HSEM1);
 
     __WFI();
+#endif    
     return OK;
 }
 
@@ -167,11 +218,8 @@ static int __ramfunc__ up_interrupt(int irq, void *context, FAR void *arg)
  ****************************************************************************/
 static void __ramfunc__ stm32h745_wwdg1_setwindow(FAR struct stm32h745_lowerhalf_s *priv, uint8_t window)
 {
-    priv->reload = window;
     priv->window = window;
 
-    LL_WWDG_SetCounter(WWDG1, window);
-    LL_WWDG_SetPrescaler(WWDG1, LL_WWDG_PRESCALER_128);
     LL_WWDG_SetWindow(WWDG1, window);
 }
 
@@ -328,13 +376,95 @@ static int __ramfunc__ stm32h745_wwdg1_getstatus(FAR struct watchdog_lowerhalf_s
  *   Zero on success; a negated errno value on failure.
  *
  ****************************************************************************/
-
 static int __ramfunc__ stm32h745_wwdg1_settimeout(FAR struct watchdog_lowerhalf_s *lower, uint32_t timeout)
 {
     FAR struct stm32h745_lowerhalf_s *priv = (FAR struct stm32h745_lowerhalf_s *)lower;
+    uint32_t fwwdg;
+    uint32_t reload;
+    uint16_t regval;
+    int wdgtb;
 
-    priv->timeout = timeout;
+    if (timeout < 1 || timeout > STM32H745_WWDG_MAXTIMEOUT)
+    {
+        lldbg("Cannot represent timeout=%d > %d\n", timeout, STM32H745_WWDG_MAXTIMEOUT);
+        return ERROR;
+    }
 
+    /* Determine prescaler value.
+     *
+     * Fwwdg = PCLK1/4096/prescaler.
+     *
+     * Where
+     *  Fwwwdg is the frequency of the WWDG clock
+     *  wdgtb is one of {1, 2, 4, 8, 16, 32, 64, 128}
+     */
+
+    /* Select the smallest prescaler that will result in a reload field value that is
+     * less than the maximum.
+     */
+    for (wdgtb = 0;; wdgtb++)
+    {
+        /* Get the WWDG counter frequency in Hz. */
+
+        fwwdg = (STM32H745_APB3_FREQUENCY / 4096) >> wdgtb;
+
+        /* The formula to calculate the timeout value is given by:
+         *
+         * timeout =  1000 * (reload + 1) / Fwwdg, OR
+         * reload = timeout * Fwwdg / 1000 - 1
+         *
+         * Where
+         *  timeout is the desired timout in milliseconds
+         *  reload is the contents of T[6:0]
+         *  Fwwdg is the frequency of the WWDG clock
+         */
+
+        reload = timeout * fwwdg / 1000 - 1;
+
+        /* If this reload valid is less than the maximum or we are not ready
+         * at the prescaler value, then break out of the loop to use these
+         * settings.
+         */
+        if (reload <= STM32H745_WWDG_CR_T_MAX || wdgtb == 7)
+        {
+            break;
+        }
+    }
+
+    /* Make sure that the final reload value is within range */
+
+    if (reload > STM32H745_WWDG_CR_T_MAX)
+    {
+        reload = STM32H745_WWDG_CR_T_MAX;
+    }
+
+
+    /* Calculate and save the actual timeout value in milliseconds:
+     *
+     * timeout =  1000 * (reload + 1) / Fwwdg
+     */
+
+    priv->timeout = 1000 * (reload + 1) / fwwdg;
+
+    /* Remember the selected values */
+
+    priv->fwwdg = fwwdg;
+    priv->reload = reload;
+
+    //lldbg("wdgtb=%d fwwdg=%d reload=%d timout=%d\n", wdgtb, fwwdg, reload, priv->timeout);
+
+    /* Set WDGTB[1:0] bits according to calculated value */
+
+    regval = LL_WWDG_ReadReg(WWDG1, CFR);
+    regval &= ~STM32H745_WWDG_CFR_WDGTB_MASK;
+    regval |= (uint16_t)wdgtb << STM32H745_WWDG_CFR_WDGTB_SHIFT;
+    LL_WWDG_WriteReg(WWDG1, CFR, regval);
+
+    /* Reset the 7-bit window value to the maximum value.. essentially disabling
+     * the lower limit of the watchdog reset time.
+     */
+
+    stm32h745_wwdg1_setwindow(priv, CONFIG_STM32_WWDG_SETWINDOW);
     return OK;
 }
 
@@ -388,6 +518,7 @@ static xcpt_t __ramfunc__ stm32h745_wwdg1_capture(FAR struct watchdog_lowerhalf_
         regval |= WWDG_CFR_EWI;
 
         WRITE_REG(WWDG1->CFR, regval);
+        irq_attach(STM32H745_IRQ_WWDG, priv->handler, lower);
         up_enable_irq(STM32H745_IRQ_WWDG);
     } else {
         /* Detaching... Disable the EWI interrupt */
@@ -395,6 +526,7 @@ static xcpt_t __ramfunc__ stm32h745_wwdg1_capture(FAR struct watchdog_lowerhalf_
         regval &= ~WWDG_CFR_EWI;
 
         WRITE_REG(WWDG1->CFR, regval);
+        irq_attach(STM32H745_IRQ_WWDG, up_interrupt, lower);
         up_disable_irq(STM32H745_IRQ_WWDG);
     }
 
@@ -473,11 +605,13 @@ void __ramfunc__ stm32h745_wwdginitialize(FAR const char *devpath)
     //LL_RCC_WWDG1_EnableSystemReset();
     LL_APB3_GRP1_EnableClock(LL_APB3_GRP1_PERIPH_WWDG1);
 
-    stm32h745_wwdg1_setwindow(priv, CONFIG_STM32_WWDG_SETWINDOW);
-    stm32h745_wwdg1_settimeout((FAR struct watchdog_lowerhalf_s *)priv, 100);
+    //stm32h745_wwdg1_setwindow(priv, CONFIG_STM32_WWDG_SETWINDOW);
+    stm32h745_wwdg1_settimeout((FAR struct watchdog_lowerhalf_s *)priv, CONFIG_STM32_WWDG_TIMEOUT);
 
     /* Register the watchdog driver as /dev/watchdog0 */
     (void)watchdog_register(devpath, (FAR struct watchdog_lowerhalf_s *)priv);
+
+    stm32h745_wwdg1_start((FAR struct watchdog_lowerhalf_s *)priv);
 }
 
 #endif
