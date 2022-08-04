@@ -44,6 +44,7 @@
 #include <debug.h>
 
 #include <tinyara/init.h>
+#include <tinyara/irq.h>
 #include <arch/board/board.h>
 
 #include "up_arch.h"
@@ -61,6 +62,8 @@ static int stm32h745_tim17_update(int irq, FAR void *context, FAR void *arg)
 {
   __HAL_TIM_CLEAR_IT(&htim17, TIM_IT_UPDATE);
   HAL_IncTick();
+
+  return OK;
 }
 
 /****************************************************************************
