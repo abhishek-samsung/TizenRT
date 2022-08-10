@@ -82,7 +82,10 @@ int stm32h745_haltick_init(void)
     /*Configure the TIM17 IRQ priority */
     if (TickPriority < (1UL << __NVIC_PRIO_BITS))
     {
+        /*
+        * Removed to use default interrupt priority
         HAL_NVIC_SetPriority(TIM17_IRQn, TickPriority ,0U);
+        */
 
         /* Enable the TIM17 global Interrupt */
         HAL_NVIC_EnableIRQ(TIM17_IRQn);

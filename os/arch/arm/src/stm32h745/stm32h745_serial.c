@@ -450,7 +450,10 @@ static int stm32h745_up_attach(struct uart_dev_s *dev)
   if (ret == OK)
   {
     (void)up_enable_irq(priv->irq);
+    /*
+    * Removed to use default priority
     (void)up_prioritize_irq(priv->irq, NVIC_SYSH_PRIORITY_MIN);
+    */
   }
   return ret;
 }

@@ -94,10 +94,10 @@
  * system clock ticks per second.  That value is a user configurable setting
  * that defaults to 100 (100 ticks per second = 10 MS interval).
  *
- * For example, suppose HCLK = 216 MHz and CLK_TCK = 100, then:
+ * For example, suppose HCLK = 400 MHz and CLK_TCK = 100, then:
  *
- *   STM32_SYSTICK_CLOCK = 216 MHz / 8 = 27 MHz
- *   SYSTICK_RELOAD      = (27,000,000 / 100) - 1 = 269,999
+ *   STM32_SYSTICK_CLOCK = 400 MHz / 8 = 50 MHz
+ *   SYSTICK_RELOAD      = (50,000,000 / 100) - 1 = 499999
  */
 
 #define SYSTICK_RELOAD ((STM32_SYSTICK_CLOCK / CLK_TCK) - 1)
@@ -145,7 +145,7 @@ int up_timerisr(int irq, uint32_t *regs)
 
 void up_timer_initialize(void)
 {
-#if 0
+#if 1
   uint32_t regval;
 
   /* Configure SysTick to interrupt at the requested rate */
@@ -175,14 +175,12 @@ void up_timer_initialize(void)
   /* And enable the timer interrupt */
   up_enable_irq(STM32H745_IRQ_SYSTICK);
 #else
+  /* Don't use this code for the interrupt priority */
+
   irq_attach(STM32H745_IRQ_SYSTICK, (xcpt_t)up_timerisr, NULL);
 
   /* Configure the SysTick to have interrupt in 1ms time basis*/
-#if 1
   HAL_SYSTICK_Config(STM32_SYSTICK_CLOCK / (1000UL / (uint32_t)HAL_TICK_FREQ_DEFAULT));
-#else
-  HAL_InitTick(uwTickPrio);
-#endif
 #endif
 }
 
