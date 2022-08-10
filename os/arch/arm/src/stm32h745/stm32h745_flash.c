@@ -233,7 +233,7 @@ static int stm32h745_ioctl(FAR struct mtd_dev_s *dev, int cmd, unsigned long arg
         case MTDIOC_BULKERASE: 
         {
             /* Erase the entire device */
-            ret = stm32h745_erase(dev, 0, 2);
+            ret = stm32h745_erase(dev, 0, priv->nsectors);
         }
         break;
 
