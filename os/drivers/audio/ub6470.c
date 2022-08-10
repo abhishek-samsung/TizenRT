@@ -44,7 +44,7 @@
 #include "ub6470.h"
 #include "ub6470scripts.h"
 
-#define UB6470_I2S_TIMEOUT_MS 100
+#define UB6470_I2S_TIMEOUT_MS 200
 
 /* Default configuration values */
 #ifndef CONFIG_UB6470_BUFFER_SIZE
@@ -885,7 +885,7 @@ static void ub6470_txcallback(FAR struct i2s_dev_s *dev, FAR struct ap_buffer_s 
  ****************************************************************************/
 static int ub6470_enqueuebuffer(FAR struct audio_lowerhalf_s *dev, FAR struct ap_buffer_s *apb)
 {
-	printf("In enqueue buffer\n");
+	//printf("In enqueue buffer\n");
 	FAR struct ub6470_dev_s *priv = (FAR struct ub6470_dev_s *)dev;
 	int ret;
 
@@ -902,11 +902,12 @@ static int ub6470_enqueuebuffer(FAR struct audio_lowerhalf_s *dev, FAR struct ap
 		ub6470_givesem(&priv->devsem);
 		return OK;
 	}
-	printf("I2S send is called\n");
+	//printf("I2S send is called\n");
 	priv->volume = UB6470_SPK_VOL_MAX; 
 	/* debugging prupose to check if volume is not on mute*/
         //printf("set volume to max\n");
         //ub6470_setvolume(priv);
+	/*
 	uint8_t regval2 = ub6470_readreg_1byte(priv, 0x3C);
         printf("val of 0x3C : 0x%02x\n", regval2);
 	regval2 = ub6470_readreg_1byte(priv, 0x3D);
@@ -915,6 +916,7 @@ static int ub6470_enqueuebuffer(FAR struct audio_lowerhalf_s *dev, FAR struct ap
         printf("val of 0x0F : 0x%02x\n", regval2);
 	regval2 = ub6470_readreg_1byte(priv, 0x2A);
         printf("val of 0x2A : 0x%02x\n", regval2);
+	*/
 	ret = I2S_SEND(priv->i2s, apb, ub6470_txcallback, priv, UB6470_I2S_TIMEOUT_MS);
 
 	return ret;

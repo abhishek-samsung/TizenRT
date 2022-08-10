@@ -117,8 +117,8 @@
 
 #define OVER_SAMPLE_RATE (384U)
 
-#define I2S_DMA_PAGE_SIZE	768   // 2 ~ 4096
-#define I2S_DMA_PAGE_NUM    4   // Vaild number is 2~4
+#define I2S_DMA_PAGE_SIZE	1024   /* 4 ~ 16384, set to a factor of APB size */
+#define I2S_DMA_PAGE_NUM    4   /* Vaild number is 2~4 */
 
 /* I2S buffer container */
 #ifdef __16_BIT_PADDING__
@@ -168,7 +168,7 @@ struct amebad_i2s_s {
 	uint32_t i2s_sd_rx_pin;
 	uint32_t i2s_mck_pin;
 
-	uint8_t i2s_tx_buf[I2S_DMA_PAGE_NUM * I2S_DMA_PAGE_SIZE];
+	uint8_t i2s_tx_buf[I2S_DMA_PAGE_NUM * I2S_DMA_PAGE_SIZE]; /* Allocate buffer for use in TX */
 	uint8_t* i2s_rx_buf;
 
 	i2s_irq_handler rx_isr_handler;
@@ -187,7 +187,7 @@ struct amebad_i2s_s {
 	int sample_rate;                /*!< I2S sample rate */
 	int channel_num;                /*!< Number of channels */
 	int bits_per_sample;            /*!< Bits per sample */
-	struct ap_buffer_s *apb_tx;
+	struct ap_buffer_s *apb_tx;		/* Pointer to application TX audio buffer to track current TX byte count */
 
 #if defined(I2S_HAVE_RX) && (0 < I2S_HAVE_RX)
 	struct amebad_transport_s rx;		/* RX transport state */
@@ -285,7 +285,7 @@ static int i2s_err_cb_register(struct i2s_dev_s *dev, i2s_err_cb_t cb, void *arg
 ****************************************************************************/
 
 static const i2s_config_t i2s_default_config = {
-	
+
 	.sample_rate =  I2S_SR_48KHZ,
 	.bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
 
@@ -344,6 +344,7 @@ static struct amebad_i2s_s *g_i2sdevice[I2S_NUM_MAX] = {NULL};
 static void i2s_txdma_callback(struct amebad_i2s_s* priv, int result)
 {
 	DEBUGASSERT(priv != NULL);
+
 	/* Cancel the watchdog timeout */
 
 	(void)wd_cancel(priv->tx.dog);
@@ -358,6 +359,7 @@ static void i2s_txdma_timeout(int argc, uint32_t arg)
 {
 	struct amebad_i2s_s *priv = (struct amebad_i2s_s *)arg;
 	DEBUGASSERT(priv != NULL);
+	lldbg("************** timeout has hapenned **************\n");
 	/* Then schedule completion of the transfer to occur on the worker thread.
 	 * Set the result with -ETIMEDOUT.
 	 */
@@ -376,13 +378,64 @@ static int i2s_txdma_prep(struct amebad_i2s_s *priv, struct amebad_buffer_s *bfc
 	return 0;
 }
 
+static int amebad_i2s_tx(struct amebad_i2s_s *priv, struct amebad_buffer_s *bfcontainer)
+{
+	int ret;
+	int* ptx_buf;
+	int tx_size;
+
+	tx_size = I2S_DMA_PAGE_SIZE; /* Track current byte size to increment by */
+	struct ap_buffer_s *apb;
+	if (NULL != bfcontainer && NULL != bfcontainer->apb) {
+
+		apb = bfcontainer->apb;
+		/* Add the container to the list of active DMAs */
+		sq_addlast((sq_entry_t *)bfcontainer, &priv->tx.act);
+
+		i2s_set_direction(&priv->i2s_object, I2S_DIR_TX);
+		priv->apb_tx = apb; /* Reference current TX apb in our I2S struct */ 
+		/* Start sending first page, after that the txdma callback will be called in the tx irq handler */
+			ptx_buf = i2s_get_tx_page(&priv->i2s_object);
+#ifdef __16_BIT_PADDING__
+			memset(audio_buf, 0, sizeof(audio_buf));
+			if ((apb->nbytes - apb->curbyte) <= (tx_size/2)) { /* Check if remaining bytes to TX is less than the maximum length we can pad */
+				tx_size = apb->nbytes - apb->curbyte; /* Update tx_size to the remaining bytes left to TX */
+				for (int j=0; j<tx_size/2; j++) {
+					memcpy(audio_buf+(2+(j*4)), &apb->samp[apb->curbyte+(j*2)], 2);
+				}
+				memset(ptx_buf, 0, I2S_DMA_PAGE_SIZE); /* Clear ptx_buf to prevent sending old data since we are sending less than I2S_DMA_PAGE_SIZE */
+				memcpy((void*)ptx_buf, (void*)audio_buf, tx_size*2);
+				apb->curbyte += tx_size; /* Remaining bytes to TX can fit into buffer, increment current byte by the remaining tx_size  */
+			}
+			else {
+				for (int j=0; j<(I2S_DMA_PAGE_SIZE/4); j++) {
+					memcpy(audio_buf+(2+(j*4)), &apb->samp[apb->curbyte+(j*2)], 2);
+				}
+				memcpy((void*)ptx_buf, (void*)audio_buf, I2S_DMA_PAGE_SIZE);
+				apb->curbyte += tx_size/2; /* We padded half of I2S_DMA_PAGE_SIZE worth of data */
+			}
+#else
+			if ((apb->nbytes - apb->curbyte) <= tx_size) {
+				tx_size = apb->nbytes - apb->curbyte;
+				memset(ptx_buf, 0, I2S_DMA_PAGE_SIZE); /* Clear ptx_buf to prevent sending old data since we are sending less than I2S_DMA_PAGE_SIZE */
+				memcpy((void*)ptx_buf, (void*)&apb->samp[apb->curbyte], tx_size);
+			}
+			else {
+				memcpy((void*)ptx_buf, (void*)&apb->samp[apb->curbyte], I2S_DMA_PAGE_SIZE);
+			}
+			apb->curbyte += tx_size; /* No padding, ptx_buf is big enough to fill the whole tx_size */
+#endif
+			i2s_send_page(&priv->i2s_object, (uint32_t*)ptx_buf);
+	}
+	return;
+}
+
 static int i2s_tx_start(struct amebad_i2s_s *priv)
 {
 	struct amebad_buffer_s *bfcontainer = NULL;
 	int ret;
 	irqstate_t flags;
-	int* ptx_buf;
-	int pg_idx;
+
 	struct ap_buffer_s *apb;
 
 	/* Check if the DMA is IDLE */
@@ -398,36 +451,12 @@ static int i2s_tx_start(struct amebad_i2s_s *priv)
 	}
 
 	flags = irqsave();
+
 	/* Remove the pending TX transfer at the head of the TX pending queue. */
 	bfcontainer = (struct amebad_buffer_s *)sq_remfirst(&priv->tx.pend);
-	if (NULL != bfcontainer && NULL != bfcontainer->apb) {
-		apb = bfcontainer->apb;
-		/* Add the container to the list of active DMAs */
-		sq_addlast((sq_entry_t *)bfcontainer, &priv->tx.act);
 
-		i2s_set_direction(&priv->i2s_object, I2S_DIR_TX);
-		priv->apb_tx = apb;
-		/* send I2S_DMA_PAGE_NUM page, after that the txdma callback will be called in the tx irq handler */
-		for (pg_idx = 0; pg_idx < I2S_DMA_PAGE_NUM; ++pg_idx) {
-
-			ptx_buf = i2s_get_tx_page(&priv->i2s_object);
-#ifdef __16_BIT_PADDING__
-			memset(audio_buf, 0, sizeof(audio_buf));
-			for (int j=0;j<(I2S_DMA_PAGE_SIZE/4);j++) {
-				memcpy(audio_buf+(2+(j*4)),&apb->samp[apb->curbyte+(j*2)], 2);
-			}
-			memcpy((void*)ptx_buf, (void*)audio_buf, I2S_DMA_PAGE_SIZE);
-#else
-			memcpy((void*)ptx_buf, (void*)&apb->samp[apb->curbyte], I2S_DMA_PAGE_SIZE);
-#endif
-			i2s_send_page(&priv->i2s_object, (uint32_t*)ptx_buf);
-#ifdef __16_BIT_PADDING__
-			apb->curbyte += (I2S_DMA_PAGE_SIZE/2);
-#else
-			apb->curbyte += (I2S_DMA_PAGE_SIZE); //audio buffer is char, so we copied DMA_PAGE_SIZE worth of data 
-#endif
-		}
-	}
+	/* Start first transfer */
+	amebad_i2s_tx(priv, bfcontainer);
 	irqrestore(flags);
 
 	/* Start a watchdog to catch DMA timeouts */
@@ -443,6 +472,7 @@ static int i2s_tx_start(struct amebad_i2s_s *priv)
 			i2serr("ERROR: wd_start failed: %d\n", errno);
 		}
 	}
+
 	return OK;
 }
 
@@ -466,6 +496,7 @@ static void i2s_tx_worker(void *arg)
 
 	i2sinfo("tx.act.head=%p tx.done.head=%p\n", priv->tx.act.head, priv->tx.done.head);
 
+
 	/* Process each buffer in the tx.done queue */
 	while (sq_peek(&priv->tx.done) != NULL) {
 		/* Remove the buffer container from the tx.done queue.  NOTE that
@@ -476,7 +507,6 @@ static void i2s_tx_worker(void *arg)
 		flags = irqsave();
 		bfcontainer = (struct amebad_buffer_s *)sq_remfirst(&priv->tx.done);
 		irqrestore(flags);
-
 		/* Perform the TX transfer done callback */
 
 		DEBUGASSERT(bfcontainer && bfcontainer->callback);
@@ -485,6 +515,7 @@ static void i2s_tx_worker(void *arg)
 		/* Release our reference on the audio buffer.  This may very likely
 		 * cause the audio buffer to be freed.
 		 */
+
 		apb_free(bfcontainer->apb);
 
 		/* And release the buffer container */
@@ -498,6 +529,7 @@ static void i2s_tx_schedule(struct amebad_i2s_s *priv, int result)
 {
 	struct amebad_buffer_s *bfcontainer;
 	int ret;
+
 	/* Upon entry, the transfer(s) that just completed are the ones in the
 	 * priv->tx.act queue.  NOTE: In certain conditions, this function may
 	 * be called an additional time, hence, we can't assert this to be true.
@@ -518,6 +550,7 @@ static void i2s_tx_schedule(struct amebad_i2s_s *priv, int result)
 		bfcontainer->result = result;
 
 		/* Add the completed buffer container to the tail of the tx.done queue */
+
 		sq_addlast((sq_entry_t *) bfcontainer, &priv->tx.done);
 	}
 
@@ -526,9 +559,8 @@ static void i2s_tx_schedule(struct amebad_i2s_s *priv, int result)
 		/* Remove the next buffer container from the tx.pend list */
 		bfcontainer = (struct amebad_buffer_s *)sq_remfirst(&priv->tx.pend);
 
-		/* Add the completed buffer container to the tail of the tx.act queue */
-		sq_addlast((sq_entry_t *) bfcontainer, &priv->tx.act);
-
+		/* Start next transfer */
+		amebad_i2s_tx(priv, bfcontainer);
 	}
 
 	/* If the worker has completed running, then reschedule the working thread.
@@ -623,9 +655,7 @@ static int i2s_send(struct i2s_dev_s *dev, struct ap_buffer_s *apb, i2s_callback
 	DEBUGASSERT(priv && apb);
 
 	// i2sinfo("[I2S TX] apb=%p nbytes=%d samp=%p arg=%p timeout=%d\n", apb, apb->nbytes - apb->curbyte, apb->samp, arg, timeout);
-
 	i2s_dump_buffer("Sending", &apb->samp[apb->curbyte], apb->nbytes - apb->curbyte);
-
 #if defined(I2S_HAVE_TX) && (0 < I2S_HAVE_TX)
 	struct amebad_buffer_s *bfcontainer;
 	irqstate_t flags;
@@ -654,9 +684,6 @@ static int i2s_send(struct i2s_dev_s *dev, struct ap_buffer_s *apb, i2s_callback
 	bfcontainer->apb = apb;
 	bfcontainer->result = -EBUSY;
 
-	/* Prepare DMA microcode */
-	// i2s_txdma_prep(priv, bfcontainer);
-
 	flags = irqsave();
 	sq_addlast((sq_entry_t *) bfcontainer, &priv->tx.pend);
 	irqrestore(flags);
@@ -684,48 +711,47 @@ static int i2s_send(struct i2s_dev_s *dev, struct ap_buffer_s *apb, i2s_callback
 
 void i2s_transfer_tx_handleirq(void *data, char *pbuf)
 {
+	/* This handler is called after every completion of i2s_send_page() */
 	struct amebad_i2s_s *priv = (struct amebad_i2s_s *)data;
 	int tx_size;
 
-	tx_size = (I2S_DMA_PAGE_SIZE);
-	if ((priv->apb_tx->nbytes - priv->apb_tx->curbyte) <= 0){ //test to make sure stop sending data after curbytes is more than maxbytes
+	tx_size = I2S_DMA_PAGE_SIZE; /* Track current byte size to increment by */
+	if ((priv->apb_tx->nbytes - priv->apb_tx->curbyte) <= 0) { /* Condition to stop sending if all data in the buffer has been sent */
 		int result = OK;
 		i2s_txdma_callback(priv, result);
-		// return;
 	}
 	else {
 		int *ptx_buf;
 		ptx_buf = i2s_get_tx_page(&priv->i2s_object);
 #ifdef __16_BIT_PADDING__
 		memset(audio_buf, 0, sizeof(audio_buf));
-		if ((priv->apb_tx->nbytes - priv->apb_tx->curbyte) <= (tx_size/2)){ //less than max length to pad
-			tx_size = priv->apb_tx->nbytes - priv->apb_tx->curbyte; // Update tx_size to the remaining bytes left to TX
-			for (int j=0;j<tx_size/2;j++) {
-				memcpy(audio_buf+(2+(j*4)),&priv->apb_tx->samp[priv->apb_tx->curbyte+(j*2)], 2);
+		if ((priv->apb_tx->nbytes - priv->apb_tx->curbyte) <= (tx_size/2)) { /* Check if remaining bytes to TX is less than the maximum length we can pad */
+			tx_size = priv->apb_tx->nbytes - priv->apb_tx->curbyte; /* Update tx_size to the remaining bytes left to TX */
+			for (int j=0; j<tx_size/2; j++) {
+				memcpy(audio_buf+(2+(j*4)), &priv->apb_tx->samp[priv->apb_tx->curbyte+(j*2)], 2);
 			}
-			memset(ptx_buf, 0, I2S_DMA_PAGE_SIZE);
+			memset(ptx_buf, 0, I2S_DMA_PAGE_SIZE); /* Clear ptx_buf to prevent sending old data since we are sending less than I2S_DMA_PAGE_SIZE */
 			memcpy((void*)ptx_buf, (void*)audio_buf, tx_size*2);
-			priv->apb_tx->curbyte += tx_size; // Remaining size can fit into buffer, increment cur byte by the remaining tx_size 
+			priv->apb_tx->curbyte += tx_size; /* Remaining bytes to TX can fit into buffer, increment current byte by the remaining tx_size  */
 		}
 		else {
-			for (int j=0;j<(I2S_DMA_PAGE_SIZE/4);j++) {
-				memcpy(audio_buf+(2+(j*4)),&priv->apb_tx->samp[priv->apb_tx->curbyte+(j*2)], 2);
+			for (int j=0; j<(I2S_DMA_PAGE_SIZE/4); j++) {
+				memcpy(audio_buf+(2+(j*4)), &priv->apb_tx->samp[priv->apb_tx->curbyte+(j*2)], 2);
 			}
 			memcpy((void*)ptx_buf, (void*)audio_buf, I2S_DMA_PAGE_SIZE);
-			priv->apb_tx->curbyte += tx_size/2; // Can only fit half the TX size, increment cur byte by tx_size/2 
+			priv->apb_tx->curbyte += tx_size/2; /* We padded half of I2S_DMA_PAGE_SIZE worth of data */
 		}
 #else
-		if ((priv->apb_tx->nbytes - priv->apb_tx->curbyte) <= tx_size){
+		if ((priv->apb_tx->nbytes - priv->apb_tx->curbyte) <= tx_size) {
 			tx_size = priv->apb_tx->nbytes - priv->apb_tx->curbyte;
-			memset(ptx_buf, 0, I2S_DMA_PAGE_SIZE);
+			memset(ptx_buf, 0, I2S_DMA_PAGE_SIZE); /* Clear ptx_buf to prevent sending old data since we are sending less than I2S_DMA_PAGE_SIZE */
 			memcpy((void*)ptx_buf, (void*)&priv->apb_tx->samp[priv->apb_tx->curbyte], tx_size);
 		}
 		else {
 			memcpy((void*)ptx_buf, (void*)&priv->apb_tx->samp[priv->apb_tx->curbyte], I2S_DMA_PAGE_SIZE);
 		}
-		priv->apb_tx->curbyte += tx_size; // No padding, ptx_buf is big enough to fill the whole tx_size
+		priv->apb_tx->curbyte += tx_size; /* No padding, ptx_buf is big enough to fill the whole tx_size */
 #endif
-			
 		i2s_send_page(&priv->i2s_object, (uint32_t*)ptx_buf);
 	}
 
@@ -1820,7 +1846,7 @@ struct i2s_dev_s *amebad_i2s_initialize(uint16_t port)
 	i2s_init(&priv->i2s_object, priv->i2s_sclk_pin, priv->i2s_ws_pin, priv->i2s_sd_tx_pin, priv->i2s_sd_rx_pin, priv->i2s_mck_pin);
 
 	/* Initialize buffering */
-	i2s_set_dma_buffer(&priv->i2s_object, (char*)priv->i2s_tx_buf, NULL, I2S_DMA_PAGE_NUM, I2S_DMA_PAGE_SIZE);
+	i2s_set_dma_buffer(&priv->i2s_object, (char*)priv->i2s_tx_buf, NULL, I2S_DMA_PAGE_NUM, I2S_DMA_PAGE_SIZE); /* Allocate DMA Buffer for TX */
 
 	/* configures IRQ */
 	priv->rx_isr_handler = (i2s_irq_handler)&i2s_transfer_rx_handleirq;
