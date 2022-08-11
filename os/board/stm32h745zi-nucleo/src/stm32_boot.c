@@ -105,7 +105,7 @@ void board_initialize(void)
 #endif
 
 #ifdef CONFIG_SHARED_MEMORY
-    stm32h745_shared_memory_init();
+    stm32h745_shared_memory_init(HSEM_ID_0);
 #endif
 
 #if defined(CONFIG_WATCHDOG) && defined(CONFIG_STM32H745_WWDG1)

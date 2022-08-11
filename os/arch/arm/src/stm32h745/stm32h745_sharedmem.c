@@ -116,7 +116,7 @@ static int  up_interrupt(int irq, void *context, FAR void *arg)
  *
  ****************************************************************************/
 
-int stm32h745_shared_memory_init(void)
+int stm32h745_shared_memory_init(uint32_t hsem_id)
 {
     int ret;
     int i;
@@ -131,7 +131,7 @@ int stm32h745_shared_memory_init(void)
     __HAL_RCC_HSEM_CLK_ENABLE();
     
     /* Enable Interrupts */
-    HAL_HSEM_ActivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0));
+    HAL_HSEM_ActivateNotification(__HAL_HSEM_SEMID_TO_MASK(hsem_id));
     ret = irq_attach(STM32H745_IRQ_HSEM1, up_interrupt, NULL);
     if (ret == OK)
     {
