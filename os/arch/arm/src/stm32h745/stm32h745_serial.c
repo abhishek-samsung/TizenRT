@@ -59,10 +59,20 @@
 #include <stm32h7xx_ll_usart.h>
 #include <system_stm32h745.h>
 
+#if defined(CONFIG_UART2_SERIAL_CONSOLE)
+  #define CONSOLE_DEV             g_uart2             /* USART2 is console */
+  #define TTYS0_DEV               g_uart3             /* USART3 is ttyS0 */
+  #define TTYS1_DEV               g_uart6             /* USART6 is ttyS0 */
+#elif defined(CONFIG_UART3_SERIAL_CONSOLE)
+  #define CONSOLE_DEV             g_uart3             /* USART3 is console */
+  #define TTYS0_DEV               g_uart2             /* USART2 is ttyS0 */
+  #define TTYS1_DEV               g_uart6             /* USART6 is ttyS0 */
+#elif defined(CONFIG_UART6_SERIAL_CONSOLE)
+  #define CONSOLE_DEV             g_uart6             /* USART6 is console */
+  #define TTYS0_DEV               g_uart2             /* USART2 is ttyS0 */
+  #define TTYS1_DEV               g_uart3             /* USART3 is ttyS0 */
+#endif
 
-#define CONSOLE_DEV             g_uart3             /* USART3 is console */
-#define TTYS0_DEV               g_uart2             /* USART2 is ttyS0 */
-#define TTYS1_DEV               g_uart6             /* USART6 is ttyS0 */
 
 
 struct stm32h745_up_dev_s
@@ -265,20 +275,12 @@ static uart_dev_t g_uart6 =
  ****************************************************************************/
 void up_serialinit(void)
 {
-#ifdef CONFIG_ARCH_HAVE_USART3
   CONSOLE_DEV.isconsole = true;
   stm32h745_up_setup(&CONSOLE_DEV);
 
   uart_register("/dev/console", &CONSOLE_DEV);
-#endif  
-
-#ifdef CONFIG_ARCH_HAVE_USART2
   uart_register("/dev/ttyS0", &TTYS0_DEV);
-#endif  
-
-#ifdef CONFIG_ARCH_HAVE_USART6
   uart_register("/dev/ttyS1", &TTYS1_DEV);
-#endif  
 }
 
 /****************************************************************************

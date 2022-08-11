@@ -155,10 +155,9 @@ int stm32h745_shared_memory_write(uint32_t hsem_id, uint32_t index, uint8_t *src
         return ERROR;
     }
 
-    while(HAL_HSEM_FastTake(hsem_id) != HAL_OK){};
-
     memcpy(&shared_mem[index], src_addr, size);
 
+    while(HAL_HSEM_FastTake(hsem_id) != HAL_OK){};
     HAL_HSEM_Release(hsem_id, 0);
     //If core use cache, need to clean cache
     return OK;
@@ -171,21 +170,25 @@ int stm32h745_shared_memory_write(uint32_t hsem_id, uint32_t index, uint8_t *src
  *   Initialize shared memory
  *
  ****************************************************************************/
-int stm32h745_shared_memory_read(uint32_t hsem_id, uint32_t index, uint8_t *dest_addr, uint32_t size)
+int stm32h745_shared_memory_read(uint32_t hsem_id, uint32_t index, uint8_t *dest_addr, uint32_t size, bool notification)
 {
     //If core use cache, need to clean cache
-    if(hsem_id >= HSEM_ID_MAX)
+    if(notification == true)
     {
-        return ERROR;
+        if(hsem_id >= HSEM_ID_MAX)
+        {
+            return ERROR;
+        }
     }
-
-    while(HAL_HSEM_FastTake(hsem_id) != HAL_OK){};
-
     memcpy(dest_addr, &shared_mem[index], size);
 
-    HAL_HSEM_Release(hsem_id, 0);
+    if(notification == true)
+    {
+        while(HAL_HSEM_FastTake(hsem_id) != HAL_OK){};
+        HAL_HSEM_Release(hsem_id, 0);
 
-    //If core use cache, need to clean cache
+        //If core use cache, need to clean cache        
+    }        
     return OK;
 }
 
