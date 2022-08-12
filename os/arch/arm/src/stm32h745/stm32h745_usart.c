@@ -54,7 +54,7 @@
 #include <stm32h7xx_ll_usart.h>
 #include <system_stm32h745.h>
 
-#if defined(CONFIG_UART2_SERIAL_CONSOLE)
+#if defined(CONFIG_USART2_SERIAL_CONSOLE)
   #define CONSOLE_UART                  USART2
   #define CONSOLE_PORT                  GPIOA
   #define CONSOLE_TX_PIN                LL_GPIO_PIN_2
@@ -63,7 +63,7 @@
   #define CONSOLE_UART_CLOCK_ENABLE()   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2)
   #define CONSOLE_PORT_CLOCK_ENABLE()   LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA)
   #define CONSOLE_CLOCK_SOURCE()        LL_RCC_SetUSARTClockSource(LL_RCC_USART234578_CLKSOURCE_PCLK1)
-#elif defined(CONFIG_UART3_SERIAL_CONSOLE)
+#elif defined(CONFIG_USART3_SERIAL_CONSOLE)
   #define CONSOLE_UART                  USART3
   #define CONSOLE_PORT                  GPIOB
   #define CONSOLE_TX_PIN                LL_GPIO_PIN_10
@@ -72,7 +72,7 @@
   #define CONSOLE_UART_CLOCK_ENABLE()   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART3)
   #define CONSOLE_PORT_CLOCK_ENABLE()   LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB)
   #define CONSOLE_CLOCK_SOURCE()        LL_RCC_SetUSARTClockSource(LL_RCC_USART234578_CLKSOURCE_PCLK1)
-#elif defined(CONFIG_UART6_SERIAL_CONSOLE)
+#elif defined(CONFIG_USART6_SERIAL_CONSOLE)
   #define CONSOLE_UART                  USART6
   #define CONSOLE_PORT                  GPIOG
   #define CONSOLE_TX_PIN                LL_GPIO_PIN_9

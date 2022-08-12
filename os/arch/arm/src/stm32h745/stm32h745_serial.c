@@ -59,15 +59,15 @@
 #include <stm32h7xx_ll_usart.h>
 #include <system_stm32h745.h>
 
-#if defined(CONFIG_UART2_SERIAL_CONSOLE)
+#if defined(CONFIG_USART2_SERIAL_CONSOLE)
   #define CONSOLE_DEV             g_uart2             /* USART2 is console */
   #define TTYS0_DEV               g_uart3             /* USART3 is ttyS0 */
   #define TTYS1_DEV               g_uart6             /* USART6 is ttyS0 */
-#elif defined(CONFIG_UART3_SERIAL_CONSOLE)
+#elif defined(CONFIG_USART3_SERIAL_CONSOLE)
   #define CONSOLE_DEV             g_uart3             /* USART3 is console */
   #define TTYS0_DEV               g_uart2             /* USART2 is ttyS0 */
   #define TTYS1_DEV               g_uart6             /* USART6 is ttyS0 */
-#elif defined(CONFIG_UART6_SERIAL_CONSOLE)
+#elif defined(CONFIG_USART6_SERIAL_CONSOLE)
   #define CONSOLE_DEV             g_uart6             /* USART6 is console */
   #define TTYS0_DEV               g_uart2             /* USART2 is ttyS0 */
   #define TTYS1_DEV               g_uart3             /* USART3 is ttyS0 */
