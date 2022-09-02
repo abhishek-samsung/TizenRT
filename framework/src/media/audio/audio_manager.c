@@ -622,6 +622,7 @@ audio_manager_result_t audio_manager_init(void)
 
 	am_initialized = 1;
 
+	/*
 	for (card_id = 0; card_id < CONFIG_AUDIO_MAX_INPUT_CARD_NUM; card_id++) {
 		pthread_mutex_init(&(g_audio_in_cards[card_id].card_mutex), NULL);
 	}
@@ -630,6 +631,7 @@ audio_manager_result_t audio_manager_init(void)
 		meddbg("find card failed result : %d\n", ret);
 		return ret;
 	}
+	*/
 
 	for (card_id = 0; card_id < CONFIG_AUDIO_MAX_OUTPUT_CARD_NUM; card_id++) {
 		pthread_mutex_init(&(g_audio_out_cards[card_id].card_mutex), NULL);

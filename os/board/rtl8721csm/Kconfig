@@ -14,7 +14,7 @@ config FLASH_START_ADDR
 
 config FLASH_SIZE
     int
-    default 8388608
+    default 16777216
     help
         A size of flash (in bytes).
         This is fixed value, so user doesn't need to change it.
@@ -30,7 +30,7 @@ config AMEBAD_FLASH_BASE
 
 config AMEBAD_FLASH_CAPACITY
     hex "Size for user filesystem"
-    default 0x80000
+    default 0x1000000
     help
         Setting this vaule to configure flash size  for user filesystem,
         such as smartfs, romfs.
@@ -46,7 +46,6 @@ config AMEBAD_FLASH_BLOCK_SIZE
     default 4096
     help
         Setting this vaule to configure erase unit size of esp32 SPI flash.
-	
+    
 endmenu
 endif
-

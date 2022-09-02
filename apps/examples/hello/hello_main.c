@@ -56,10 +56,26 @@
 
 #include <tinyara/config.h>
 #include <stdio.h>
+#include <debug.h>
+
+
+#include <stdlib.h>
+#include <tinyara/i2c.h>
 
 /****************************************************************************
  * hello_main
  ****************************************************************************/
+#define byteWrite_DEBUG
+#define UART_Printf printf
+
+
+#define DEVICE_ADDRESS 0x1A  // Device address when ADO = 1
+
+#define I2C_FREQ 100000
+
+int counter = 0;
+
+extern int amebad_PA0_set(unsigned int value);
 
 #ifdef CONFIG_BUILD_KERNEL
 int main(int argc, FAR char *argv[])
@@ -67,6 +83,230 @@ int main(int argc, FAR char *argv[])
 int hello_main(int argc, char *argv[])
 #endif
 {
+#if 1
+    amebad_PA0_set(0);
+    lldbg("set gpio0 to low");
+    lldbg("registering i2s driver\n");
+    struct i2s_dev_s *i2s = amebad_i2s_initialize(0);
+    sleep(2);
+    amebad_PA0_set(1);
+    lldbg("set gpio0 to high");
+    sleep(2);
+    FAR struct i2c_dev_s *dev;
+
+    dev = up_i2cinitialize(0);
+  
+    int ret = 0;
+    FAR struct i2c_config_s config;
+    uint8_t buf[2];
+    uint8_t addr[2];
+
+    config.frequency = 100000;
+    config.addrlen = 7;
+    config.address = 0x1A;
+   
+//    while(true) {
+
+    addr[0] = 0x04;
+    addr[1] = 0x00;
+
+    ret = i2c_write(dev, &config, addr, 2);
+
+    if (ret != 2) {
+	    lldbg("write fail\n");
+	    return;
+    }
+    else lldbg("written 0x%02x to regaddr 0x%02x\n", addr[1], addr[0]);
+
+    sleep(2);
+
+    ret = i2c_write(dev, &config, addr, 1); // send address 0x01 followed by read command.
+
+    if (ret != 1) {
+            lldbg("write fail\n");
+            return;
+    }
+   
+    ret =  i2c_read(dev, &config, buf, 1);
+
+    if (ret != 1) {
+            lldbg("read fail\n");
+            return;
+    }
+
+    lldbg("read 0x%02x from regaddr 0x%02x\n", buf[0], addr[0]);
+
+    sleep(2);
+
+    addr[0] = 0x05;
+    addr[1] = 0x3F;
+
+    ret = i2c_write(dev, &config, addr, 2);
+
+    if (ret != 2) {
+            lldbg("write fail\n");
+            return;
+    }
+    else lldbg("written 0x%02x to regaddr 0x%02x\n", addr[1], addr[0]);
+
+    sleep(2);
+
+    ret = i2c_write(dev, &config, addr, 1); // send address 0x01 followed by read command.
+
+    if (ret != 1) {
+            lldbg("write fail\n");
+            return;
+    }
+
+    ret =  i2c_read(dev, &config, buf, 1);
+
+    if (ret != 1) {
+            lldbg("read fail\n");
+            return;
+    }
+
+    lldbg("read 0x%02x from regaddr 0x%02x\n", buf[0], addr[0]);
+
+    sleep(2);
+
+    addr[0] = 0x03; // write to regaddr 0x01 value 0x00
+    addr[1] = 0x01;
+
+    ret = i2c_write(dev, &config, addr, 2);
+
+    if (ret != 2) {
+            lldbg("write fail\n");
+            return;
+    }
+    else lldbg("written 0x%02x to regaddr 0x%02x\n", addr[1], addr[0]);
+
+    sleep(2);
+
+    ret = i2c_write(dev, &config, addr, 1); // send address 0x01 followed by read command.
+
+    if (ret != 1) {
+            lldbg("write fail\n");
+            return;
+    }
+
+    ret =  i2c_read(dev, &config, buf, 1);
+
+    if (ret != 1) {
+            lldbg("read fail\n");
+            return;
+    }
+
+
+    lldbg("read 0x%02x from regaddr 0x%02x\n", buf[0], addr[0]);
+
+    sleep(2);
+
+    addr[0] = 0x01; 
+    addr[1] = 0x00;
+
+    ret = i2c_write(dev, &config, addr, 2);
+
+    if (ret != 2) {
+        lldbg("write fail\n");
+        return;
+    } else lldbg("written 0x%02x to regaddr 0x%02x\n", addr[1], addr[0]);
+
+    sleep(2);
+
+    while(true) {
+
+    ret = i2c_write(dev, &config, addr, 1); // send address 0x01 followed by read command.
+
+    if (ret != 1) {
+            lldbg("write fail\n");
+            return;
+    }
+
+    ret =  i2c_read(dev, &config, buf, 1);
+
+    if (ret != 1) {
+            lldbg("read fail\n");
+            return;
+    }
+
+    lldbg("read 0x%02x from regaddr 0x%02x\n", buf[0], addr[0]);
+
+    if (buf[0] == 0x02) break;    // wait until we read 0x02 from the register.
+
+    sleep(2);
+
+    }
+
+    addr[0] = 0x2A; // write to regaddr 0x01 value 0x00
+    addr[1] = 0xCC;
+
+    ret = i2c_write(dev, &config, addr, 2);
+
+    if (ret != 2) {
+            lldbg("write fail\n");
+            return;
+    }
+    else lldbg("written 0x%02x to regaddr 0x%02x\n", addr[1], addr[0]);
+
+    sleep(2);
+
+    ret = i2c_write(dev, &config, addr, 1); // send address 0x01 followed by read command.
+
+    if (ret != 1) {
+            lldbg("write fail\n");
+            return;
+    }
+
+    ret =  i2c_read(dev, &config, buf, 1);
+
+    if (ret != 1) {
+            lldbg("read fail\n");
+            return;
+    }
+
+
+    lldbg("read 0x%02x from regaddr 0x%02x\n", buf[0], addr[0]);
+
+    sleep(2);
+
+    addr[0] = 0x2B; // master volume fine
+    addr[1] = 0x03;
+
+    ret = i2c_write(dev, &config, addr, 2);
+
+    if (ret != 2) {
+            lldbg("write fail\n");
+            return;
+    }
+    else lldbg("written 0x%02x to regaddr 0x%02x\n", addr[1], addr[0]);
+
+    sleep(2);
+
+    ret = i2c_write(dev, &config, addr, 1); // send address 0x01 followed by read command.
+
+    if (ret != 1) {
+            lldbg("write fail\n");
+            return;
+    }
+
+    ret =  i2c_read(dev, &config, buf, 1);
+
+    if (ret != 1) {
+            lldbg("read fail\n");
+            return;
+    }
+
+
+    lldbg("read 0x%02x from regaddr 0x%02x\n", buf[0], addr[0]);
+
+#else
+	sleep(2);
+	counter++;
 	printf("Hello, World!!\n");
+	if (counter == 3) {
+		printf("registering i2s driver\n");
+		struct i2s_dev_s *i2s = amebad_i2s_initialize(0);
+	}
+#endif    
 	return 0;
 }

@@ -83,6 +83,8 @@
 #include <tinyara/arch.h>
 #endif
 
+extern int rtl_ub6470_initialize(int minor);
+
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
@@ -324,5 +326,6 @@ void up_initialize(void)
 	/* Initialize the L2 cache if present and selected */
 
 	up_l2ccinitialize();
+
 	board_led_on(LED_IRQSENABLED);
 }

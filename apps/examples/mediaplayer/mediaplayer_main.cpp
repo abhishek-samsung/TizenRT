@@ -50,7 +50,7 @@ static const int TEST_PCM = 1;
 static const int TEST_BUFFER = 2;
 static const int TEST_HTTP = 3;
 
-static char TEST_FILE_PATH[128] = "/rom/44100.pcm";
+static char TEST_FILE_PATH[128] = "/mnt/44100.pcm";
 // We don't provide any song's URL, to avoid license issue.
 // Please fill a valid URL to `TEST_HTTP_URL` for testing!
 static const std::string TEST_HTTP_URL = "";
@@ -58,12 +58,12 @@ static const std::string TEST_HTTP_URL = "";
 enum test_command_e {
 	APP_OFF = 0,
 	PLAYER_START = 1,
-	PLAYER_PAUSE,
-	PLAYER_RESUME,
+//	PLAYER_PAUSE,
+//	PLAYER_RESUME,
 	PLAYER_STOP,
-	GET_MAX_VOLUME,
-	VOLUME_UP,
-	VOLUME_DOWN
+//	GET_MAX_VOLUME,
+//	VOLUME_UP,
+//	VOLUME_DOWN
 };
 
 class MyMediaPlayer : public MediaPlayerObserverInterface,
@@ -104,10 +104,10 @@ bool MyMediaPlayer::init(int test)
 	switch (test) {
 	case TEST_PCM:
 		makeSource = []() {
-			auto source = std::move(unique_ptr<FileInputDataSource>(new FileInputDataSource("/rom/44100.pcm")));
-			source->setSampleRate(44100);
+			auto source = std::move(unique_ptr<FileInputDataSource>(new FileInputDataSource("/mnt/file.raw")));
+			source->setSampleRate(48000);
 			source->setChannels(2);
-			source->setPcmFormat(AUDIO_FORMAT_TYPE_S16_LE);
+			source->setPcmFormat(AUDIO_FORMAT_TYPE_S32_LE);
 			return std::move(source);
 		};
 		break;
@@ -156,7 +156,7 @@ void MyMediaPlayer::doCommand(int command)
 		}
 		focusManager.requestFocus(mFocusRequest);
 		break;
-	case PLAYER_PAUSE:
+/*	case PLAYER_PAUSE:
 		cout << "PLAYER_PAUSE is selected" << endl;
 		if (mp.pause() != PLAYER_OK) {
 			cout << "Mediaplayer::pause failed" << endl;
@@ -168,7 +168,7 @@ void MyMediaPlayer::doCommand(int command)
 			cout << "Mediaplayer::start failed" << endl;
 		}
 		break;
-	case PLAYER_STOP:
+*/	case PLAYER_STOP:
 		cout << "PLAYER_STOP is selected" << endl;
 		if (mp.stop() != PLAYER_OK) {
 			cout << "Mediaplayer::stop failed" << endl;
@@ -180,7 +180,7 @@ void MyMediaPlayer::doCommand(int command)
 		isSourceSet = false;
 		focusManager.abandonFocus(mFocusRequest);
 		break;
-	case GET_MAX_VOLUME:
+/*	case GET_MAX_VOLUME:
 		cout << "GET_MAX_VOLUME is selected" << endl;
 		if (mp.getMaxVolume(&volume) != PLAYER_OK) {
 			cout << "MediaPlayer::getMaxVolume failed" << endl;
@@ -230,7 +230,7 @@ void MyMediaPlayer::doCommand(int command)
 			cout << "Now, Volume is " << (int)volume << endl;
 		}
 		break;
-	default:
+*/	default:
 		break;
 	}
 }
@@ -314,9 +314,10 @@ class MediaPlayerController
 public:
 	void start()
 	{
+		int player = -5;
 		while (true) {
 			vector<string> sourceList = {"Exit APP", "Test PCM", "Test BUFFER", "Test HTTP"};
-			listDirEntries("/rom", sourceList);
+			listDirEntries("/mnt", sourceList);
 			auto test = view.selectSource(sourceList);
 			if (test == 0) {
 				break;
@@ -329,7 +330,7 @@ public:
 			}
 
 			while (true) {
-				auto player = view.selectPlayer();
+				if (player == -5) player = view.selectPlayer();
 				if (player < 0) {
 					break;
 				}

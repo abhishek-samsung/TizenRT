@@ -303,8 +303,8 @@ static const struct amebad_i2c_config_s amebad_i2c1_config = {
 	//.busy_idle = CONFIG_I2C1_BUSYIDLE,
 	//.filtscl = CONFIG_I2C1_FILTSCL,
 	//.filtsda = CONFIG_I2C1_FILTSDA,
-	.scl_pin = PA_25,
-	.sda_pin = PA_26,
+	.scl_pin = PB_5,
+	.sda_pin = PB_6,
 #ifndef CONFIG_I2C_SLAVE
 	.mode = AMEBAD_I2C_MASTER,
 #else
@@ -765,7 +765,7 @@ static int amebad_i2c_isr_process(struct amebad_i2c_priv_s *priv)
 
 	if ((w_msgv->flags & I2C_M_READ) == 0) {
 
-		i2cinfo("i2c writing");
+		lldbg("i2c writing");
 #ifdef CONFIG_I2C_SLAVE
 
 		i2c_slave_read(priv->i2c_object, &read_restart, 1);
@@ -778,7 +778,7 @@ static int amebad_i2c_isr_process(struct amebad_i2c_priv_s *priv)
         }
 	if ((r_msgv->flags & I2C_M_READ) != 0) {
 
-		i2cinfo("i2c reading");
+		lldbg("i2c reading");
 #ifdef CONFIG_I2C_SLAVE
 
 		ret = i2c_slave_read(priv->i2c_object, r_msgv->buffer, r_msgv->length);
@@ -792,7 +792,6 @@ static int amebad_i2c_isr_process(struct amebad_i2c_priv_s *priv)
 
 	if ((w_msgv->flags & I2C_M_READ) == 0) {
 
-		i2cinfo("i2c writing");
 #ifdef CONFIG_I2C_SLAVE
 
 		i2c_slave_set_for_rd_req(priv->i2c_object, 1);
@@ -800,16 +799,26 @@ static int amebad_i2c_isr_process(struct amebad_i2c_priv_s *priv)
 #else
 		ret = rtk_i2c_write(priv->i2c_object, priv->msgv->addr, w_msgv->buffer, w_msgv->length, 1);
 #endif
+		//lldbg("i2c writing - priv->msgv->addr = 0x%x, w_msgv->buffer = 0x%x 0x%x, w_msgv->length = 0x%x\n", priv->msgv->addr, w_msgv->buffer[0], w_msgv->buffer[1], w_msgv->length);
+		if(ret != w_msgv->length) {
+			lldbg("write length is not successful - ret = %d, w_msgv->length = %d\n", ret, w_msgv->length);
+			ret = -1;
+		}
 	}
 	else if ((w_msgv->flags & I2C_M_READ) != 0) {
 
-		i2cinfo("i2c reading");
+		
 #ifdef CONFIG_I2C_SLAVE
 
 		ret = i2c_slave_read(priv->i2c_object, w_msgv->buffer, w_msgv->length);
 #else
 		ret = rtk_i2c_read(priv->i2c_object, priv->msgv->addr, w_msgv->buffer, w_msgv->length, 1);
 #endif
+		//lldbg("i2c reading - priv->msgv->addr = 0x%x, w_msgv->buffer = 0x%x\n", priv->msgv->addr, w_msgv->buffer[0]);
+		if(ret != w_msgv->length) {
+			lldbg("read length is not successful - ret = %d, w_msgv->length = %d\n", ret, w_msgv->length);
+			ret = -1;
+		}		
 	}
 
 #endif  /* #ifdef CONFIG_I2C_WRITEREAD */

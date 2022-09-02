@@ -51,3 +51,4 @@
 
 CSRCS += rtl8721csm_boot.c
 CSRCS += rtl8721csm_i2schar.c
+CSRCS += rtl_ub6470.c

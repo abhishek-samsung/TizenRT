@@ -123,6 +123,16 @@ static void amebad_gpio_set(FAR struct gpio_lowerhalf_s *lower,
 	gpio_write(&priv->obj, value);
 }
 
+int amebad_gpio_write(PinName pin, FAR unsigned int value) {
+	gpio_t p;
+	p.pin = pin;
+	gpio_write(&p, value);
+}
+
+int amebad_PA0_set(FAR unsigned int value) {
+	return amebad_gpio_write(_PA_0, value);
+}
+
 /****************************************************************************
  * Name: amebad_gpio_get
  *
@@ -141,7 +151,6 @@ static int amebad_gpio_get(FAR struct gpio_lowerhalf_s *lower)
 	struct amebad_lowerhalf_s *priv = (struct amebad_lowerhalf_s *)lower;
 	return gpio_read(&priv->obj);
 }
-
 
 static int amebad_gpio_setdir(FAR struct gpio_lowerhalf_s *lower,
 						   unsigned long arg)
@@ -258,6 +267,7 @@ FAR struct gpio_lowerhalf_s *amebad_gpio_lowerhalf(u32 pinname, u32 pinmode, u32
 	gpio_init(&lower->obj, pinname);
     	gpio_dir(&lower->obj, pinmode);
     	gpio_mode(&lower->obj, pinpull);
+	gpio_write(&lower->obj, 0);
 	lower->pinmode =pinmode;
 	lower->pinpull = pinpull;
 	lower->ops = &amebad_gpio_ops;
