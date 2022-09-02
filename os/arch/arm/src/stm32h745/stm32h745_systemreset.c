@@ -242,8 +242,18 @@ int board_reset(int status)
 	return 0;
 }
 
-
-
+/****************************************************************************
+ * Name: stm32h745_system_reset
+ *
+ * Description:
+ *   Reset board.  This function may or may not be supported by a
+ *   particular board architecture.
+ *
+ ****************************************************************************/
+void stm32h745_system_reset(void)
+{
+    __NVIC_SystemReset();
+}
 
 
 
