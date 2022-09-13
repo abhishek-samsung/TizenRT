@@ -83,23 +83,23 @@
 struct stm32h745_up_dev_s
 {
   USART_TypeDef *USART;
-  uint8_t parity;       /* 0=none, 1=odd, 2=even */
-  uint8_t bits;         /* Number of bits (7 or 8) */
-  uint8_t stopbit;      /* LL_USART_STOPBITS_1 or LL_USART_STOPBITS_2 */
+  uint32_t parity;       /* 0=none, 1=odd, 2=even */
+  uint32_t bits;         /* Number of bits (7 or 8) */
+  uint32_t stopbit;      /* LL_USART_STOPBITS_1 or LL_USART_STOPBITS_2 */
   uint32_t baud;        /* Configured baud */
   uint32_t irq;
   uint32_t tx;
   uint32_t rx;
   uint32_t rts;
   uint32_t cts;
-  uint8_t FlowControl;
+  uint32_t FlowControl;
   bool txint_enable;
   bool rxint_enable;
 #ifdef CONFIG_SERIAL_IFLOWCONTROL
-  uint8_t iflow:1;      /* input flow control (RTS) enabled */
+  uint32_t iflow:1;      /* input flow control (RTS) enabled */
 #endif
 #ifdef CONFIG_SERIAL_OFLOWCONTROL
-  uint8_t oflow:1;      /* output flow control (CTS) enabled */
+  uint32_t oflow:1;      /* output flow control (CTS) enabled */
 #endif
   uint8_t tx_level;
 };
@@ -146,8 +146,22 @@ static char g_uart2_txbuffer[CONFIG_USART2_TXBUFSIZE];
 static struct stm32h745_up_dev_s g_uart2_priv = 
 {
   .USART = USART2,
-  .parity = CONFIG_USART2_PARITY,
-  .bits = CONFIG_USART2_BITS,
+#if (CONFIG_USART2_PARITY == 1)
+  .parity = LL_USART_PARITY_ODD,
+#elif (CONFIG_USART2_PARITY == 2)
+  .parity = LL_USART_PARITY_EVEN,
+#else
+  .parity = LL_USART_PARITY_NONE,
+#endif
+
+#if (CONFIG_USART2_BITS == 7)
+  .bits = LL_USART_DATAWIDTH_7B,
+#elif (CONFIG_USART2_BITS == 8)
+  .bits = LL_USART_DATAWIDTH_8B,
+#else
+  #  error "Unsupported UART Bits!!!"
+#endif
+
 #if (CONFIG_USART2_2STOP)
   .stopbit = LL_USART_STOPBITS_2,
 #else
@@ -190,8 +204,23 @@ static char g_uart3_txbuffer[CONFIG_USART3_TXBUFSIZE];
 static struct stm32h745_up_dev_s g_uart3_priv = 
 {
   .USART = USART3,
-  .parity = CONFIG_USART3_PARITY,
-  .bits = CONFIG_USART3_BITS,
+#if (CONFIG_USART3_PARITY == 1)
+  .parity = LL_USART_PARITY_ODD,
+#elif (CONFIG_USART3_PARITY == 2)
+  .parity = LL_USART_PARITY_EVEN,
+#else
+  .parity = LL_USART_PARITY_NONE,
+#endif
+
+#if (CONFIG_USART3_BITS == 7)
+  .bits = LL_USART_DATAWIDTH_7B,
+#elif (CONFIG_USART3_BITS == 8)
+  .bits = LL_USART_DATAWIDTH_8B,
+#else
+  #  error "Unsupported UART Bits!!!"
+#endif
+
+
 #if (CONFIG_USART3_2STOP)
   .stopbit = LL_USART_STOPBITS_2,
 #else
@@ -235,8 +264,22 @@ static char g_uart6_txbuffer[CONFIG_USART6_TXBUFSIZE];
 static struct stm32h745_up_dev_s g_uart6_priv = 
 {
   .USART = USART6,
-  .parity = CONFIG_USART6_PARITY,
-  .bits = CONFIG_USART6_BITS,
+#if (CONFIG_USART6_PARITY == 1)
+  .parity = LL_USART_PARITY_ODD,
+#elif (CONFIG_USART6_PARITY == 2)
+  .parity = LL_USART_PARITY_EVEN,
+#else
+  .parity = LL_USART_PARITY_NONE,
+#endif
+
+#if (CONFIG_USART6_BITS == 7)
+  .bits = LL_USART_DATAWIDTH_7B,
+#elif (CONFIG_USART6_BITS == 8)
+  .bits = LL_USART_DATAWIDTH_8B,
+#else
+  #  error "Unsupported UART Bits!!!"
+#endif
+
 #if (CONFIG_USART6_2STOP)
   .stopbit = LL_USART_STOPBITS_2,
 #else
@@ -297,6 +340,7 @@ static int  stm32h745_up_setup(struct uart_dev_s *dev)
 
   LL_USART_InitTypeDef     USART_InitStruct = {0};
   LL_GPIO_InitTypeDef      GPIO_InitStruct = {0};
+
 
   if(priv->USART == USART3)
   {
@@ -359,12 +403,29 @@ static int  stm32h745_up_setup(struct uart_dev_s *dev)
 
   USART_InitStruct.PrescalerValue = LL_USART_PRESCALER_DIV1;
   USART_InitStruct.BaudRate = priv->baud;
-  USART_InitStruct.DataWidth = priv->bits;
+  if(priv->parity != LL_USART_PARITY_NONE)
+  {
+    if(priv->bits == LL_USART_DATAWIDTH_7B)
+    {
+      USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
+    }
+    else
+    {
+      USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_9B;
+    }
+  }
+  else
+  {
+    USART_InitStruct.DataWidth = priv->bits;
+  }
   USART_InitStruct.StopBits = priv->stopbit;
   USART_InitStruct.Parity = priv->parity;
   USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
   USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
   USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
+
+  LL_USART_DeInit(priv->USART);
+  LL_USART_Disable(priv->USART);
 
   LL_USART_Init(priv->USART, &USART_InitStruct);
   LL_USART_SetTXFIFOThreshold(priv->USART, LL_USART_FIFOTHRESHOLD_1_8);
@@ -387,6 +448,8 @@ static int  stm32h745_up_setup(struct uart_dev_s *dev)
 static void stm32h745_up_shutdown(struct uart_dev_s *dev)
 {
   struct stm32h745_up_dev_s *priv = (struct stm32h745_up_dev_s *)dev->priv;
+
+  stm32h745_up_detach(dev);
 
   if(priv->USART == USART3)
   {
@@ -541,13 +604,13 @@ static int  stm32h745_up_ioctl(FAR struct uart_dev_s *dev, int cmd, unsigned lon
       termiosp->c_cflag |= CSTOPB;
     }
 
-    if(priv->bits == LL_USART_DATAWIDTH_7B)
-    {
-      termiosp->c_cflag |= CS7;
-    }
-    else if(priv->bits == LL_USART_DATAWIDTH_8B)
+    if(priv->bits == LL_USART_DATAWIDTH_8B)
     {
       termiosp->c_cflag |= CS8;
+    }
+    else if(priv->bits == LL_USART_DATAWIDTH_7B)
+    {
+      termiosp->c_cflag |= CS7;
     }
     else
     {
@@ -563,13 +626,13 @@ static int  stm32h745_up_ioctl(FAR struct uart_dev_s *dev, int cmd, unsigned lon
     }
 
     //Bits
-    if((termiosp->c_cflag&CS7) == CS7)
-    {
-      priv->bits = LL_USART_DATAWIDTH_7B;
-    }
-    else if((termiosp->c_cflag&CS8) == CS8)
+    if((termiosp->c_cflag&CS8) == CS8)
     {
       priv->bits = LL_USART_DATAWIDTH_8B;
+    }
+    else if((termiosp->c_cflag&CS7) == CS7)
+    {
+      priv->bits = LL_USART_DATAWIDTH_7B;
     }
     else
     {
@@ -579,11 +642,11 @@ static int  stm32h745_up_ioctl(FAR struct uart_dev_s *dev, int cmd, unsigned lon
     //Stop bits
     if((termiosp->c_cflag&CSTOPB) == CSTOPB)
     {
-      priv->stopbit == LL_USART_STOPBITS_2;
+      priv->stopbit = LL_USART_STOPBITS_2;
     }
     else
     {
-      priv->stopbit == LL_USART_STOPBITS_1; 
+      priv->stopbit = LL_USART_STOPBITS_1; 
     }
 
     //Parity bits

@@ -157,6 +157,28 @@ int stm32h745_switch_boot_address(uint32_t address)
 }
 
 
+/************************************************************************************
+ * Name: stm32h745_switch_boot_control
+ *
+ * Description:
+ *   switch execution boot after reset
+ *   core  : 0 is CM7, 1 is CM4
+ *   value : 0 is disable, 1 is enable
+ ************************************************************************************/
+int stm32h745_switch_boot_control(int core, int value)
+{
+    int result = ERROR;
+
+    //Will implement
+
+    return result;
+}
+
+
+
+
+
+
 
 
 

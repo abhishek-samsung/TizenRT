@@ -285,7 +285,7 @@ void __start(void)
 #endif
 
 	/* clear axi sram */
-	for(dest = 0x24000000; dest < (0x24000000 + (512 * 1024)); )
+	for(dest = (uint32_t *)0x24000000; dest < (uint32_t *)(0x24000000 + (512 * 1024)); )
 	{
 		*dest++ = 0;
 	}
