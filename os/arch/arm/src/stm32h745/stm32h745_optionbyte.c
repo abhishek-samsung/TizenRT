@@ -318,6 +318,24 @@ int  stm32h745_switch_boot_address_m7_m4(uint32_t address_m7, uint32_t address_m
 }
 
 
+/************************************************************************************
+ * Name: stm32h745_switch_boot_address_m7_m4
+ *
+ * Description:
+ *   switch boot address after reset for M4, M7 both core
+ ************************************************************************************/
+int  stm32h745_get_boot_address_m7_m4(uint32_t *address_m7, uint32_t *address_m4)
+{
+    FLASH_OBProgramInitTypeDef OBInit;
+
+    OBInit.Banks = FLASH_BANK_1;
+    HAL_FLASHEx_OBGetConfig(&OBInit);
+
+    (*address_m7) = OBInit.BootAddr0;
+    (*address_m4) = OBInit.CM4BootAddr0;
+
+    return OK;
+}
 
 /************************************************************************************
  * Name: stm32h745_switch_boot_control
