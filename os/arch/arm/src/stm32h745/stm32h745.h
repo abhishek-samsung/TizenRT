@@ -44,7 +44,7 @@ extern int  stm32h745_switch_boot_address(uint32_t address);
 extern int  stm32h745_switch_boot_address_m4(uint32_t address);
 extern int  stm32h745_switch_boot_address_m7_m4(uint32_t address_m7, uint32_t address_m4);
 extern int  stm32h745_get_boot_address_m7_m4(uint32_t *address_m7, uint32_t *address_m4);
-extern int stm32h745_get_boot_control(int core, int *value);
+extern int  stm32h745_get_boot_control(int core, int *value);
 extern int  stm32h745_switch_boot_control(int core, int value);
 extern void stm32h745_irq_clear_pending_all(void);
 extern void stm32h745_system_reset(void);
