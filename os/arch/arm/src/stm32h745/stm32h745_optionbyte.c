@@ -345,6 +345,55 @@ int  stm32h745_get_boot_address_m7_m4(uint32_t *address_m7, uint32_t *address_m4
  *   core  : 0 is CM7, 1 is CM4
  *   value : 0 is disable, 1 is enable
  ************************************************************************************/
+int stm32h745_get_boot_control(int core, int *value)
+{
+    int result = OK;
+    FLASH_OBProgramInitTypeDef OBInit;
+
+    if(core == 0) /* CM7 */
+    {
+        OBInit.Banks = FLASH_BANK_1;
+    }
+    else /* CM4 */
+    {
+        OBInit.Banks = FLASH_BANK_2;
+    }
+
+    HAL_FLASHEx_OBGetConfig(&OBInit);
+
+    if(core == 0) /* CM7 */
+    {
+        if((OBInit.USERConfig&FLASH_OPTSR_BCM7) == FLASH_OPTSR_BCM7)
+        {
+            (*value) = 1;
+        }
+        else
+        {
+            (*value) = 0;
+        }
+    }
+    else /* CM4 */
+    {
+        if((OBInit.USERConfig&FLASH_OPTSR_BCM4) == FLASH_OPTSR_BCM4)
+        {
+            (*value) = 1;
+        }
+        else
+        {
+            (*value) = 0;
+        }
+    }
+
+    return result;    
+}
+/************************************************************************************
+ * Name: stm32h745_switch_boot_control
+ *
+ * Description:
+ *   switch execution boot after reset
+ *   core  : 0 is CM7, 1 is CM4
+ *   value : 0 is disable, 1 is enable
+ ************************************************************************************/
 int stm32h745_switch_boot_control(int core, int value)
 {
     int result = OK;
