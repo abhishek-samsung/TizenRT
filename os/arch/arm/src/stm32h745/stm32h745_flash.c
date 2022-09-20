@@ -84,7 +84,7 @@
 
 /* This type represents the state of the MTD device.  The struct mtd_dev_s must
  * appear at the beginning of the definition so that you can freely cast between
- * pointers to struct mtd_dev_s and struct amebad_dev_s.
+ * pointers to struct mtd_dev_s.
  */
 struct stm32h745_mtd_dev_s 
 {

@@ -113,7 +113,7 @@ void board_initialize(void)
 #endif
 
     //up_flashinitialize();
-
+    stm32h745_tim_init("/dev/timer0", 16);
     lldbg("Board init \r\n");
 }
 
