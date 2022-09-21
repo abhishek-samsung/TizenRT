@@ -128,7 +128,7 @@ static void stm32h745_tim_handler(int irq, FAR void *context, FAR void *arg)
   {
     priv->callback(&next_interval_us, priv->arg);
   }
-  
+
   __HAL_TIM_CLEAR_IT(&priv->htim, TIM_IT_UPDATE);
 }
 
@@ -377,7 +377,7 @@ int stm32h745_tim_init(const char *devpath, int timer)
 
   switch (timer) 
   {
-  case 15:  /* TIMER 16 */
+  case 15:  /* TIMER 15  */
     __HAL_RCC_TIM15_CLK_ENABLE();
     priv->htim.Instance = TIM15;
     priv->irq = STM32H745_IRQ_TIM15;

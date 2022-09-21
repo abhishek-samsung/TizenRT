@@ -37,6 +37,8 @@
 #define __ARCH_ARM_SRC_STM32H745_H
 
 extern int  stm32h745_shared_memory_init(uint32_t hsem_id);
+extern int  stm32h745_shared_memory_write(uint32_t hsem_id, uint32_t index, uint8_t *src_addr, uint32_t size);
+extern int  stm32h745_shared_memory_read(uint32_t hsem_id, uint32_t index, uint8_t *dest_addr, uint32_t size, bool notification);
 extern int  stm32h745_haltick_init(void);
 extern void __ramfunc__ stm32h745_wwdginitialize(FAR const char *devpath);
 extern void stm32h745_tim4_init(void);
