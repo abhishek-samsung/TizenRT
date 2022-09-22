@@ -106,7 +106,6 @@ void board_initialize(void)
 
 #ifdef CONFIG_SHARED_MEMORY
     stm32h745_shared_memory_init(HSEM_ID_0);
-    stm32h745_shared_memory_write(HSEM_ID_1, 0, w_buffer, 8);
 #endif
 
 #if defined(CONFIG_WATCHDOG) && defined(CONFIG_STM32H745_WWDG1)
@@ -118,7 +117,6 @@ void board_initialize(void)
     stm32h745_tim_init("/dev/timer0", 16);
 #endif
 
-    lldbg("Option byte result : %d\n", stm32h745_switch_boot_control(1, 0));
     lldbg("Board init \r\n");
 }
 

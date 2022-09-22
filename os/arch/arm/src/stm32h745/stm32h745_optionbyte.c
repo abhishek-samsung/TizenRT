@@ -422,6 +422,8 @@ int stm32h745_switch_boot_control(int core, int value)
 
     if(core == 0) /* CM7 */
     {
+        OBInit.USERType = OB_USER_BCM7;
+
         if(value == 0)  /* disable */
         {
             OBInit.USERConfig &= ~FLASH_OPTSR_BCM7;
@@ -433,6 +435,8 @@ int stm32h745_switch_boot_control(int core, int value)
     }
     else /* CM4 */
     {
+        OBInit.USERType = OB_USER_BCM4;
+
         if(value == 0)  /* disable */
         {
             OBInit.USERConfig &= ~FLASH_OPTSR_BCM4;
