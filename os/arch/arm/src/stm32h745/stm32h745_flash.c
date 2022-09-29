@@ -66,17 +66,16 @@
 /****************************************************************************
  * Pre-processor Definitions
  ************************************************************************************/
-#define STM32H745_FLASH_TOTAL_SIZE   (1024 * 1024)  /*Should be changed as a using*/
+#define STM32H745_FLASH_TOTAL_SIZE   (1024 * 1024 * 2)  /*Should be changed as a using*/
 #define STM32H745_FLASH_BLOCK_SIZE   (32)           /*Should be changed as a using*/
 #define STM32H745_FLASH_ERASE_SIZE   (128 * 1024)   /*Should be changed as a using*/
-#define STM32H745_FLASH_SECTOR_NB    (STM32H745_FLASH_TOTAL_SIZE / STM32H745_FLASH_ERASE_SIZE)
+#define STM32H745_FLASH_SECTOR_NB    (16)           /*Total bank number*/
+#define STM32H745_FLASH_SECTOR_NB_EACH_BANK (8)     /*each banks number*/
 
-#define STM32H745_FLASH_FIRST_ADDRESS (0x08000000)
 #define STM32H745_FLASH_BASE_ADDRESS  (0x08000000)   /*Should be changed as a using*/
 #define STM32H745_FLASH_MAX_ADDRESS   (STM32H745_FLASH_BASE_ADDRESS + STM32H745_FLASH_TOTAL_SIZE)
 
 #define STM32H745_FLASH_SECTOR_SIZE   (128 * 1024)
-#define STM32H745_FLASH_FIRST_SECTOR  ((STM32H745_FLASH_BASE_ADDRESS - STM32H745_FLASH_FIRST_ADDRESS) / STM32H745_FLASH_SECTOR_SIZE)
 
 /************************************************************************************
  * Private Types
@@ -114,12 +113,37 @@ static ssize_t stm32h745_write(FAR struct mtd_dev_s *dev, off_t offset, size_t n
 
 /************************************************************************************
  * Name: stm32h745_erase
+ * Description: 
+ *   startblock BANK1 : 0 ~ 7
+ *   startblock BANK2 : 8 ~ 15
  ************************************************************************************/\
 static int stm32h745_erase(FAR struct mtd_dev_s *dev, off_t startblock, size_t nblocks)
 {
     ssize_t result=OK;
     static FLASH_EraseInitTypeDef EraseInitStruct;
     uint32_t SECTORError = 0;
+    int Banks;
+    int Sector;
+
+    if(nblocks < 1)
+    {
+        return ERROR;
+    }
+
+    if(startblock < STM32H745_FLASH_SECTOR_NB_EACH_BANK)
+    {
+        Banks  = FLASH_BANK_1;
+        Sector = startblock;
+    }
+    else if(startblock < STM32H745_FLASH_SECTOR_NB)
+    {
+        Banks  = FLASH_BANK_2;
+        Sector = startblock - STM32H745_FLASH_SECTOR_NB_EACH_BANK;
+    }
+    else
+    {
+        return ERROR;
+    }
 
     __DSB();
     __ISB();
@@ -130,8 +154,8 @@ static int stm32h745_erase(FAR struct mtd_dev_s *dev, off_t startblock, size_t n
     /* Fill EraseInit structure*/
     EraseInitStruct.TypeErase     = FLASH_TYPEERASE_SECTORS;
     EraseInitStruct.VoltageRange  = FLASH_VOLTAGE_RANGE_2;
-    EraseInitStruct.Banks         = FLASH_BANK_1;
-    EraseInitStruct.Sector        = STM32H745_FLASH_FIRST_SECTOR + startblock;
+    EraseInitStruct.Banks         = Banks;
+    EraseInitStruct.Sector        = Sector;
     EraseInitStruct.NbSectors     = nblocks;
 
     if(HAL_FLASHEx_Erase(&EraseInitStruct, &SECTORError) != HAL_OK)

@@ -252,9 +252,11 @@ void __start(void)
 	const uint32_t *src;
 	uint32_t *dest;
 	volatile uint32_t delay=0xFFFFFF;
+	int option_value;
 
 	/* Add delay to wait for M4 System clock completed 10msec */
-	while(delay--)
+	stm32h745_get_boot_control(1, &option_value);
+	while((delay--) && (option_value == 1))
 	{
 		__NOP();
 	}
