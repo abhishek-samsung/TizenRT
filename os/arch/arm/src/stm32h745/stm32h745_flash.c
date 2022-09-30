@@ -149,7 +149,7 @@ static int stm32h745_erase(FAR struct mtd_dev_s *dev, off_t startblock, size_t n
     __ISB();
 
     __disable_irq();
-    stm32h745_irq_clear_pending_all();
+//    stm32h745_irq_clear_pending_all();
     HAL_FLASH_Unlock();
     /* Fill EraseInit structure*/
     EraseInitStruct.TypeErase     = FLASH_TYPEERASE_SECTORS;
@@ -311,9 +311,42 @@ FAR struct mtd_dev_s *up_flashinitialize(void)
     g_dev_s.mtd.ioctl  = stm32h745_ioctl;
     g_dev_s.mtd.name   = "stm32h745 flash";
 
+    lldbg("1\n");
     return (FAR struct mtd_dev_s *)&g_dev_s;
 }
 
+/************************************************************************************
+ * Name: stm32h745_flash_ecc_handler
+ ************************************************************************************/
+
+void stm32h745_flash_ecc_handler(void)
+{
+    int ecc_sector;
+    lldbg("ECC Error recovery handler\n");
+
+    if(__HAL_FLASH_GET_FLAG_BANK1(FLASH_FLAG_DBECCERR_BANK1))
+    {
+        ecc_sector = (int)((int)(READ_REG(FLASH->ECC_FA1) * STM32H745_FLASH_BLOCK_SIZE) / STM32H745_FLASH_SECTOR_SIZE);
+        
+        __HAL_FLASH_CLEAR_FLAG_BANK1(FLASH_FLAG_SNECCERR_BANK1);
+        __HAL_FLASH_CLEAR_FLAG_BANK1(FLASH_FLAG_DBECCERR_BANK1);
+        
+        stm32h745_erase(NULL, ecc_sector, 1);
+        lldbg("BANK1 Sector erased:%d\n", ecc_sector);
+    }
+
+    if(__HAL_FLASH_GET_FLAG_BANK2(FLASH_FLAG_DBECCERR_BANK2))
+    {
+        ecc_sector = (int)((int)(READ_REG(FLASH->ECC_FA2) * STM32H745_FLASH_BLOCK_SIZE) / STM32H745_FLASH_SECTOR_SIZE);
+        ecc_sector = ecc_sector + STM32H745_FLASH_SECTOR_NB_EACH_BANK;
+        
+        __HAL_FLASH_CLEAR_FLAG_BANK2(FLASH_FLAG_SNECCERR_BANK2);
+        __HAL_FLASH_CLEAR_FLAG_BANK2(FLASH_FLAG_DBECCERR_BANK2);
+
+        stm32h745_erase(NULL, ecc_sector, 1);
+        lldbg("BANK2 Sector erased:%d\n", ecc_sector);
+    }
+}
 
 
 

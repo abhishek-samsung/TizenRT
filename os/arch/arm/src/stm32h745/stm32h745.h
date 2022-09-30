@@ -51,7 +51,7 @@ extern int  stm32h745_switch_boot_control(int core, int value);
 extern void stm32h745_irq_clear_pending_all(void);
 extern void stm32h745_system_reset(void);
 extern int  stm32h745_tim_init(const char *devpath, int timer);
-
+extern void stm32h745_flash_ecc_handler(void);
 /* Definition of HSEM ID */
 #define HSEM_ID_0  (0U)
 #define HSEM_ID_1  (1U)
