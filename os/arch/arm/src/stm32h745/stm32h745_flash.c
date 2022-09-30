@@ -321,7 +321,6 @@ FAR struct mtd_dev_s *up_flashinitialize(void)
 void stm32h745_flash_ecc_handler(void)
 {
     int ecc_sector;
-    lldbg("ECC Error recovery handler\n");
 
     if(__HAL_FLASH_GET_FLAG_BANK1(FLASH_FLAG_DBECCERR_BANK1))
     {
@@ -331,6 +330,7 @@ void stm32h745_flash_ecc_handler(void)
         __HAL_FLASH_CLEAR_FLAG_BANK1(FLASH_FLAG_DBECCERR_BANK1);
         
         stm32h745_erase(NULL, ecc_sector, 1);
+        lldbg("ECC Error recovery handler\n");
         lldbg("BANK1 Sector erased:%d\n", ecc_sector);
     }
 
@@ -343,6 +343,7 @@ void stm32h745_flash_ecc_handler(void)
         __HAL_FLASH_CLEAR_FLAG_BANK2(FLASH_FLAG_DBECCERR_BANK2);
 
         stm32h745_erase(NULL, ecc_sector, 1);
+        lldbg("ECC Error recovery handler\n");
         lldbg("BANK2 Sector erased:%d\n", ecc_sector);
     }
 }
