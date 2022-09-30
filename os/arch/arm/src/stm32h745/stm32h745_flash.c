@@ -311,7 +311,6 @@ FAR struct mtd_dev_s *up_flashinitialize(void)
     g_dev_s.mtd.ioctl  = stm32h745_ioctl;
     g_dev_s.mtd.name   = "stm32h745 flash";
 
-    lldbg("1\n");
     return (FAR struct mtd_dev_s *)&g_dev_s;
 }
 
