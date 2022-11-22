@@ -548,5 +548,7 @@ int up_prioritize_irq(int irq, int priority)
   stm32h745_dumpnvic("prioritize", irq);
 
 #endif
+
+  return OK;
 }
 #endif

@@ -779,7 +779,7 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle(UART_HandleTypeDef *huart, uint8_t *p
       /* Check if RXNE flag is set */
       if (__HAL_UART_GET_FLAG(huart, UART_FLAG_RXNE))
       {
-        if (pdata8bits == NULL)
+        if ((pdata8bits == NULL) && (pdata16bits != NULL))
         {
           *pdata16bits = (uint16_t)(huart->Instance->RDR & uhMask);
           pdata16bits++;
