@@ -784,7 +784,7 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle(UART_HandleTypeDef *huart, uint8_t *p
           *pdata16bits = (uint16_t)(huart->Instance->RDR & uhMask);
           pdata16bits++;
         }
-        else
+        else if (pdata8bits != NULL)
         {
           *pdata8bits = (uint8_t)(huart->Instance->RDR & (uint8_t)uhMask);
           pdata8bits++;

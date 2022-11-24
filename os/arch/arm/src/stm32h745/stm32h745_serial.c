@@ -64,18 +64,26 @@
 #include <stm32h7xx_ll_usart.h>
 #include <system_stm32h745.h>
 
-#if defined(CONFIG_USART2_SERIAL_CONSOLE)
+#if defined(CONFIG_USART1_SERIAL_CONSOLE)
+  #define CONSOLE_DEV             g_uart1             /* USART1 is console */
+  #define TTYS0_DEV               g_uart2             /* USART2 is ttyS0 */
+  #define TTYS1_DEV               g_uart3             /* USART3 is ttyS1 */
+  #define TTYS2_DEV               g_uart6             /* USART6 is ttyS2 */
+#elif defined(CONFIG_USART2_SERIAL_CONSOLE)
   #define CONSOLE_DEV             g_uart2             /* USART2 is console */
-  #define TTYS0_DEV               g_uart3             /* USART3 is ttyS0 */
-  #define TTYS1_DEV               g_uart6             /* USART6 is ttyS0 */
+  #define TTYS0_DEV               g_uart1             /* USART1 is ttyS0 */
+  #define TTYS1_DEV               g_uart3             /* USART2 is ttyS1 */
+  #define TTYS2_DEV               g_uart6             /* USART6 is ttyS2 */
 #elif defined(CONFIG_USART3_SERIAL_CONSOLE)
   #define CONSOLE_DEV             g_uart3             /* USART3 is console */
-  #define TTYS0_DEV               g_uart2             /* USART2 is ttyS0 */
-  #define TTYS1_DEV               g_uart6             /* USART6 is ttyS0 */
+  #define TTYS0_DEV               g_uart1             /* USART1 is ttyS0 */
+  #define TTYS1_DEV               g_uart2             /* USART2 is ttyS1 */
+  #define TTYS2_DEV               g_uart6             /* USART6 is ttyS2 */
 #elif defined(CONFIG_USART6_SERIAL_CONSOLE)
   #define CONSOLE_DEV             g_uart6             /* USART6 is console */
-  #define TTYS0_DEV               g_uart2             /* USART2 is ttyS0 */
-  #define TTYS1_DEV               g_uart3             /* USART3 is ttyS0 */
+  #define TTYS0_DEV               g_uart1             /* USART1 is ttyS0 */
+  #define TTYS1_DEV               g_uart2             /* USART2 is ttyS1 */
+  #define TTYS2_DEV               g_uart3             /* USART3 is ttyS2 */
 #endif
 
 
@@ -135,6 +143,64 @@ static const struct uart_ops_s g_uart_ops =
   .txint         = stm32h745_up_txint,
   .txready       = stm32h745_up_txready,
   .txempty       = stm32h745_up_txempty,
+};
+
+/****************************************************************************
+ * USART 1 configuration
+ ****************************************************************************/
+static char g_uart1_rxbuffer[CONFIG_USART1_RXBUFSIZE];
+static char g_uart1_txbuffer[CONFIG_USART1_TXBUFSIZE];
+
+static struct stm32h745_up_dev_s g_uart1_priv = 
+{
+  .USART = USART1,
+#if (CONFIG_USART1_PARITY == 1)
+  .parity = LL_USART_PARITY_ODD,
+#elif (CONFIG_USART1_PARITY == 2)
+  .parity = LL_USART_PARITY_EVEN,
+#else
+  .parity = LL_USART_PARITY_NONE,
+#endif
+
+#if (CONFIG_USART1_BITS == 7)
+  .bits = LL_USART_DATAWIDTH_7B,
+#elif (CONFIG_USART1_BITS == 8)
+  .bits = LL_USART_DATAWIDTH_8B,
+#else
+  #  error "Unsupported UART Bits!!!"
+#endif
+
+#if (CONFIG_USART1_2STOP)
+  .stopbit = LL_USART_STOPBITS_2,
+#else
+  .stopbit = LL_USART_STOPBITS_1,
+#endif
+  .baud = CONFIG_USART1_BAUD,
+  .irq  = STM32H745_IRQ_USART1,
+  .tx   = 0,
+  .rx   = 0,
+  .rts  = 0,
+  .cts  = 0,
+  .FlowControl  = UART_HWCONTROL_NONE,
+  .txint_enable = false,
+  .rxint_enable = false,
+};
+
+static uart_dev_t g_uart1 = 
+{
+  .isconsole = false,
+  .recv = 
+  {
+    .size   = CONFIG_USART1_RXBUFSIZE,
+    .buffer = g_uart1_rxbuffer,
+  },
+  .xmit = 
+  {
+    .size   = CONFIG_USART1_TXBUFSIZE,
+    .buffer = g_uart1_txbuffer,
+  },
+  .ops  = &g_uart_ops,
+  .priv = &g_uart1_priv,
 };
 
 /****************************************************************************
@@ -329,6 +395,7 @@ void up_serialinit(void)
   uart_register("/dev/console", &CONSOLE_DEV);
   uart_register("/dev/ttyS0", &TTYS0_DEV);
   uart_register("/dev/ttyS1", &TTYS1_DEV);
+  uart_register("/dev/ttyS2", &TTYS2_DEV);
 }
 
 /****************************************************************************
@@ -400,6 +467,25 @@ static int  stm32h745_up_setup(struct uart_dev_s *dev)
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
     LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
   }
+  else if(priv->USART == USART1)
+  {
+    LL_RCC_SetUSARTClockSource(LL_RCC_USART16_CLKSOURCE_PCLK2);
+
+    /* Peripheral clock enable */
+    LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART1);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
+    /**USART1 GPIO Configuration
+    PA9   ------> USART1_TX
+    PA10   ------> USART1_RX
+    */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_9|LL_GPIO_PIN_10;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
+    LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  }
 
   USART_InitStruct.PrescalerValue = LL_USART_PRESCALER_DIV1;
   USART_InitStruct.BaudRate = priv->baud;
@@ -465,6 +551,11 @@ static void stm32h745_up_shutdown(struct uart_dev_s *dev)
   {
     LL_USART_DeInit(USART6);
     LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_USART6);
+  }
+  else if(priv->USART == USART1)
+  {
+    LL_USART_DeInit(USART1);
+    LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_USART1);
   }
 }
 
@@ -539,26 +630,31 @@ static int  up_interrupt(int irq, void *context, FAR void *arg)
 
     if(LL_USART_IsActiveFlag_PE(priv->USART))
     {
+      lldbg("UART Parity Error!!!\n");
       LL_USART_ClearFlag_PE(priv->USART);
     }
 
     if(LL_USART_IsActiveFlag_FE(priv->USART))
     {
+      lldbg("UART Frame Error!!!\n");
       LL_USART_ClearFlag_FE(priv->USART);
     }
 
     if(LL_USART_IsActiveFlag_NE(priv->USART))
     {
+      lldbg("UART Noise Error!!!\n");
       LL_USART_ClearFlag_NE(priv->USART);
     }
 
     if(LL_USART_IsActiveFlag_ORE(priv->USART))
     {
+      lldbg("UART Overrun!!!\n");
       LL_USART_ClearFlag_ORE(priv->USART);
     }
     
     if(LL_USART_IsActiveFlag_UDR(priv->USART))
     {
+      lldbg("UART Underrun!!!\n");
       LL_USART_ClearFlag_UDR(priv->USART);
     }
   }

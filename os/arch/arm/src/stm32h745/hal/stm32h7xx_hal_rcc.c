@@ -1580,7 +1580,7 @@ void HAL_RCC_GetOscConfig(RCC_OscInitTypeDef  *RCC_OscInitStruct)
 #if defined(RCC_VER_X)
   if(HAL_GetREVID() <= REV_ID_Y)
   {
-    RCC_OscInitStruct->CSICalibrationValue = (uint32_t)(READ_BIT(RCC->HSICFGR, HAL_RCC_REV_Y_CSITRIM_Msk) >> HAL_RCC_REV_Y_CSITRIM_Pos);
+    RCC_OscInitStruct->CSICalibrationValue = (uint32_t)(READ_BIT(RCC->CSICFGR, HAL_RCC_REV_Y_CSITRIM_Msk) >> HAL_RCC_REV_Y_CSITRIM_Pos);
   }
   else
   {
