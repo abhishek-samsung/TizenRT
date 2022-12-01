@@ -68,5 +68,9 @@ int hello_main(int argc, char *argv[])
 #endif
 {
 	printf("Hello, World!!\n");
+	int *a = (int *)malloc(sizeof(int)); 
+	for (int i = 0; i < 20; i++) a[i] = i; 
+	PANIC();
+
 	return 0;
 }

@@ -94,6 +94,11 @@ void mm_manage_alloc_fail(struct mm_heap_s *heap, int startidx, int endidx, size
 {
 	irqstate_t flags = irqsave();
 
+	extern abort_mode;
+#ifdef CONFIG_MM_ASSERT_ON_FAIL
+	abort_mode = true;
+#endif
+
 	mfdbg("Allocation failed from %s heap.\n", (heap_type == KERNEL_HEAP) ? KERNEL_STR : USER_STR);
 	mfdbg(" - requested size %u\n", size);
 #ifdef CONFIG_DEBUG_MM_HEAPINFO
