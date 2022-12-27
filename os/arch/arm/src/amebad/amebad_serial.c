@@ -409,17 +409,85 @@ static void LOGUART_PutChar_RAM(u8 c)
  *   opened.
  *
  ****************************************************************************/
+#define SRX_BUF_SZ    (32*5)
+char rx_buf[SRX_BUF_SZ]__attribute__((aligned(32))) = {0};
+
+volatile uint32_t tx_busy = 0;
+volatile uint32_t rx_done = 0;
+
+void uart_send_string_done(uint32_t id)
+{
+        (void)id;
+        tx_busy = 0;
+}
+
+void uart_recv_string_done(uint32_t id)
+{
+        (void)id;
+        rx_done = 1;
+}
+
+void uart_send_string(serial_t *sobj, char *pstr)
+{
+        int32_t ret = 0;
+        if (tx_busy) {
+                return;
+        }
+
+        tx_busy = 1;
+	lldbg("trying to send string\n");
+	//ret = serial_send_stream(sobj, pstr, _strlen(pstr));
+        ret = serial_send_stream_dma(sobj, pstr, _strlen(pstr));
+        if (ret != 0) {
+                lldbg("%s Error(%d)\n", __FUNCTION__, ret);
+                tx_busy = 0;
+        } else {
+		lldbg("succesfully sent string %d\n", ret);
+	}
+}
+
+void uart_stream_dma(struct uart_dev_s *dev)
+{
+	struct rtl8721d_up_dev_s *priv = (struct rtl8721d_up_dev_s *)dev->priv;
+	serial_t sobj;
+        int ret;
+        int i = 0;
+        int len;
+
+        sobj.uart_idx = uart_index_get(priv->tx);
+
+        serial_init(&sobj, priv->tx, priv->rx);
+        serial_baud(&sobj, 115200);
+        serial_format(&sobj, priv->bits, priv->parity, priv->stopbit);
+
+        serial_send_comp_handler(&sobj, (void *)uart_send_string_done, (uint32_t) &sobj);
+        serial_recv_comp_handler(&sobj, (void *)uart_recv_string_done, (uint32_t) &sobj);
+
+        for (int j = 0; j < SRX_BUF_SZ; j++) {
+                rx_buf[j] = 'a';
+        }
+	rx_buf[64] = '\0';
+
+        uart_send_string(&sobj, rx_buf);
+	while (true) {}
+
+}
+
+
 static int rtl8721d_up_setup(struct uart_dev_s *dev)
 {
 	struct rtl8721d_up_dev_s *priv = (struct rtl8721d_up_dev_s *)dev->priv;
 	DEBUGASSERT(priv);
 	DEBUGASSERT(!sdrv[uart_index_get(priv->tx)]);
+	/*
 	sdrv[uart_index_get(priv->tx)] = (serial_t *)kmm_malloc(sizeof(serial_t));
 	DEBUGASSERT(sdrv[uart_index_get(priv->tx)]);
 	serial_init((serial_t *) sdrv[uart_index_get(priv->tx)], priv->tx, priv->rx);
 	serial_baud(sdrv[uart_index_get(priv->tx)], priv->baud);
 	serial_format(sdrv[uart_index_get(priv->tx)], priv->bits, priv->parity, priv->stopbit);
 	serial_set_flow_control(sdrv[uart_index_get(priv->tx)], priv->FlowControl, priv->rts, priv->cts);
+	*/
+	uart_stream_dma(dev);
 	return OK;
 }
 
@@ -725,6 +793,7 @@ void up_serialinit(void)
 
 #ifdef CONSOLE_DEV
 	CONSOLE_DEV.isconsole = true;
+	lldbg("setting up serial console\n");
 	rtl8721d_up_setup(&CONSOLE_DEV);
 
 	/* Register the console */
