@@ -155,13 +155,6 @@ static void amebad_dumpnvic(const char *msg, int irq)
  *
  ****************************************************************************/
 
-static int amebad_gdma(int irq, FAR void *context, FAR void *arg)
-{
-  lldbg("gdma0 channel 2 interrupt\n");
-  return 0;
-}
-
-
 #ifdef CONFIG_DEBUG
 static int amebad_nmi(int irq, FAR void *context, FAR void *arg)
 {
@@ -346,8 +339,6 @@ void up_irqinitialize(void)
   irq_attach(AMEBAD_IRQ_DBGMONITOR, amebad_dbgmonitor, NULL);
   irq_attach(AMEBAD_IRQ_RESERVED, amebad_reserved, NULL);
 #endif
-
-  irq_attach(AMEBAD_IRQ_GDMA0_CHANNEL2, amebad_gdma, NULL);
 
   amebad_dumpnvic("initial", NR_IRQS);
 
