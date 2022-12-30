@@ -1267,12 +1267,12 @@ void app_start(void)
 
 #ifdef CONFIG_STACK_COLORATION
 	/* Set the IDLE stack to the coloration value and jump into os_start() */
-
-	go_os_start((FAR void *)g_idle_topstack - CONFIG_IDLETHREAD_STACKSIZE, CONFIG_IDLETHREAD_STACKSIZE);
+	main();
+//	go_os_start((FAR void *)g_idle_topstack - CONFIG_IDLETHREAD_STACKSIZE, CONFIG_IDLETHREAD_STACKSIZE);
 #else
 	/* Call os_start() */
-
-	os_start();
+	main();
+//	os_start();
 
 	/* Shoulnd't get here */
 
