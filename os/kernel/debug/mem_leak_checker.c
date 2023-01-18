@@ -43,6 +43,7 @@
 #define MAX_ALLOC_COUNT    CONFIG_MEM_LEAK_CHECKER_MAX_ALLOC_COUNT
 #define HASH_SIZE          CONFIG_MEM_LEAK_CHECKER_HASH_TABLE_SIZE
 
+//#define RAM_START_ADDR  kregionx_start[0]
 #define RAM_START_ADDR  kregionx_start[0]
 #define RAM_END_ADDR	(kregionx_start[CONFIG_KMM_REGIONS - 1] + kregionx_size[CONFIG_KMM_REGIONS - 1])
 #define HEAP_START_ADDR (void *)leak_checker.heap_start
@@ -169,6 +170,9 @@ static void fill_hash_table(int *leak_cnt, int *broken_cnt)
 
 static void search_addr(void *start_addr, void *end_addr, int *leak_cnt)
 {
+	   lldbg("SEARCHING FROM : %p\n", start_addr);
+	   lldbg("SEARCHIGN TO : %p\n", end_addr);
+	   lldbg("LEAK COUNT : %d\n", *leak_cnt);
 	/* This function traverse the memory from start_addr to end_addr for comparing the address based on hash table. */
 	void *leak_chk;
 	/* Not to access over its region, subtract 0x04 from the end of the address. */
@@ -209,6 +213,15 @@ static void heap_check(int *leak_cnt)
 	}
 }
 
+extern uint32_t _sdata;
+extern uint32_t _edata;
+extern uint32_t __bss_start__;
+extern uint32_t __bss_end__;
+extern uint32_t __psram_bss_start__;
+extern uint32_t __psram_bss_end__; 
+extern uint32_t __psram_data_start__;
+extern uint32_t __psram_data_end__;
+
 static void ram_check(char *bin_name, int *leak_cnt, uint32_t *bin_text_addr)
 {
 #ifdef CONFIG_APP_BINARY_SEPARATION
@@ -226,8 +239,18 @@ static void ram_check(char *bin_name, int *leak_cnt, uint32_t *bin_text_addr)
 	/* Visit the RAM region, except heap region.
 	 * So check from RAM start to heap start, and from heap end to RAM end.
 	 */
-	search_addr(RAM_START_ADDR, HEAP_START_ADDR, leak_cnt);
+//	lldbg("RAM START ADDR : %d\n",RAM_START_ADDR);
+//	lldbg("RAM END ADDR : %d\n",RAM_END_ADDR);
+//	lldbg("HEAP_START_ADDR : %d\n", HEAP_START_ADDR);
+//	lldbg("HEAP_END_ADDR : %d\n", HEAP_END_ADDR);
+
+	//search_addr(RAM_START_ADDR, HEAP_START_ADDR, leak_cnt);
 	search_addr(HEAP_END_ADDR, RAM_END_ADDR, leak_cnt);
+
+	search_addr(&_sdata, &_edata, leak_cnt);
+	search_addr(&__bss_start__, &__bss_end__, leak_cnt);
+	search_addr(&__psram_bss_start__, &__psram_bss_end__, leak_cnt);
+	search_addr(&__psram_data_start__, &__psram_data_end__, leak_cnt);
 
 	/* Visit heap region */
 	heap_check(leak_cnt);

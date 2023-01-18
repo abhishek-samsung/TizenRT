@@ -668,11 +668,15 @@ int tash_cmd_install(const char *str, TASH_CMD_CALLBACK cb, int thread_exec)
 				return -2;			/* CMD already installed */
 			}
 		}
-
+		//printf("old_cmd_buff address is %p\n", new_cmd_buff);
 		new_cmd_buff = (struct tash_cmd_s *)realloc(tash_cmds_info.cmd, sizeof(struct tash_cmd_s) * (tash_cmds_info.count + 1));
+		//printf("After allocation old_cmd_buff addre_ss is %p\n", new_cmd_buff);
+		
 	}
 
 	if (new_cmd_buff) {
+		printf("TASH_CMDS_INFO CMD points to %p\n", tash_cmds_info.cmd);
+		printf("NEW CMD BUFF points to %p\n", new_cmd_buff);
 		tash_cmds_info.cmd = new_cmd_buff;
 	} else {
 		printf("TASH: memory allocation fail to register (%s) command\n", str);

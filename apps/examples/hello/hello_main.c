@@ -56,10 +56,28 @@
 
 #include <tinyara/config.h>
 #include <stdio.h>
+#include <pthread.h>
 
+//int* myglobalvariable;
+struct globalstruct {
+       	int value;
+        int count;	/* Number of TASH commands */
+};
+
+static struct globalstruct mystruct = {1,0};
 /****************************************************************************
  * hello_main
  ****************************************************************************/
+
+/*void *myThreadFun(void *vargp)
+{
+   // sleep(1);
+    for (int i=0;i<700;i++){
+    	printf("PRINTING FROM THREAD\n",i);
+    }
+    return NULL;
+}
+*/
 
 #ifdef CONFIG_BUILD_KERNEL
 int main(int argc, FAR char *argv[])
@@ -68,5 +86,19 @@ int hello_main(int argc, char *argv[])
 #endif
 {
 	printf("Hello, World!!\n");
+//	myglobalvariable = (int *)malloc(10*sizeof(int));
+//	for(int i=0;i<10;i++){
+//		printf("%d\t",*(myglobalvariable + 2));
+//	}
+//	printf("\n");
+
+	printf("VALUE IS %d\n",mystruct.value);
+	printf("VALUE IS %d\n",mystruct.count);
+
+	printf("\n");
+
+	//printf("ADDR of myglobal varialbe %p\n", myglobalvariable);
+	printf("ADDR OF GLOBAL STRUCT IS %p\n", mystruct);
+
 	return 0;
 }
