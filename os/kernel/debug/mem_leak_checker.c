@@ -263,6 +263,8 @@ static void ram_check(char *bin_name, int *leak_cnt, uint32_t *bin_text_addr)
 
 	struct mm_heap_s *heap;
 
+	if (leak_checker.heap == g_kmmheap) return;
+
         heap = g_kmmheap;
         /* Set the target heap information */
         leak_checker.heap = heap;
@@ -359,6 +361,8 @@ int run_mem_leak_checker(int checker_pid, char *bin_name)
 
 	/* Visit RAM region */
 	ram_check(bin_name, &leak_cnt, &bin_text_addr);
+
+	init_mem_leak_checker(checker_pid, bin_name);
 
 	print_info(bin_name, leak_cnt, broken_cnt, bin_text_addr);
 
