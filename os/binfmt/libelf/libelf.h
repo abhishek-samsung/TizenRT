@@ -425,8 +425,11 @@ struct bin_addr_info_s {
 #ifdef CONFIG_SAVE_BIN_SECTION_ADDR
 #ifdef CONFIG_OPTIMIZE_APP_RELOAD_TIME
 	uint32_t rodata_addr;
+	uint32_t rodata_size;
 	uint32_t data_addr;
+	uint32_t data_size;
 	uint32_t bss_addr;
+	uint32_t bss_size;
 #endif
 #endif
 };

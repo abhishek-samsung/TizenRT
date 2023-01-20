@@ -245,14 +245,30 @@ static void ram_check(char *bin_name, int *leak_cnt, uint32_t *bin_text_addr)
 //	lldbg("HEAP_END_ADDR : %d\n", HEAP_END_ADDR);
 
 	//search_addr(RAM_START_ADDR, HEAP_START_ADDR, leak_cnt);
-	search_addr(HEAP_END_ADDR, RAM_END_ADDR, leak_cnt);
+//	search_addr(HEAP_END_ADDR, RAM_END_ADDR, leak_cnt);
 
 	search_addr(&_sdata, &_edata, leak_cnt);
 	search_addr(&__bss_start__, &__bss_end__, leak_cnt);
 	search_addr(&__psram_bss_start__, &__psram_bss_end__, leak_cnt);
 	search_addr(&__psram_data_start__, &__psram_data_end__, leak_cnt);
 
+        for (bin_idx = 0; bin_idx <= CONFIG_NUM_APPS; bin_idx++) {
+			if (info[bin_idx].data_addr == 0) continue;
+			search_addr(info[bin_idx].data_addr, info[bin_idx].data_addr + info[bin_idx].data_size, leak_cnt);
+                        search_addr(info[bin_idx].bss_addr, info[bin_idx].bss_addr + info[bin_idx].bss_size, leak_cnt);
+        }
+
 	/* Visit heap region */
+	heap_check(leak_cnt);
+
+	struct mm_heap_s *heap;
+
+        heap = g_kmmheap;
+        /* Set the target heap information */
+        leak_checker.heap = heap;
+        leak_checker.heap_start = heap->mm_heapstart[0];
+        leak_checker.heap_end = heap->mm_heapend[0];
+	
 	heap_check(leak_cnt);
 }
 
