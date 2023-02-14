@@ -446,6 +446,10 @@ for i in ${cmd_args[@]};do
 		fi
 	done
 
+	if [[ "${i}" == "ota" ]];then
+		result=yes
+	fi
+
 	if [[ "$result" != "yes" ]];then
 		echo "FAIL!! Given \"${i}\" partition is not available. Refer \"PARTITION NAMES\" above."
 		dwld_help

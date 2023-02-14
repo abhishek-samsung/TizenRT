@@ -56,10 +56,156 @@
 
 #include <tinyara/config.h>
 #include <stdio.h>
+#include <tinyara/binary_manager.h>
+#include <binary_manager/binary_manager.h>
 
 /****************************************************************************
  * hello_main
  ****************************************************************************/
+static int fail_cnt = 0;
+
+static void binary_update_cb(void)
+{
+	printf(" ==========================================================================\n");
+	printf("   The state changed callback is executed in WIFI. %s state is changed. \n", "kernel");
+	printf(" ========================================================================= \n");
+}
+
+static void print_binary_info(binary_update_info_t *binary_info)
+{
+	printf(" =========== binary [%s] info ============ \n", binary_info->name);
+	printf(" %10s | %8s\n", "Version", "Available size");
+	printf(" -------------------------------------------- \n");
+	printf(" %8.1u | %8d\n", binary_info->version, binary_info->available_size);
+	printf(" ============================================ \n");
+}
+
+static void print_binary_info_list(binary_update_info_list_t *binary_info_list)
+{
+	int bin_idx;
+
+	printf(" ============== ALL binary info : %d count ================ \n", binary_info_list->bin_count);
+	printf(" %4s | %6s | %10s | %8s\n", "Idx", "Name", "Version", "Available size");
+	printf(" -------------------------------------------------------- \n");
+	for (bin_idx = 0; bin_idx < binary_info_list->bin_count; bin_idx++) {
+		printf(" %4d | %6s | %8.1u | %8d\n", bin_idx, \
+		binary_info_list->bin_info[bin_idx].name, binary_info_list->bin_info[bin_idx].version, \
+		binary_info_list->bin_info[bin_idx].available_size);
+	}
+	printf(" ======================================================== \n");
+}
+
+static int binary_update_check_test_result(binary_update_info_t *pre_bin_info, binary_update_info_t *cur_bin_info, int condition)
+{
+	int ret = ERROR;
+
+	printf(" ========== [%5s] Update info =========== \n", cur_bin_info->name);
+	printf(" %4s | %10s \n", "Con", "Version");
+	printf(" ----------------------------------------- \n");
+	printf(" %4s | %8.1u \n", "Pre", pre_bin_info->version);
+	printf(" %4s | %8.1u \n", "Cur", cur_bin_info->version);
+	printf(" ========================================== \n");
+
+	if (true) {
+		if (pre_bin_info->version == cur_bin_info->version) {
+			fail_cnt++;
+			printf("Fail to load valid higher version binary.\n");
+		} else {
+			ret = OK;
+			printf("Success to load valid higher version binary.\n");
+		}
+	} else { //DOWNLOAD_INVALID_BIN
+		if (pre_bin_info->version != cur_bin_info->version) {
+			fail_cnt++;
+			printf("Warning! Load invalid binary.\n");
+		} else {
+			ret = OK;
+			printf("No update with invalid binary.\n");
+		}
+	}
+
+	return ret;
+}
+
+static void binary_update_getinfo_all(void)
+{
+	int ret;
+	binary_update_info_list_t bin_info_list;
+
+	printf("\n** Binary Update GETINFO_ALL test.\n");
+	ret = binary_manager_get_update_info_all(&bin_info_list);
+	if (ret == OK) {
+		print_binary_info_list(&bin_info_list);
+	} else {
+		fail_cnt++;
+		printf("Get binary info all FAIL %d\n", ret);
+	}
+}
+
+static int binary_update_getinfo(char *name, binary_update_info_t *bin_info)
+{
+	int ret;
+
+	printf("\n** Binary Update GETINFO [%s] test.\n", name);
+	ret = binary_manager_get_update_info(name, bin_info);
+	if (ret == OK) {
+		print_binary_info(bin_info);
+	} else {
+		fail_cnt++;
+		printf("Get binary info FAIL, ret %d\n", ret);
+	}
+
+	return ret;
+}
+
+static int binary_update_reload(void)
+{
+	int ret;
+
+	printf("\n** Binary Update RELOAD test.\n");
+	ret = binary_manager_update_binary();
+	if (ret == OK) {
+		printf("RELOAD SUCCESS\n");
+	} else {
+		fail_cnt++;
+		printf("Reload binary FAIL, ret %d\n", ret);
+	}
+
+	return ret;
+}
+
+static int binary_update_register_state_changed_callback(void)
+{
+	int ret;
+
+	printf("\n** Binary Update Register state changed callback test.\n");
+	ret = binary_manager_register_state_changed_callback((binmgr_statecb_t)binary_update_cb, NULL);
+	if (ret == OK) {
+		printf("Register state changed callback SUCCESS\n");
+	} else {
+		fail_cnt++;
+		printf("Register state changed callback FAIL, ret %d\n", ret);
+	}
+
+	return ret;
+}
+
+static int binary_update_unregister_state_changed_callback(void)
+{
+	int ret;
+
+	printf("\n** Binary Update Unregister state changed callback test.\n");
+	ret = binary_manager_unregister_state_changed_callback();
+	if (ret == OK) {
+		printf("Unregister state changed callback SUCCESS\n");
+	} else {
+		fail_cnt++;
+		printf("Unregister state changed callback FAIL, ret %d\n", ret);
+	}
+
+	return ret;
+}
+
 
 #ifdef CONFIG_BUILD_KERNEL
 int main(int argc, FAR char *argv[])
@@ -67,6 +213,33 @@ int main(int argc, FAR char *argv[])
 int hello_main(int argc, char *argv[])
 #endif
 {
-	printf("Hello, World!!\n");
+	printf("Hello, Abhishek!!\n");
+	int ret;
+	uint8_t type = 0;
+	binary_setbp_result_t result;
+	binary_update_info_t pre_bin_info;
+	binary_update_info_t cur_bin_info;
+
+	printf("\n** Binary Update New Version Test. **\n");
+
+	ret = binary_update_getinfo("kernel", &pre_bin_info);
+	if (ret != OK) {
+		return ret;
+	}
+
+	BM_SET_GROUP(type, BINARY_KERNEL);
+	ret = binary_manager_set_bootparam(type, &result);
+	printf("binary_manager_set_bootparam %d\n", ret);
+	if (ret != OK) {
+		if (ret == BINMGR_ALREADY_UPDATED) {
+			int idx;
+			for (idx = 0; idx < BINARY_TYPE_MAX; idx++) {
+				printf("[%d] result %d\n", idx, result.result[idx]);
+			}
+		}
+		return ret;
+	}
+
+	ret = binary_update_reload();
 	return 0;
 }
