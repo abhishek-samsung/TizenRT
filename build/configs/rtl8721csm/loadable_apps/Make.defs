@@ -61,9 +61,9 @@ LDSCRIPT = rlx8721d_img2_is.ld
 endif
 
 ifeq ($(CONFIG_LIBCXX_HAVE_LIBSUPCXX),y)
-LIBSUPXX = ${shell $(CC) $(CXXFLAGS) --print-file-name=libsupc++.a}
+LIBSUPXX = ${shell $(CC) $(CXXFLAGS) --print-file-name=libsupc++_nano.a}
 EXTRA_LIBPATHS += -L "${shell dirname "$(LIBSUPXX)"}"
-EXTRA_LIBS += -lsupc++
+EXTRA_LIBS += -lsupc++_nano
 endif
 
 
@@ -155,7 +155,7 @@ CFLAGS = $(ARCHCFLAGS) $(ARCHWARNINGS) $(ARCHOPTIMIZATION) $(ARCHCPUFLAGS) $(ARC
 CPICFLAGS = $(ARCHPICFLAGS) $(CFLAGS)
 CXXFLAGS = $(ARCHCXXFLAGS) $(ARCHWARNINGSXX) $(ARCHOPTIMIZATION) $(ARCHCPUFLAGS) $(ARCHXXINCLUDES)
 CXXFLAGS += $(ARCHDEFINES) $(EXTRADEFINES) -pipe -std=c++11 -DCLOCK_MONOTONIC -D__TINYARA__
-CXXFLAGS += -fexceptions -fcheck-new -frtti
+CXXFLAGS += -fno-exceptions -fcheck-new -frtti
 CXXFLAGS += -pedantic -D_DEBUG -D_LIBCPP_BUILD_STATIC -ffunction-sections -fdata-sections -D__GLIBCXX__
 CXXPICFLAGS = $(ARCHPICFLAGS) $(CXXFLAGS)
 CPPFLAGS = $(ARCHINCLUDES) $(ARCHDEFINES) $(EXTRADEFINES)
