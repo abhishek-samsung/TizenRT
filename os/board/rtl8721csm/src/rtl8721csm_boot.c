@@ -313,9 +313,10 @@ void board_initialize(void)
 	ipc_table_init();
 	amebad_mount_partions();
 	board_gpio_initialize();
-	board_i2c_initialize();
-	board_spi_initialize();
+//	board_i2c_initialize();
+//	board_spi_initialize();
 	board_i2s_initialize();
+	rtl8721csm_mi48_initialize();
 #ifdef CONFIG_WATCHDOG
 	amebad_wdg_initialize(CONFIG_WATCHDOG_DEVPATH, 5000);
 #endif

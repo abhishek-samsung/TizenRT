@@ -101,6 +101,7 @@
 #define _IOTBUSBASE     (0x2600)	/* iotbus ioctl commands */
 #define _FBIOCBASE      (0x2700)	/* Frame buffer character driver ioctl commands */
 #define _CPULOADBASE    (0x2800)	/* cpuload ioctl commands */
+#define _MI48BASE	(0x2900)	/* mi48 control ioctl commands */
 #define _TESTIOCBASE    (0xfe00)	/* KERNEL TEST DRV module ioctl commands */
 
 
@@ -441,6 +442,16 @@
 #define CPULOADIOC_START              _CPULOADIOC(0x0001)
 #define CPULOADIOC_STOP               _CPULOADIOC(0x0002)
 #define CPULOADIOC_GETVALUE           _CPULOADIOC(0x0003)
+
+/* MI48 driver ioctl definitions ************************/
+
+#define _MI48IOCVALID(c)   (_IOC_TYPE(c) == _MI48BASE)
+#define _MI48IOC(nr)       _IOC(_CPULOADBASE, nr)
+
+#define MI48IOC_ENABLE_TEMPORAL_FILTER		_MI48IOC(0x0001)
+#define MI48IOC_SET_FR_DIV			_MI48IOC(0x0002)
+#define MI48IOC_CONT_CAPTURE			_MI48IOC(0x0003)
+#define MI48IOC_HW_RESET			_MI48IOC(0x0004)
 
 /* Audio driver ioctl definitions *************************************/
 /* (see tinyara/audio/audio.h) */
