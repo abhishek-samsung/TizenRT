@@ -23,6 +23,10 @@ ifeq ($(CONFIG_SENSOR_PPD42NS),y)
   CSRCS += ppd42ns.c
 endif
 
+ifeq ($(CONFIG_MI48),y)
+  CSRCS += mi48.c
+endif
+
 # Include sensor build support
 
 DEPPATH += --dep-path sensors

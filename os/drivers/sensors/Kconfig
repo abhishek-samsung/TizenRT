@@ -24,3 +24,10 @@ config SENSOR_PPD42NS_DEBUG
 		enable PPD42ns dust sensor driver's debug message
 
 endif # SENSOR_PPD42NS
+
+config MI48
+        bool "mi48 thermal imaging sensor"
+        depends on I2C && SPI
+        default n
+	---help---
+		enable mi48 thermal imaging sensor
