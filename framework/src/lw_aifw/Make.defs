@@ -24,7 +24,9 @@ ifeq ($(CONFIG_LW_AIFW_READ_FROM_MANIFEST_FILE), y)
 CXXSRCS += AIManifestParser.cpp
 endif
 
+endif
+
+CXXSRCS += frame.cpp
+
 DEPPATH += --dep-path src/lw_aifw
 VPATH += :src/lw_aifw
-
-endif

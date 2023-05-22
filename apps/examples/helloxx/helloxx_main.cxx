@@ -54,12 +54,7 @@
 // Included Files
 //***************************************************************************
 
-#include <tinyara/config.h>
-
-#include <cstdio>
-#include <debug.h>
-
-#include <tinyara/init.h>
+#include "frame.h"
 
 //***************************************************************************
 // Definitions
@@ -67,74 +62,39 @@
 // Debug ********************************************************************
 // Non-standard debug that may be enabled just for testing the constructors
 
-#ifndef CONFIG_DEBUG
-#  undef CONFIG_DEBUG_CXX
-#endif
-
-#ifdef CONFIG_DEBUG_CXX
-#  define cxxdbg              dbg
-#  define cxxlldbg            lldbg
-#  ifdef CONFIG_DEBUG_VERBOSE
-#    define cxxvdbg           vdbg
-#    define cxxllvdbg         llvdbg
-#  else
-#    define cxxvdbg(...)
-#    define cxxllvdbg(...)
-#  endif
-#else
-#  define cxxdbg(...)
-#  define cxxlldbg(...)
-#  define cxxvdbg(...)
-#  define cxxllvdbg(...)
-#endif
 
 //***************************************************************************
 // Private Classes
 //***************************************************************************
-
-class CHelloWorld
+/**
+ * Concrete Strategies implement the algorithm while following the base Strategy
+ * interface. The interface makes them interchangeable in the Context.
+ */
+class ConcreteStrategyA : public Strategy
 {
 public:
-	CHelloWorld(void) : mSecret(42)
-	{
-		cxxdbg("Constructor: mSecret=%d\n", mSecret);
-	}
+    std::string doAlgorithm(std::string_view data) const override
+    {
+        std::string result(data);
+        std::sort(std::begin(result), std::end(result));
 
-	~CHelloWorld(void)
-	{
-		cxxdbg("Destructor\n");
-	}
+        return result;
+    }
+};
+class ConcreteStrategyB : public Strategy
+{
+    std::string doAlgorithm(std::string_view data) const override
+    {
+        std::string result(data);
+        std::sort(std::begin(result), std::end(result), std::greater<>());
 
-	bool HelloWorld(void)
-	{
-		cxxdbg("HelloWorld: mSecret=%d\n", mSecret);
-
-		if (mSecret != 42)
-		{
-			printf("CHelloWorld::HelloWorld: CONSTRUCTION FAILED!\n");
-			return false;
-		}
-		else
-		{
-			printf("CHelloWorld::HelloWorld: Hello, World!!\n");
-			return true;
-		}
-	}
-
-private:
-	int mSecret;
+        return result;
+    }
 };
 
 //***************************************************************************
 // Private Data
 //***************************************************************************
-
-// Define a statically constructed CHellowWorld instance if C++ static
-// initializers are supported by the platform
-
-#if defined(CONFIG_HAVE_CXXINITIALIZE) || defined(CONFIG_BINFMT_CONSTRUCTORS)
-static CHelloWorld g_HelloWorld;
-#endif
 
 //***************************************************************************
 // Public Functions
@@ -146,34 +106,21 @@ static CHelloWorld g_HelloWorld;
 
 extern "C"
 {
-	int helloxx_main(int argc, char *argv[])
-	{
-		// Print the cpp version used
-		printf("c++ version used : %d\n", __cplusplus);
 
-		// Exercise an explictly instantiated C++ object
-
-		CHelloWorld *pHelloWorld = new CHelloWorld;
-		printf("helloxx_main: Saying hello from the dynamically constructed instance\n");
-		pHelloWorld->HelloWorld();
-
-		// Exercise an C++ object instantiated on the stack
-
-#ifndef CONFIG_EXAMPLES_HELLOXX_NOSTACKCONST
-		CHelloWorld HelloWorld;
-
-		printf("helloxx_main: Saying hello from the instance constructed on the stack\n");
-		HelloWorld.HelloWorld();
-#endif
-
-		// Exercise an statically constructed C++ object
-
-#if defined(CONFIG_HAVE_CXXINITIALIZE) || defined(CONFIG_BINFMT_CONSTRUCTORS)
-		printf("helloxx_main: Saying hello from the statically constructed instance\n");
-		g_HelloWorld.HelloWorld();
-#endif
-
-		delete pHelloWorld;
-		return 0;
-	}
+void clientCode()
+{
+    Context context(std::make_unique<ConcreteStrategyA>());
+    std::cout << "Client: Strategy is set to normal sorting.\n";
+    context.doSomeBusinessLogic();
+    std::cout << "\n";
+    std::cout << "Client: Strategy is set to reverse sorting.\n";
+    context.set_strategy(std::make_unique<ConcreteStrategyB>());
+    context.doSomeBusinessLogic();
+}
+	
+int helloxx_main(int argc, char *argv[])
+{
+    clientCode();
+    return 0;
+}
 }
