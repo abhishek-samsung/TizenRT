@@ -670,7 +670,7 @@ void rtw_spin_unlock(_lock *plock);
  * @param[in] irqL: Pointer to the IRQ.
  * @return	  None
  */
-void rtw_spinlock_irqsave(_lock *plock, _irqL *irqL);
+void rtw_spinlock_enter_critical_section(_lock *plock, _irqL *irqL);
 
 /**
  * @brief  This function releases a spin lock semaphore and
@@ -679,7 +679,7 @@ void rtw_spinlock_irqsave(_lock *plock, _irqL *irqL);
  * @param[in] irqL: Pointer to the IRQ.
  * @return	  None
  */
-void rtw_spinunlock_irqsave(_lock *plock, _irqL *irqL);
+void rtw_spinunlock_enter_critical_section(_lock *plock, _irqL *irqL);
 /*************************** End Semaphores *******************************/
 
 /*************************** Queues *******************************/
@@ -1322,8 +1322,8 @@ struct osdep_service_ops {
 	void (*rtw_spinlock_free)(_lock *plock);
 	void (*rtw_spin_lock)(_lock *plock);
 	void (*rtw_spin_unlock)(_lock *plock);
-	void (*rtw_spinlock_irqsave)(_lock *plock, _irqL *irqL);
-	void (*rtw_spinunlock_irqsave)(_lock *plock, _irqL *irqL);
+	void (*rtw_spinlock_enter_critical_section)(_lock *plock, _irqL *irqL);
+	void (*rtw_spinunlock_enter_critical_section)(_lock *plock, _irqL *irqL);
 	int (*rtw_init_xqueue)(_xqueue *queue, const char *name, u32 message_size, u32 number_of_messages);
 	int (*rtw_push_to_xqueue)(_xqueue *queue, void *message, u32 timeout_ms);
 	int (*rtw_pop_from_xqueue)(_xqueue *queue, void *message, u32 timeout_ms);
