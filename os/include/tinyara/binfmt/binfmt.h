@@ -71,6 +71,14 @@
  * Pre-processor Definitions
  ****************************************************************************/
 
+#ifdef CONFIG_OPTIMIZE_APP_RELOAD_TIME
+/* Separate three MPU regions (text, ro and rw) to optimize reloading time */
+#define NUM_APP_REGIONS     3
+#else
+/* Just a MPU region for all of section data */
+#define NUM_APP_REGIONS     1
+#endif
+
 /****************************************************************************
  * Public Types
  ****************************************************************************/
@@ -125,7 +133,7 @@ struct binary_s {
 	uint8_t run_library_ctors;		/* Flag to check if we need to run ctors for common binary */
 #endif
 #ifdef CONFIG_ARM_MPU							/* MPU register values for common binary only */
-	uint32_t cmn_mpu_regs[MPU_REG_NUMBER * MPU_NUM_REGIONS];	/* Common binary MPU is configured during loading and disabled during unload_module */
+	uint32_t cmn_mpu_regs[MPU_REG_NUMBER * NUM_APP_REGIONS];	/* Common binary MPU is configured during loading and disabled during unload_module */
 #endif
 #endif
 	FAR char *const *argv;			/* Argument list */
