@@ -641,7 +641,7 @@ struct tcb_s {
 	uint32_t uspace;		/* User space object for app binary */
 
 #ifdef CONFIG_ARM_MPU						/* MPU register values for loadable apps only */
-	uint32_t mpu_regs[MPU_REG_NUMBER * MPU_NUM_REGIONS];	/* MPU for apps is configured during loading and disabled in task_terminate */
+	uint32_t mpu_regs[MPU_REG_NUMBER * NUM_APP_REGIONS];	/* MPU for apps is configured during loading and disabled in task_terminate */
 #endif
 #endif
 
