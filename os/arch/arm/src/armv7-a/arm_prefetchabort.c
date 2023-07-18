@@ -52,6 +52,7 @@
 
 #include "sched/sched.h"
 #include "arm_internal.h"
+#include "mmu.h"
 
 /****************************************************************************
  * Public Functions
@@ -148,6 +149,10 @@ uint32_t *arm_prefetchabort(uint32_t *regs, uint32_t ifar, uint32_t ifsr)
 
   _alert("Prefetch abort. PC: %08x IFAR: %08x IFSR: %08x\n",
         regs[REG_PC], ifar, ifsr);
+
+  _alert("MMU L1 Entry for 0x%08x = 0x%08x\n", ifar, mmu_l1_getentry(ifar));  
+  mmu_dump_pgtbl();
+
   PANIC();
   return regs; /* To keep the compiler happy */
 }

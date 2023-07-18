@@ -40,6 +40,9 @@
 
 #include "up_internal.h"
 #include "sched/sched.h"
+#if defined(CONFIG_APP_BINARY_SEPARATION) && defined(CONFIG_ARCH_USE_MMU)
+#include "mmu.h"
+#endif
 
 /****************************************************************************
  * Private Data
@@ -71,8 +74,50 @@ void up_restoretask(struct tcb_s *tcb)
 #endif
 
 		/* Restore the MPU registers in case we are switching to an application task */
-#ifdef CONFIG_ARM_MPU
 #ifdef CONFIG_APP_BINARY_SEPARATION
+#ifdef CONFIG_SUPPORT_COMMON_BINARY
+		if (g_umm_app_id) {
+			*g_umm_app_id = tcb->app_id;
+		}
+#endif
+
+#ifdef CONFIG_ARCH_USE_MMU
+#if 0
+		uint32_t ctxidr = mmu_get_asid();
+		uint8_t asid = ctxidr & 0xFF;
+		if (asid != tcb->app_id) {
+			mmu_switch_ttbr_asid((uint32_t)tcb->pgtbl, tcb->app_id);			
+		}
+#endif
+
+  irqstate_t flags;
+      flags = enter_critical_section();
+		lldbg("Write TTBR = 0x%08x\n", tcb->pgtbl);
+		cp15_wrttb((uint32_t)tcb->pgtbl);
+		cp15_invalidate_tlbs();
+		if (tcb->app_id)
+		{
+			// If this tcb belongs to an app (and not kernel thread)
+			// binfmt_invalidate_app_regions(((struct task_tcb_s *)tcb)->bininfo);
+			//cp15_invalidate_tlbs();
+		}
+
+		  uint32_t ttbr0;
+
+  __asm__ __volatile__
+    (
+      "\tmrc p15, 0, %0, c2, c0, 0\n"
+      : "=r" (ttbr0)
+      :
+      :
+    );
+
+		lldbg("Updated TTBR = 0x%08x\n", ttbr0);
+		
+      leave_critical_section(flags);
+#endif
+
+#ifdef CONFIG_ARM_MPU
 		/* Condition check : Update MPU registers only if this is not a kernel thread. */
 
 		if ((tcb->flags & TCB_FLAG_TTYPE_MASK) != TCB_FLAG_TTYPE_KERNEL) {
@@ -81,15 +126,10 @@ void up_restoretask(struct tcb_s *tcb)
 			}
 		}
 
-#ifdef CONFIG_SUPPORT_COMMON_BINARY
-		if (g_umm_app_id) {
-			*g_umm_app_id = tcb->app_id;
-		}
 #endif
 #endif
 #ifdef CONFIG_MPU_STACK_OVERFLOW_PROTECTION
 		up_mpu_set_register(tcb->stack_mpu_regs);
-#endif
 #endif
 
 #ifdef CONFIG_TASK_MONITOR

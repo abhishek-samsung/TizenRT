@@ -156,6 +156,7 @@ void up_reprioritize_rtr(struct tcb_s *tcb, uint8_t priority)
               /* Update scheduler parameters */
 
               //sched_resume_scheduler(rtcb);
+				up_restoretask(rtcb);
 
               /* Then switch contexts.  Any necessary address environment
                * changes will be made when the interrupt returns.
