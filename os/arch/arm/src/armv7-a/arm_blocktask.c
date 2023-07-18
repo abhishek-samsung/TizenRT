@@ -134,6 +134,7 @@ void up_block_task(struct tcb_s *tcb, tstate_t task_state)
           /* Reset scheduler parameters */
 
      //     sched_resume_scheduler(rtcb);
+			up_restoretask(rtcb);
 
           /* Then switch contexts.  Any necessary address environment
            * changes will be made when the interrupt returns.

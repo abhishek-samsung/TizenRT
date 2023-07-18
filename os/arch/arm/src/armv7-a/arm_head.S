@@ -543,7 +543,11 @@ __start:
 .LCptinfo:
 	.long	(PGTABLE_BASE_PADDR & 0xfff00000)	/* Physical base address */
 	.long	(PGTABLE_BASE_VADDR & 0xfff00000)	/* Virtual base address */
+#ifdef CONFIG_APP_BINARY_SEPARATION
+	.long	MMU_USR_PGTBL_MAPPING				/* MMU flags for text section in RAM */
+#else
 	.long	MMU_MEMFLAGS				/* MMU flags for text section in RAM */
+#endif
 	.size	.LCptinfo, . -.LCptinfo
 #endif
 
