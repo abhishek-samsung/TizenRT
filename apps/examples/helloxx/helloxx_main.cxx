@@ -54,12 +54,6 @@
 // Included Files
 //***************************************************************************
 
-#include <tinyara/config.h>
-
-#include <iostream>
-
-#include <tinyara/init.h>
-
 using namespace std;
 
 //***************************************************************************
@@ -70,6 +64,8 @@ using namespace std;
 #undef CXXTEST_ISTREAM
 #define CXXTEST_EXCEPTION
 #define THREAD_TEST
+
+int abhishek = 5;
 
 //***************************************************************************
 // Private Classes
@@ -90,15 +86,13 @@ using namespace std;
 #ifdef CXXTEST_EXCEPTION
 static void test_exception(void)
 {
-	cout << endl << "============ Test Exception =============================" << endl;
 	try
 	{
-		throw runtime_error("runtime error");
+		throw (abhishek);
 	}
 
-	catch (runtime_error &e)
+	catch (int e)
 	{
-		cout << "Catch exception: " << e.what() << endl;
 	}
 }
 #endif

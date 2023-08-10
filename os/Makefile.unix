@@ -473,7 +473,6 @@ define VERIFY_APP
 	$(Q) if [ "`nm -u $(OUTBIN_DIR)/$1 | wc -l`" != "0" ]; then \
 		echo "Undefined Symbols in $(OUTBIN_DIR)/$1"; \
 		nm -u -l $(OUTBIN_DIR)/$1; \
-		rm $(OUTBIN_DIR)/$1; \
 		exit 1; \
 	fi
 endef

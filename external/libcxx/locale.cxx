@@ -50,7 +50,7 @@
 #endif
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <__locale>
 // On Linux, wint_t and wchar_t have different signed-ness, and this causes
 // lots of noise in the build log, but no bugs that I know of.
 #if defined(__clang__)
@@ -1267,6 +1267,8 @@ ctype_byname<wchar_t>::~ctype_byname()
     freelocale(__l);
 }
 
+extern "C" {
+
 bool
 ctype_byname<wchar_t>::do_is(mask m, char_type c) const
 {
@@ -1383,7 +1385,7 @@ ctype_byname<wchar_t>::do_scan_not(mask m, const char_type* low, const char_type
     }
     return low;
 }
-
+}
 wchar_t
 ctype_byname<wchar_t>::do_toupper(char_type c) const
 {
