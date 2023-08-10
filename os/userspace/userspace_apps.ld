@@ -80,6 +80,18 @@ SECTIONS
       _etext_flash = . ;
     }
 
+  .ARM.extab : ALIGN(8)
+    {
+        *(.ARM.extab*)
+    }
+
+  .ARM.exidx : ALIGN(8)
+    {
+	__exidx_start = ABSOLUTE(.);
+        *(.ARM.exidx*)
+	__exidx_end = ABSOLUTE(.);
+    }
+
   .rodata :
     {
       _srodata = . ;

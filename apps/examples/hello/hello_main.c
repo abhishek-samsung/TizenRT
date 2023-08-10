@@ -56,10 +56,13 @@
 
 #include <tinyara/config.h>
 #include <stdio.h>
+#include <unwind.h>
 
 /****************************************************************************
  * hello_main
  ****************************************************************************/
+
+extern _Unwind_Ptr __gnu_Unwind_Find_exidx(_Unwind_Ptr return_address, int *nrecp);
 
 #ifdef CONFIG_BUILD_KERNEL
 int main(int argc, FAR char *argv[])
@@ -67,6 +70,8 @@ int main(int argc, FAR char *argv[])
 int hello_main(int argc, char *argv[])
 #endif
 {
-	printf("Hello, World!!\n");
+	int * a;
+	_Unwind_Ptr x = __gnu_Unwind_Find_exidx(0x1, a);
+	printf("Hello, World!! %d\n", a);
 	return 0;
 }

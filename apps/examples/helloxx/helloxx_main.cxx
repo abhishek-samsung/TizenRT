@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- * Copyright 2016 Samsung Electronics All Rights Reserved.
+ * Copyright 2018 Samsung Electronics All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
  *
  ****************************************************************************/
 //***************************************************************************
-// examples/helloxx/helloxx_main.cxx
+// examples/cxxtest/cxxtest_main.cxx
 //
-//   Copyright (C) 2009, 2011-2013 Gregory Nutt. All rights reserved.
-//   Author: Gregory Nutt <gnutt@nuttx.org>
+//   Copyright (C) 2012, 2017 Gregory Nutt. All rights reserved.
+//   Author: Qiang Yu, http://rgmp.sourceforge.net/wiki/index.php/Main_Page
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions
@@ -56,124 +56,71 @@
 
 #include <tinyara/config.h>
 
-#include <cstdio>
-#include <debug.h>
+#include <iostream>
 
 #include <tinyara/init.h>
+
+using namespace std;
 
 //***************************************************************************
 // Definitions
 //***************************************************************************
-// Debug ********************************************************************
-// Non-standard debug that may be enabled just for testing the constructors
-
-#ifndef CONFIG_DEBUG
-#  undef CONFIG_DEBUG_CXX
-#endif
-
-#ifdef CONFIG_DEBUG_CXX
-#  define cxxdbg              dbg
-#  define cxxlldbg            lldbg
-#  ifdef CONFIG_DEBUG_VERBOSE
-#    define cxxvdbg           vdbg
-#    define cxxllvdbg         llvdbg
-#  else
-#    define cxxvdbg(...)
-#    define cxxllvdbg(...)
-#  endif
-#else
-#  define cxxdbg(...)
-#  define cxxlldbg(...)
-#  define cxxvdbg(...)
-#  define cxxllvdbg(...)
-#endif
+// Configuration ************************************************************
+#define CXXTEST_RTTI
+#undef CXXTEST_ISTREAM
+#define CXXTEST_EXCEPTION
+#define THREAD_TEST
 
 //***************************************************************************
 // Private Classes
 //***************************************************************************
 
-class CHelloWorld
-{
-public:
-	CHelloWorld(void) : mSecret(42)
-	{
-		cxxdbg("Constructor: mSecret=%d\n", mSecret);
-	}
-
-	~CHelloWorld(void)
-	{
-		cxxdbg("Destructor\n");
-	}
-
-	bool HelloWorld(void)
-	{
-		cxxdbg("HelloWorld: mSecret=%d\n", mSecret);
-
-		if (mSecret != 42)
-		{
-			printf("CHelloWorld::HelloWorld: CONSTRUCTION FAILED!\n");
-			return false;
-		}
-		else
-		{
-			printf("CHelloWorld::HelloWorld: Hello, World!!\n");
-			return true;
-		}
-	}
-
-private:
-	int mSecret;
-};
 
 //***************************************************************************
 // Private Data
 //***************************************************************************
 
-// Define a statically constructed CHellowWorld instance if C++ static
-// initializers are supported by the platform
+//***************************************************************************
+// Private Functions
 
-#if defined(CONFIG_HAVE_CXXINITIALIZE) || defined(CONFIG_BINFMT_CONSTRUCTORS)
-static CHelloWorld g_HelloWorld;
+//***************************************************************************
+// Name: test_exception
+//***************************************************************************/
+
+#ifdef CXXTEST_EXCEPTION
+static void test_exception(void)
+{
+	cout << endl << "============ Test Exception =============================" << endl;
+	try
+	{
+		throw runtime_error("runtime error");
+	}
+
+	catch (runtime_error &e)
+	{
+		cout << "Catch exception: " << e.what() << endl;
+	}
+}
 #endif
 
 //***************************************************************************
 // Public Functions
 //***************************************************************************
 
-/****************************************************************************
- * Name: helloxx_main
- ****************************************************************************/
+//***************************************************************************
+// Name: cxxtest_main
+//***************************************************************************/
 
 extern "C"
 {
 	int helloxx_main(int argc, char *argv[])
 	{
-		// Print the cpp version used
-		printf("c++ version used : %d\n", __cplusplus);
 
-		// Exercise an explictly instantiated C++ object
-
-		CHelloWorld *pHelloWorld = new CHelloWorld;
-		printf("helloxx_main: Saying hello from the dynamically constructed instance\n");
-		pHelloWorld->HelloWorld();
-
-		// Exercise an C++ object instantiated on the stack
-
-#ifndef CONFIG_EXAMPLES_HELLOXX_NOSTACKCONST
-		CHelloWorld HelloWorld;
-
-		printf("helloxx_main: Saying hello from the instance constructed on the stack\n");
-		HelloWorld.HelloWorld();
+#ifdef CXXTEST_EXCEPTION
+		test_exception();
 #endif
 
-		// Exercise an statically constructed C++ object
-
-#if defined(CONFIG_HAVE_CXXINITIALIZE) || defined(CONFIG_BINFMT_CONSTRUCTORS)
-		printf("helloxx_main: Saying hello from the statically constructed instance\n");
-		g_HelloWorld.HelloWorld();
-#endif
-
-		delete pHelloWorld;
 		return 0;
 	}
 }
+

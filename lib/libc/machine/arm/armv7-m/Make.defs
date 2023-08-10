@@ -52,7 +52,7 @@
 
 ifeq ($(CONFIG_LIBC_ARCH_ELF),y)
 
-CSRCS += arch_elf.c
+CSRCS += arch_elf.c gnu_unwind_find_exidx.c
 
 DEPPATH += --dep-path machine/arm/armv7-m
 VPATH += :machine/arm/armv7-m

@@ -348,7 +348,7 @@ int get_errno(void);
 #endif
 
 #ifdef CONFIG_DEBUG_BINFMT_ERROR
-#  define berr(format, ...)     dbg(format, ##__VA_ARGS__)
+#  define berr(format, ...)     lldbg(format, ##__VA_ARGS__)
 #else
 #  define berr(...)
 #endif
@@ -1199,7 +1199,7 @@ int get_errno(void);
 #endif
 
 #ifdef CONFIG_DEBUG_BINFMT_ERROR
-#define berr  dbg
+#define berr  lldbg
 #else
 #define berr  (void)
 #endif
