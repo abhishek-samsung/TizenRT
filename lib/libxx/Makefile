@@ -57,7 +57,7 @@
 ASRCS =
 CSRCS =
 
-CXXSRCS  = libxx_cxapurevirtual.cxx libxx_eabi_atexit.cxx  libxx_cxa_atexit.cxx
+CXXSRCS  = libxx_cxapurevirtual.cxx libxx_eabi_atexit.cxx  libxx_cxa_atexit.cxx libxx_vterminate.cxx
 
 ifneq ($(CONFIG_LIBCXX),y)
 CXXSRCS += libxx_delete.cxx libxx_delete_sized.cxx libxx_deletea.cxx
@@ -65,7 +65,7 @@ CXXSRCS += libxx_deletea_sized.cxx libxx_new.cxx libxx_newa.cxx
 CXXSRCS += libxx_stdthrow.cxx libxx_cxa_guard.cxx
 else
 ifneq ($(CONFIG_LIBCXX_EXCEPTION),y)
-CXXSRCS += libxx_stdthrow.cxx libxx_vterminate.cxx
+CXXSRCS += libxx_stdthrow.cxx
 endif
 CXXSRCS += libxx_cxa_guard.cxx
 endif

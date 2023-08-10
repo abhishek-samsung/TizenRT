@@ -7,9 +7,8 @@
 
 #include <cstdlib>
 #include <debug.h>
-
+#include <stdio.h>
 // This is a brain-dead replacement for __gnu_cxx::__verbose_terminate_handler
-abhi;
 namespace __gnu_cxx
 {
   void __verbose_terminate_handler()
