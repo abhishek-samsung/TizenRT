@@ -65,7 +65,7 @@ CXXSRCS += libxx_deletea_sized.cxx libxx_new.cxx libxx_newa.cxx
 CXXSRCS += libxx_stdthrow.cxx libxx_cxa_guard.cxx
 else
 ifneq ($(CONFIG_LIBCXX_EXCEPTION),y)
-CXXSRCS += libxx_stdthrow.cxx
+CXXSRCS += libxx_stdthrow.cxx libxx_vterminate.cxx
 endif
 CXXSRCS += libxx_cxa_guard.cxx
 endif

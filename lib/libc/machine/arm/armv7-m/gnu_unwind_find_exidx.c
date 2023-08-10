@@ -76,14 +76,15 @@ int up_init_exidx(Elf32_Addr start, Elf32_Word size)
 
 _Unwind_Ptr __gnu_Unwind_Find_exidx(_Unwind_Ptr return_address, int *nrecp)
 {
-  if (return_address < 0x20000000)
+ /*
+      	if (return_address < 0x20000000)
     {
       *nrecp = __exidx_end - __exidx_start;
       return (_Unwind_Ptr)__exidx_start;
     }
   else
     {
-      *nrecp = __exidx_end_elf - __exidx_start_elf;
+   */   *nrecp = __exidx_end_elf - __exidx_start_elf;
       return (_Unwind_Ptr)__exidx_start_elf;
-    }
+    //}
 }
