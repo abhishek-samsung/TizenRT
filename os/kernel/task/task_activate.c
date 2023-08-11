@@ -115,7 +115,7 @@
 
 int task_activate(FAR struct tcb_s *tcb)
 {
-	irqstate_t flags = irqsave();
+	volatile irqstate_t flags = irqsave();
 #ifndef CONFIG_DISABLE_SIGNALS
 	int ret;
 	struct sigaction act;
