@@ -71,6 +71,9 @@
 #include <tinyara/mpu.h>
 #endif
 #include <tinyara/mm/mm.h>
+#if defined(CONFIG_APP_BINARY_SEPARATION) && defined(CONFIG_ARCH_USE_MMU)
+#include <tinyara/mmu.h>
+#endif
 
 #ifdef CONFIG_BINARY_MANAGER
 #include <string.h>
@@ -127,7 +130,7 @@ static void exec_ctors(FAR void *arg)
 	if (g_lib_binp->run_library_ctors) {
 		ctor = g_lib_binp->ctors;
 		for (i = 0; i < g_lib_binp->nctors; i++) {
-			binfo("Calling ctor %d at %p\n", i, (FAR void *)ctor);
+			dbg("Calling ctor %d at %p\n", i, (FAR void *)ctor);
 
 			(*ctor)();
 			ctor++;
@@ -141,7 +144,7 @@ static void exec_ctors(FAR void *arg)
 	/* Execute each constructor */
 
 	for (i = 0; i < binp->nctors; i++) {
-		binfo("Calling ctor %d at %p\n", i, (FAR void *)ctor);
+		dbg("Calling ctor %d at %p\n", i, (FAR void *)ctor);
 
 		(*ctor)();
 		ctor++;
@@ -182,7 +185,7 @@ int exec_module(FAR struct binary_s *binp)
 	}
 #endif
 
-	binfo("Executing %s\n", binp->filename);
+	dbg("Executing %s\n", binp->filename);
 
 	binary_idx = binp->binary_idx;
 	binp->uheap = (struct mm_heap_s *)binp->sections[BIN_HEAP];
@@ -193,8 +196,8 @@ int exec_module(FAR struct binary_s *binp)
 	}
 	mm_add_app_heap_list(binp->uheap, binp->bin_name);
 
-	binfo("------------------------%s Binary Heap Information------------------------\n", binp->bin_name);
-	binfo("Start addr = 0x%x, size = %u \n", (void *)binp->sections[BIN_HEAP] + sizeof(struct mm_heap_s), binp->sizes[BIN_HEAP]);
+	dbg("------------------------%s Binary Heap Information------------------------\n", binp->bin_name);
+	dbg("Start addr = 0x%x, size = %u \n", (void *)binp->sections[BIN_HEAP] + sizeof(struct mm_heap_s), binp->sizes[BIN_HEAP]);
 
 	/* The first 4 bytes of the data section of the application must contain a
 	pointer to the application's mm_heap object. Here we will store the mm_heap
@@ -301,6 +304,9 @@ int exec_module(FAR struct binary_s *binp)
 #ifdef CONFIG_ARM_MPU
 	memset(rtcb->mpu_regs, 0, sizeof(rtcb->mpu_regs));
 #endif
+#ifdef CONFIG_ARCH_USE_MMU
+	rtcb->pgtbl = mmu_get_os_l1_pgtbl();
+#endif
 
 	/* Store the address of the applications userspace object in the newtcb  */
 	/* The app's userspace object will be found at an offset of 4 bytes from the start of the binary */
@@ -308,9 +314,7 @@ int exec_module(FAR struct binary_s *binp)
 	newtcb->cmn.uheap = (uint32_t)binp->uheap;
 
 #ifdef CONFIG_BINARY_MANAGER
-#ifdef CONFIG_SUPPORT_COMMON_BINARY
 	newtcb->cmn.app_id = binp->binary_idx;
-#endif
 
 	/* Set task name as binary name */
 	strncpy(newtcb->cmn.name, binp->bin_name, CONFIG_TASK_NAME_SIZE);
@@ -346,7 +350,7 @@ int exec_module(FAR struct binary_s *binp)
 		goto errout_with_tcbinit;
 	}
 
-	binfo("%s loaded @ 0x%08x and running with pid = %d\n", binp->filename, binp->sections[BIN_TEXT], pid);
+	dbg("%s loaded @ 0x%08x and running with pid = %d\n", binp->filename, binp->sections[BIN_TEXT], pid);
 
 	return (int)pid;
 

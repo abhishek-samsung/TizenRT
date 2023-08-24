@@ -458,15 +458,15 @@ static int thread_schedsetup(FAR struct tcb_s *tcb, int priority, start_t start,
 		rtcb = this_task();
 		tcb->uspace = rtcb->uspace;
 		tcb->uheap = rtcb->uheap;
-#ifdef CONFIG_SUPPORT_COMMON_BINARY
 		tcb->app_id = rtcb->app_id;
+#ifdef CONFIG_ARCH_USE_MMU
+		tcb->pgtbl = rtcb->pgtbl;
 #endif
-
 		/* Copy the MPU register values from parent to child task */
 #ifdef CONFIG_ARM_MPU
 		int i = 0;
 #ifdef CONFIG_OPTIMIZE_APP_RELOAD_TIME
-		for (; i < MPU_REG_NUMBER * MPU_NUM_REGIONS; i += MPU_REG_NUMBER)
+		for (; i < MPU_REG_NUMBER * NUM_APP_REGIONS; i += MPU_REG_NUMBER)
 #endif
 		{
 			tcb->mpu_regs[i + MPU_REG_RNR] = rtcb->mpu_regs[i + MPU_REG_RNR];

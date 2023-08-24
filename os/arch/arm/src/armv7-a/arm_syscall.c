@@ -181,6 +181,7 @@ uint32_t *arm_syscall(uint32_t *regs)
 #ifdef CONFIG_BUILD_PROTECTED
 	uint32_t cpsr;
 #endif
+	struct tcb_s *rtcb = sched_self();
 
 	/* Nested interrupts are not supported */
 
@@ -221,7 +222,6 @@ uint32_t *arm_syscall(uint32_t *regs)
 #ifdef CONFIG_LIB_SYSCALL
 	case SYS_syscall_return:
 	 {
-		struct tcb_s *rtcb = sched_self();
 		int index = (int)rtcb->xcp.nsyscalls - 1;
 
 		/* Make sure that there is a saved SYSCALL return address. */
@@ -289,6 +289,7 @@ uint32_t *arm_syscall(uint32_t *regs)
 
 		CURRENT_REGS = (uint32_t *)regs[REG_R1];
 		DEBUGASSERT(CURRENT_REGS);
+		up_restoretask(rtcb);
 	 }
 	 break;
 
@@ -314,6 +315,7 @@ uint32_t *arm_syscall(uint32_t *regs)
 		DEBUGASSERT(regs[REG_R1] != 0 && regs[REG_R2] != 0);
 		*(uint32_t **)regs[REG_R1] = regs;
 		CURRENT_REGS = (uint32_t *)regs[REG_R2];
+		up_restoretask(rtcb);
 	 }
 	 break;
 
@@ -333,7 +335,6 @@ uint32_t *arm_syscall(uint32_t *regs)
 #ifdef CONFIG_BUILD_PROTECTED
 	case SYS_task_start:
 	 {
-		struct tcb_s *rtcb = sched_self();
 		DEBUGASSERT(rtcb->uspace);
 		/* Set up to return to the user-space _start function in
 			* unprivileged mode.  We need:
@@ -370,7 +371,6 @@ uint32_t *arm_syscall(uint32_t *regs)
 #if !defined(CONFIG_BUILD_FLAT) && !defined(CONFIG_DISABLE_PTHREAD)
 	case SYS_pthread_start:
 	 {
-		struct tcb_s *rtcb = sched_self();
 		DEBUGASSERT(rtcb->uspace);
 		/* Set up to enter the user-space pthread start-up function in
 			* unprivileged mode. We need:
@@ -409,7 +409,6 @@ uint32_t *arm_syscall(uint32_t *regs)
 	case SYS_signal_handler:
 	{
 
-		struct tcb_s *rtcb = sched_self();
 		/* Remember the caller's return address */
 
 		DEBUGASSERT(rtcb->uspace);
@@ -474,7 +473,6 @@ uint32_t *arm_syscall(uint32_t *regs)
 	case SYS_signal_handler_return:
 	{
 
-		struct tcb_s *rtcb = sched_self();
 		/* Set up to return to the kernel-mode signal dispatching logic. */
 
 		DEBUGASSERT(rtcb->xcp.sigreturn != 0);
@@ -511,7 +509,6 @@ uint32_t *arm_syscall(uint32_t *regs)
 	default:
 	{
 #ifdef CONFIG_LIB_SYSCALL
-		struct tcb_s *rtcb = sched_self();
 		int index = rtcb->xcp.nsyscalls;
 
 		/* Verify that the SYS call number is within range */
