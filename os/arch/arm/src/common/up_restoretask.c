@@ -93,7 +93,7 @@ void up_restoretask(struct tcb_s *tcb)
   irqstate_t flags;
       flags = enter_critical_section();
 		lldbg("Write TTBR = 0x%08x\n", tcb->pgtbl);
-		cp15_wrttb((uint32_t)tcb->pgtbl);
+		cp15_wrttb((uint32_t)tcb->pgtbl | TTBR0_RGN_WBWA | TTBR0_IRGN0);
 		cp15_invalidate_tlbs();
 		if (tcb->app_id)
 		{
