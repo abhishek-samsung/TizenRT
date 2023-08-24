@@ -344,6 +344,7 @@ uint32_t *mmu_allocate_app_l2_pgtbl(int app_id, int l2_idx)
 {
 	app_id--;
 	uint32_t *addr = (uint32_t *)(PGTABLE_BASE_VADDR + (2 * 16384) + (app_id * l2_idx * 1024));
+	lldbg("allocating level 2 page table, appid : %d, l2_idx : %d, start : %x, end : %x\n", app_id, l2_idx, PGTABLE_BASE_VADDR + (2 * 16384) + (app_id * l2_idx * 1024), PGTABLE_BASE_VADDR + (2 * 16384) + (app_id * l2_idx * 1024) + 1024);
 	// uint32_t *addr = (uint32_t *)kmm_memalign(L2_PGTBL_ALIGNMENT, L2_PGTBL_SIZE);
 	// ASSERT(addr);
 	// memset(addr, 0, L2_PGTBL_SIZE);
@@ -401,7 +402,7 @@ void mmu_map_app_region(int app_id, uint32_t *l1_pgtbl, uint32_t start, uint32_t
 	uint32_t val;
 	uint32_t end = start + size;
 	irqstate_t flags;
-
+	int l2_idx = 0;
 	lldbg("start = 0x%08x end = 0x%08x size = %x\n", start, end, size);
 
 	// Run a loop until the entire region is mapped.
@@ -435,70 +436,41 @@ void mmu_map_app_region(int app_id, uint32_t *l1_pgtbl, uint32_t start, uint32_t
 
 			// Check if L2 page table is not created.
 			idx = (start & 0xfff00000) >> 20;
-			int l2_idx = 0;
+			//int l2_idx = 0;
 			uint32_t *l2_pgtbl = (uint32_t *)(l1_pgtbl[idx] & PMD_PTE_PADDR_MASK);
 			if ((l1_pgtbl[idx] & PMD_TYPE_MASK) != PMD_TYPE_PTE) {
 				// Yes. Allocate L2 page table for app.
 				l2_pgtbl = mmu_allocate_app_l2_pgtbl(app_id, l2_idx++);
 
-				lldbg("Allocated L2 pgtbl at 0x%08x\n", l2_pgtbl);
-				if (global) {
-  					// If this update is for the common binary, then it is done
-					// in the kernel page tables and so the cache and tlbs need
-					// to be flushed and invalidated.
-
-					flags = enter_critical_section();
-
-					// Fill default entries into L2 page table.
-					uint32_t tmp = start;
-					for (idx = 0; idx < L2_PGTBL_NENTRIES; idx++) {
-						val = tmp & PTE_SMALL_PADDR_MASK;
-						val |= MMU_MEMFLAGS;
-						l2_pgtbl[idx] = val;
-						cp15_clean_dcache_bymva((uint32_t)&l2_pgtbl[idx]);
-						tmp += 4096;
-					}
-
-					// Update L2 page table address in L1 page table. 
-					val = (uint32_t)l2_pgtbl & PMD_PTE_PADDR_MASK;
-					val |= MMU_L1_DATAFLAGS;
-					l1_pgtbl[idx] = val;
-
-					cp15_clean_dcache_bymva((uint32_t)&l1_pgtbl[idx]);
-					cp15_invalidate_tlb_bymva(start);
-					leave_critical_section(flags);
-				} else {
-					// Update L2 page table address in L1 page table.
-					val = (uint32_t)l2_pgtbl & PMD_PTE_PADDR_MASK;
-					val |= MMU_L1_PGTABFLAGS;
-					l1_pgtbl[idx] = val;
-					// dbg("Set l1 pte at 0x%08x = 0x%08x\n", &l1_pgtbl[idx], val);
-					cp15_clean_dcache_bymva((uint32_t)&l1_pgtbl[idx]);
+				/* fill default kernel values first */
+				uint32_t l2_start = start & PMD_SECT_PADDR_MASK;
+				lldbg("start address %x l2 page\n", l2_start);
+				for (int i = 0; i < L2_PGTBL_NENTRIES; i++) {
+					l2_pgtbl[i] = l2_start | (1<<10) | PTE_AP_RW01 | PTE_TYPE_SMALL | PMD_CACHEABLE;
+					lldbg("l2[%d] = %x\n", i, l2_pgtbl[i]);
+					l2_start += 0x1000;
 				}
-			}
+				lldbg("end address %x l2 page\n", l2_start);
+				val = l2_pgtbl;
+				lldbg("setting l2 pg tbl in l1 , %x\n", val);
+				l1_pgtbl[idx] = (val & PMD_PTE_PADDR_MASK) | PMD_SECT_DOM(0) | PMD_TYPE_PTE | (1 << 3);
 
+				lldbg("Allocated L2 pgtbl at 0x%08x\n", l2_pgtbl);
+				//cp15_clean_dcache_bymva((uint32_t)&l1_pgtbl[idx]);
+			}
+/*
 			// Update the L2 page table entry.
   			idx = (start & 0x000ff000) >> 12;
 			val = start & PTE_SMALL_PADDR_MASK;
-			mmu_set_flags(&val, ro, exec, false, global);
+			//mmu_set_flags(&val, ro, exec, false, global);
+			val = val | PMD_SECT_S | PTE_AP_RW01 | PTE_TYPE_SMALL;
 
-			if (global) {
-				flags = enter_critical_section();
-				l2_pgtbl[idx] = val;
-  				// If this update is for the common binary, then it is done
-				// in the kernel page tables and so the cache and tlbs need
-				// to be flushed and invalidated.
-				cp15_clean_dcache_bymva((uint32_t)&l2_pgtbl[idx]);
-				cp15_invalidate_tlb_bymva(start);
-				leave_critical_section(flags);
-			} else {
-				l2_pgtbl[idx] = val;
-				// dbg("Set l2 pte at 0x%08x = 0x%08x\n", &l2_pgtbl[idx], val);
-				cp15_clean_dcache_bymva((uint32_t)&l2_pgtbl[idx]);
-			}
+			l2_pgtbl[idx] = val;
+			// dbg("Set l2 pte at 0x%08x = 0x%08x\n", &l2_pgtbl[idx], val);
+			cp15_clean_dcache_bymva((uint32_t)&l2_pgtbl[idx]);
 
 			// Advance the memory region address.
-			start += SMALL_PAGE_SIZE;
+*/			start += SMALL_PAGE_SIZE;
 		}
 	}
 }
