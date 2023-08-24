@@ -64,7 +64,7 @@ static void mmu_set_flags(uint32_t *val, bool ro, bool exec, uint8_t isL1, uint8
 		}
 
 		if (!isGlobal) {
-			*val |= PMD_SECT_NG;
+	//		*val |= PMD_SECT_NG;
 		}
 	} else {
 		if (ro && exec) {
@@ -406,6 +406,12 @@ void mmu_map_app_region(int app_id, uint32_t *l1_pgtbl, uint32_t start, uint32_t
 
 	// Run a loop until the entire region is mapped.
 	while (start < end) {
+		idx = start >> 20;
+                val = start & PMD_SECT_PADDR_MASK;
+                mmu_set_flags(&val, false, exec, true, false);
+		l1_pgtbl[idx] = val;
+		start += SMALL_PAGE_SIZE;
+		continue;	
 		// Check if this address can be mapped to a section.
 		if (!(start & SECTION_MASK) && !(size & SECTION_MASK)) {
 			// Yes. Update the section entry in the the L1 page table.

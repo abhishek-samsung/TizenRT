@@ -645,10 +645,10 @@
                               		PMD_SECT_DOM(0) | PMD_SECT_NS) 
 #ifdef CONFIG_SMP
 #define MMU_APP_L1_RW         	(PMD_TYPE_SECT | PMD_SECT_AP_RW01 | PMD_CACHEABLE | \
-                              		PMD_SECT_S | PMD_SECT_DOM(0) | PMD_SECT_XN | PMD_SECT_NS)
+                              		PMD_SECT_S | PMD_SECT_DOM(0) | PMD_SECT_NS)
 #else
 #define MMU_APP_L1_RW		(PMD_TYPE_SECT | PMD_SECT_AP_RW01 | PMD_CACHEABLE | \
-					PMD_SECT_DOM(0) | PMD_SECT_XN | PMD_SECT_NS)
+					PMD_SECT_DOM(0) | PMD_SECT_S)
 #endif
 #define MMU_APP_L2_RO		(PTE_TYPE_SMALL | PTE_WRITE_BACK | PTE_AP_R01 | PTE_SMALL_XN)
 #define MMU_APP_L2_ROX		(PTE_TYPE_SMALL | PTE_WRITE_BACK | PTE_AP_R01)
