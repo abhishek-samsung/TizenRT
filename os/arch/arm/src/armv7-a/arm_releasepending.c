@@ -80,7 +80,7 @@ void up_release_pending(void)
 
       /* Update scheduler parameters */
 
-     // sched_suspend_scheduler(rtcb);
+    // sched_suspend_scheduler(rtcb);
 
       /* Are we operating in interrupt context? */
 

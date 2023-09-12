@@ -96,7 +96,7 @@ sched_removeblocked(tcb);
 
       /* Update scheduler parameters */
 
-//      sched_suspend_scheduler(rtcb);
+      //sched_suspend_scheduler(rtcb);
 
       /* Are we in an interrupt handler? */
 
@@ -116,7 +116,7 @@ sched_removeblocked(tcb);
 
           /* Update scheduler parameters */
 
- 	  // sched_resume_scheduler(rtcb);
+ 	  sched_resume_scheduler(rtcb);
 
           /* Then switch contexts.  Any necessary address environment
            * changes will be made when the interrupt returns.
@@ -133,7 +133,7 @@ sched_removeblocked(tcb);
 
           /* Update scheduler parameters */
 
-//          sched_resume_scheduler(nexttcb);
+	  sched_resume_scheduler(nexttcb);
 
           /* Switch context to the context of the task at the head of the
            * ready to run list.
