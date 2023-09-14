@@ -256,12 +256,7 @@ volatile pid_t g_lastpid;
  *
  * the number of tasks to CONFIG_MAX_TASKS.
  */
-#ifdef CONFIG_SMP
-struct pidhash_s g_pidhash[CONFIG_SMP_NCPUS][CONFIG_MAX_TASKS];
-volatile int g_npidhash;
-#else
 struct pidhash_s g_pidhash[CONFIG_MAX_TASKS];
-#endif
 
 /* This is a table of task lists.  This table is indexed by
  * the task state enumeration type (tstate_t) and provides
@@ -530,14 +525,6 @@ void os_start(void)
 
  	/* Initialize the logic that determine unique process IDs. */
 
-#ifdef CONFIG_SMP
-	g_npidhash = 4;
-	while (g_npidhash <= CONFIG_SMP_NCPUS)
-	{
-		g_npidhash <<= 1;
-	}
-#endif
-
 	/* IDLE Group Initialization **********************************************/
 
 	for (i = 0; i < CONFIG_SMP_NCPUS; i++)
@@ -547,11 +534,7 @@ void os_start(void)
 		/* Assign the process ID(s) of ZERO to the idle task(s) */
 
 		hashndx  = PIDHASH(i);
-#ifdef CONFIG_SMP
-		g_pidhash[i][hashndx].tcb = &g_idletcb[i].cmn;
-#else
 		g_pidhash[hashndx].tcb = &g_idletcb[i].cmn;
-#endif
 		/* Allocate the IDLE group */
 #ifdef HAVE_TASK_GROUP
 

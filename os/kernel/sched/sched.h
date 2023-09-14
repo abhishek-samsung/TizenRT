@@ -275,12 +275,7 @@ extern volatile pid_t g_lastpid;
  * of tasks to CONFIG_MAX_TASKS.
  */
 
-#ifdef CONFIG_SMP
-extern struct pidhash_s g_pidhash[CONFIG_SMP_NCPUS][CONFIG_MAX_TASKS];
-extern volatile int g_npidhash;
-#else
 extern struct pidhash_s g_pidhash[CONFIG_MAX_TASKS];
-#endif
 
 /* This is a table of task lists.  This table is indexed by the task state
  * enumeration type (tstate_t) and provides a pointer to the associated
