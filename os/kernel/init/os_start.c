@@ -306,6 +306,10 @@ const struct tasklist_s g_tasklisttable[NUM_TASK_STATES] =
     &g_waitingforsemaphore,
     TLIST_ATTR_PRIORITIZED
   },
+  {						/* TSTATE_WAIT_FIN */
+	  &g_waitingforfin,    
+	  TLIST_ATTR_PRIORITIZED
+  },
   {                                              /* TSTATE_WAIT_SIG */
     &g_waitingforsignal,
     0
