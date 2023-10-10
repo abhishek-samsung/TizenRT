@@ -103,6 +103,11 @@ void uart_xmitchars(FAR uart_dev_t *dev)
 
 	/* Send while we still have data in the TX buffer & room in the fifo */
 
+#ifdef CONFIG_SMP
+	irqstate_t flags = enter_critical_section();
+#endif
+
+
 	while (dev->xmit.head != dev->xmit.tail && uart_txready(dev)) {
 		/* Send the next byte */
 
@@ -136,6 +141,10 @@ void uart_xmitchars(FAR uart_dev_t *dev)
 	if (nbytes) {
 		dev->sent(dev);
 	}
+
+#ifdef CONFIG_SMP
+	leave_critical_section(flags);
+#endif
 }
 
 /************************************************************************************
