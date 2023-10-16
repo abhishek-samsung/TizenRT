@@ -207,7 +207,11 @@ int waitid(idtype_t idtype, id_t id, FAR siginfo_t *info, int options)
 
 	/* Disable pre-emption so that nothing changes while the loop executes */
 
+#ifdef CONFIG_SMP
+	irqstate_t flags = enter_critical_section();
+#else
 	sched_lock();
+#endif
 
 	/* Verify that this task actually has children and that the requested
 	 * TCB is actually a child of this task.
@@ -386,14 +390,22 @@ int waitid(idtype_t idtype, id_t id, FAR siginfo_t *info, int options)
 	}
 
 	leave_cancellation_point();
+#ifdef CONFIG_SMP
+	leave_critical_section(flags);
+#else
 	sched_unlock();
+#endif
 	return OK;
 
 errout_with_errno:
 	set_errno(err);
 errout:
 	leave_cancellation_point();
+#ifdef CONFIG_SMP
+	leave_critical_section(flags);
+#else
 	sched_unlock();
+#endif
 	return ERROR;
 }
 

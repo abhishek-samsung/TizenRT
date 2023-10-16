@@ -164,7 +164,7 @@ void _exit(int status)
 	sched_foreach(_up_dumponexit, NULL);
 #endif
 
-	(void)irqsave();
+	(void)enter_critical_section();
 
 	/* Destroy the task at the head of the ready to run list. */
 
@@ -190,6 +190,8 @@ void _exit(int status)
 	/*Save the task name which will be scheduled */
 	save_task_scheduling_status(tcb);
 #endif
+
+	sched_resume_scheduler(tcb);
 
 	/* Then switch contexts */
 

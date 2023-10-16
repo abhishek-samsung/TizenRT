@@ -720,21 +720,21 @@ void rtw_spin_unlock(_lock *plock)
 	}
 }
 
-void rtw_spinlock_irqsave(_lock *plock, _irqL *irqL)
+void rtw_spinlock_enter_critical_section(_lock *plock, _irqL *irqL)
 {
-	if (osdep_service.rtw_spinlock_irqsave) {
-		osdep_service.rtw_spinlock_irqsave(plock, irqL);
+	if (osdep_service.rtw_spinlock_enter_critical_section) {
+		osdep_service.rtw_spinlock_enter_critical_section(plock, irqL);
 	} else {
-		OSDEP_DBG("Not implement osdep service: rtw_spinlock_irqsave");
+		OSDEP_DBG("Not implement osdep service: rtw_spinlock_enter_critical_section");
 	}
 }
 
-void rtw_spinunlock_irqsave(_lock *plock, _irqL *irqL)
+void rtw_spinunlock_enter_critical_section(_lock *plock, _irqL *irqL)
 {
-	if (osdep_service.rtw_spinunlock_irqsave) {
-		osdep_service.rtw_spinunlock_irqsave(plock, irqL);
+	if (osdep_service.rtw_spinunlock_enter_critical_section) {
+		osdep_service.rtw_spinunlock_enter_critical_section(plock, irqL);
 	} else {
-		OSDEP_DBG("Not implement osdep service: rtw_spinunlock_irqsave");
+		OSDEP_DBG("Not implement osdep service: rtw_spinunlock_enter_critical_section");
 	}
 }
 

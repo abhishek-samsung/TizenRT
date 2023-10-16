@@ -87,12 +87,12 @@ irqstate_t flags;
 void save_and_cli()
 {
 	flags = 0;
-	flags = irqsave();
+	flags = enter_critical_section();
 }
 
 void restore_flags()
 {
-	irqrestore(flags);
+	leave_critical_section(flags);
 }
 
 void cli()
@@ -379,7 +379,7 @@ static void _tizenrt_spinunlock(_lock *plock)
 	sem_post(*plock);
 }
 
-static void _tizenrt_spinlock_irqsave(_lock *plock, _irqL *irqL)
+static void _tizenrt_spinlock_enter_critical_section(_lock *plock, _irqL *irqL)
 {
 
 	int temp;
@@ -390,7 +390,7 @@ static void _tizenrt_spinlock_irqsave(_lock *plock, _irqL *irqL)
 	}
 }
 
-static void _tizenrt_spinunlock_irqsave(_lock *plock, _irqL *irqL)
+static void _tizenrt_spinunlock_enter_critical_section(_lock *plock, _irqL *irqL)
 {
 
 	pthread_mutex_unlock(*plock);
@@ -867,8 +867,8 @@ const struct osdep_service_ops osdep_service = {
 	_tizenrt_spinlock_free,		 //rtw_spinlock_free
 	_tizenrt_spinlock,			 //rtw_spin_lock
 	_tizenrt_spinunlock,		 //rtw_spin_unlock
-	_tizenrt_spinlock_irqsave,   //rtw_spinlock_irqsave
-	_tizenrt_spinunlock_irqsave, //rtw_spinunlock_irqsave
+	_tizenrt_spinlock_enter_critical_section,   //rtw_spinlock_enter_critical_section
+	_tizenrt_spinunlock_enter_critical_section, //rtw_spinunlock_enter_critical_section
 	_tizenrt_init_xqueue,		 //rtw_init_xqueue
 	_tizenrt_push_to_xqueue,	 //rtw_push_to_xqueue
 	_tizenrt_pop_from_xqueue,	//rtw_pop_from_xqueue

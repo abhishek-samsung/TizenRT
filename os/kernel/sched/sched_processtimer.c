@@ -107,9 +107,10 @@
  ************************************************************************/
 
 #if CONFIG_RR_INTERVAL > 0
-static inline void sched_process_timeslice(void)
+static inline void sched_process_timeslice(int cpu)
 {
-	FAR struct tcb_s *rtcb = this_task();
+
+	FAR struct tcb_s *rtcb = current_task(cpu);
 
 	/* Check if the currently executing task uses round robin
 	 * scheduling.
@@ -159,6 +160,60 @@ static inline void sched_process_timeslice(void)
 }
 #else
 #define sched_process_timeslice()
+#endif
+
+
+/****************************************************************************
+ * Name:  sched_process_scheduler
+ *
+ * Description:
+ *   Check for operations specific to scheduling policy of the currently
+ *   active task on all configured CPUs.
+ *
+ * Input Parameters:
+ *   None
+ *
+ * Returned Value:
+ *   None
+ *
+ ****************************************************************************/
+
+#if CONFIG_RR_INTERVAL > 0 || defined(CONFIG_SCHED_SPORADIC)
+static inline void sched_process_scheduler(void)
+{
+	irqstate_t flags;
+	flags = enter_critical_section();
+
+#ifdef CONFIG_SMP
+	int i;
+	
+	/* If we are running on a single CPU architecture, then we know interrupts
+	 * are disabled and there is no need to explicitly call
+	 * enter_critical_section().  However, in the SMP case,
+	 * enter_critical_section() does much more than just disable interrupts on
+	 * the local CPU; it also manages spinlocks to assure the stability of the
+	 * TCB that we are manipulating.
+	 */
+
+
+	/* Perform scheduler operations on all CPUs */
+
+	for (i = 0; i < CONFIG_SMP_NCPUS; i++)
+	  {
+	    sched_process_timeslice(i);
+	  }
+
+
+#else
+	/* Perform scheduler operations on the single CPUs */
+
+	sched_process_timeslice(0);
+#endif
+	leave_critical_section(flags);
+
+}
+#else
+#  define sched_process_scheduler()
 #endif
 
 /************************************************************************
@@ -221,9 +276,15 @@ void sched_process_timer(void)
 	 * timeslice.
 	 */
 
-	sched_process_timeslice();
+	sched_process_scheduler();
 
 	/* Process watchdogs */
 
+#ifdef CONFIG_SMP
+	irqstate_t flags = enter_critical_section();
+#endif
 	wd_timer();
+#ifdef CONFIG_SMP
+	leave_critical_section(flags);
+#endif
 }

@@ -99,7 +99,7 @@ FAR struct tcb_s *sched_gettcb(pid_t pid)
 {
 	FAR struct tcb_s *ret = NULL;
 	int hash_ndx;
-
+	irqstate_t flags = enter_critical_section();
 	/* Verify that the PID is within range */
 
 	if (pid >= 0) {
@@ -114,7 +114,10 @@ FAR struct tcb_s *sched_gettcb(pid_t pid)
 
 			ret = g_pidhash[hash_ndx].tcb;
 		}
+
 	}
+
+	leave_critical_section(flags);
 
 	/* Return the TCB. */
 

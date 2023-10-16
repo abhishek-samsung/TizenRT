@@ -662,7 +662,7 @@ void binary_manager_release_binary_sem(int bin_idx)
 	irqstate_t flags;
 	FAR struct semholder_s *holder;
 
-	flags = irqsave();
+	flags = enter_critical_section();
 
 	sem = (sem_t *)sq_peek(&g_sem_list);
 	if (sem == NULL) {
@@ -686,7 +686,7 @@ void binary_manager_release_binary_sem(int bin_idx)
 			sem = sq_next(sem);
 		} while (sem);
 	}
-	irqrestore(flags);
+	leave_critical_section(flags);
 }
 
 /****************************************************************************

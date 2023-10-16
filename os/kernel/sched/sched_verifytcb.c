@@ -97,7 +97,11 @@
 
 bool sched_verifytcb(FAR struct tcb_s *tcb)
 {
+	bool valid;
+	irqstate_t flags = enter_critical_section();
 	/* Return true if the PID hashes to this TCB. */
+	valid = tcb == g_pidhash[PIDHASH(tcb->pid)].tcb;
+	leave_critical_section(flags);
 
-	return tcb == g_pidhash[PIDHASH(tcb->pid)].tcb;
+	return valid;
 }

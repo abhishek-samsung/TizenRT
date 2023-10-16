@@ -128,16 +128,16 @@ int sched_start_cpuload_snapshot(int ticks)
 {
 	irqstate_t flags;
 
-	flags = irqsave();
+	flags = enter_critical_section();
 	/* Allocate data buffer for CPU load measurements in time interval */
 	g_cpusnap_arr = (pid_t *)kmm_realloc(g_cpusnap_arr, ticks * sizeof(pid_t));
 	if (g_cpusnap_arr == NULL) {
-		irqrestore(flags);
+		leave_critical_section(flags);
 		return -ENOMEM;
 	}
 	g_cpusnap_arr_size = ticks;
 	g_cpusnap_head = 0;
-	irqrestore(flags);
+	leave_critical_section(flags);
 
 	return OK;
 }
@@ -186,7 +186,7 @@ void sched_clear_cpuload(pid_t pid)
 
 	hash_ndx = PIDHASH(pid);
 
-	flags = irqsave();
+	flags = enter_critical_section();
 	/* Decrement the total CPU load count held by this thread from the
 	 * total for all threads.  Then we can reset the count on this
 	 * defunct thread to zero.
@@ -195,7 +195,49 @@ void sched_clear_cpuload(pid_t pid)
 		g_cpuload_total[cpuload_idx] -= g_pidhash[hash_ndx].ticks[cpuload_idx];
 		g_pidhash[hash_ndx].ticks[cpuload_idx] = 0;
 	}
-	irqrestore(flags);
+	leave_critical_section(flags);
+}
+
+/****************************************************************************
+ * Name: sched_cpu_process_cpuload
+ *
+ * Description:
+ *   Collect data that can be used for CPU load measurements.
+ *
+ * Input Parameters:
+ *   cpu   - The CPU that we are performing the load operations on.
+ *   ticks - The ticks that we process in this cpuload.
+ *
+ * Returned Value:
+ *   None
+ *
+ * Assumptions/Limitations:
+ *   This function is called from a timer interrupt handler with all
+ *   interrupts disabled.
+ *
+ ****************************************************************************/
+
+static inline void sched_cpu_process_cpuload(int cpu, int cpuload_idx)
+{
+	FAR struct tcb_s *rtcb = current_task(cpu);
+	int hash_index = PIDHASH(rtcb->pid);
+
+	if (g_cpusnap_arr) {
+		g_cpusnap_arr[g_cpusnap_head] = rtcb->pid;
+		if (++g_cpusnap_head >= g_cpusnap_arr_size) {
+			g_cpusnap_head = 0;
+		}
+	}
+
+	/* Increment the count on the currently executing thread */
+
+	g_pidhash[hash_index].ticks[cpuload_idx]++;
+
+	/* Increment tick count.  NOTE that the count is increment once for each
+	 * CPU on each sample interval.
+	 */
+
+	g_cpuload_total[cpuload_idx]++;
 }
 
 #ifndef CONFIG_SCHED_CPULOAD_EXTCLK
@@ -219,10 +261,13 @@ void sched_clear_cpuload(pid_t pid)
 
 void weak_function sched_process_cpuload(void)
 {
-	FAR struct tcb_s *rtcb = this_task();
-	int hash_index;
-	int i;
+	int i, j;
 	int cpuload_idx;
+	irqstate_t flags;
+
+	/* Perform scheduler operations on all CPUs. */
+
+	flags = enter_critical_section();
 
 	/* Increment the count on the currently executing thread
 	 *
@@ -233,22 +278,16 @@ void weak_function sched_process_cpuload(void)
 	 * do this too, but this would require a little more overhead.
 	 */
 
-	if (g_cpusnap_arr) {
-		g_cpusnap_arr[g_cpusnap_head] = rtcb->pid;
-		if (++g_cpusnap_head >= g_cpusnap_arr_size) {
-			g_cpusnap_head = 0;
-		}
-	}
-	hash_index = PIDHASH(rtcb->pid);
-
 	for (cpuload_idx = 0; cpuload_idx < SCHED_NCPULOAD; cpuload_idx++) {
-		g_pidhash[hash_index].ticks[cpuload_idx]++;
-
+		for (i = 0; i < CONFIG_SMP_NCPUS; i++)
+		{
+			sched_cpu_process_cpuload(i, cpuload_idx);
+		}
 		/* Increment tick count.  If the accumulated tick value exceed a time
 		 * constant, then shift the accumulators.
 		 */
 
-		if (++g_cpuload_total[cpuload_idx] > (g_cpuload_timeconstant[cpuload_idx] * CPULOAD_TICKSPERSEC)) {
+		if (g_cpuload_total[cpuload_idx] > (g_cpuload_timeconstant[cpuload_idx] * CPULOAD_TICKSPERSEC)) {
 			uint32_t total = 0;
 
 			/* Divide the tick count for every task by two and recalculate the
@@ -264,6 +303,8 @@ void weak_function sched_process_cpuload(void)
 			g_cpuload_total[cpuload_idx] = total;
 		}
 	}
+
+	leave_critical_section(flags);
 }
 #endif
 
@@ -299,7 +340,7 @@ int clock_cpuload(int pid, int index, FAR struct cpuload_s *cpuload)
 	 * synchronized when read.
 	 */
 
-	flags = irqsave();
+	flags = enter_critical_section();
 
 	/* Make sure that the entry is valid (TCB field is not NULL) and matches
 	 * the requested PID.  The first check is needed if the thread has exited.
@@ -320,7 +361,7 @@ int clock_cpuload(int pid, int index, FAR struct cpuload_s *cpuload)
 		ret = OK;
 	}
 
-	irqrestore(flags);
+	leave_critical_section(flags);
 	return ret;
 }
 #endif							/* CONFIG_SCHED_CPULOAD */

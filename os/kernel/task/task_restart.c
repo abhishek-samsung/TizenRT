@@ -126,7 +126,10 @@ int task_restart(pid_t pid)
 {
 	FAR struct tcb_s *rtcb;
 	FAR struct task_tcb_s *tcb;
-	irqstate_t state;
+#ifdef CONFIG_SMP
+	int cpu;
+#endif
+	int ret = OK;
 
 	trace_begin(TTRACE_TAG_TASK, "task_restart");
 
@@ -134,6 +137,13 @@ int task_restart(pid_t pid)
 	 * we are futzing with its TCB
 	 */
 
+	/* NOTE: sched_lock() is not enough for SMP
+	 * because tcb->group will be accessed from the child tasks
+	 */
+	irqstate_t flags = enter_critical_section();
+	/* Lock the scheduler so that there this thread will not lose priority
+	 * until all of its children are suspended.
+	 */
 	sched_lock();
 
 	/* Check if the task to restart is the calling task */
@@ -143,8 +153,8 @@ int task_restart(pid_t pid)
 		/* Not implemented */
 
 		set_errno(ENOSYS);
-		trace_end(TTRACE_TAG_TASK);
-		return ERROR;
+		ret = ERROR;
+		goto ret_with_lock;
 	}
 
 	/* We are restarting some other task than ourselves */
@@ -164,8 +174,8 @@ int task_restart(pid_t pid)
 			 */
 
 			set_errno(ESRCH);
-			trace_end(TTRACE_TAG_TASK);
-			return ERROR;
+			ret = ERROR;
+			goto ret_with_lock;
 		}
 
 #if defined(CONFIG_SCHED_ATEXIT) || defined(CONFIG_SCHED_ONEXIT)
@@ -178,6 +188,15 @@ int task_restart(pid_t pid)
 		/* Call any registered on_exit function(s) */
 
 		task_onexit((FAR struct tcb_s *)tcb, EXIT_SUCCESS);
+#endif
+
+#ifdef CONFIG_SMP
+		/* If the task is running on another CPU, then pause that CPU.
+		 * We can then manipulate the TCB of the restarted task and when
+		 * we resume that CPU, the restart can take effect.
+		 */
+
+		cpu = sched_pause_cpu(&tcb->cmn);
 #endif
 
 		/* Try to recover from any bad states */
@@ -194,10 +213,13 @@ int task_restart(pid_t pid)
 		 * TCB should no longer be accessible to the system
 		 */
 
-		state = irqsave();
+#ifdef CONFIG_SMP
+		FAR dq_queue_t *tasklist = TLIST_HEAD(tcb->cmn.task_state, tcb->cmn.cpu);
+		dq_rem((FAR dq_entry_t *)tcb, tasklist);
+#else
 		dq_rem((FAR dq_entry_t *)tcb, (dq_queue_t *)g_tasklisttable[tcb->cmn.task_state].list);
+#endif
 		tcb->cmn.task_state = TSTATE_TASK_INVALID;
-		irqrestore(state);
 
 #ifndef CONFIG_DISABLE_SIGNALS
 		/* Deallocate anything left in the TCB's queues */
@@ -211,6 +233,10 @@ int task_restart(pid_t pid)
 		tcb->cmn.sched_priority = tcb->init_priority;
 
 		/* Reset the base task priority and the number of pending reprioritizations */
+
+#ifdef CONFIG_SMP
+		tcb->cmn.irqcount = 0;
+#endif
 
 #ifdef CONFIG_PRIORITY_INHERITANCE
 		tcb->cmn.base_priority = tcb->init_priority;
@@ -230,12 +256,24 @@ int task_restart(pid_t pid)
 		dq_addfirst((FAR dq_entry_t *)tcb, (dq_queue_t *)&g_inactivetasks);
 		tcb->cmn.task_state = TSTATE_TASK_INACTIVE;
 
+#ifdef CONFIG_SMP
+		/* Resume the paused CPU (if any) */
+		if (cpu >= 0) {
+			ret = up_cpu_resume(cpu);
+			if (ret < 0) {
+				goto ret_with_lock;
+			}
+		}
+#endif
+
 		/* Activate the task */
 
 		(void)task_activate((FAR struct tcb_s *)tcb);
 	}
 
+ret_with_lock:
+	leave_critical_section(flags);
 	sched_unlock();
 	trace_end(TTRACE_TAG_TASK);
-	return OK;
+	return ret;
 }

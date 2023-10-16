@@ -62,6 +62,8 @@
 #include <sched.h>
 #include <errno.h>
 
+#include <tinyara/spinlock.h>
+
 #include "sched/sched.h"
 #include "group/group.h"
 #include "signal/signal.h"
@@ -81,6 +83,7 @@
 /****************************************************************************
  * Private Variables
  ****************************************************************************/
+spinlock_t g_sigaction_spin;
 
 /****************************************************************************
  * Private Functions
@@ -97,10 +100,12 @@
 FAR sigactq_t *sig_allocateaction(void)
 {
 	FAR sigactq_t *sigact;
+	irqstate_t flags;
 
 	/* Try to get the signal action structure from the free list */
-
+	flags = spin_lock_irqsave(&g_sigaction_spin);
 	sigact = (FAR sigactq_t *)sq_remfirst(&g_sigfreeaction);
+	spin_unlock_irqrestore(&g_sigaction_spin, flags);
 
 	/* Check if we got one. */
 
@@ -110,8 +115,9 @@ FAR sigactq_t *sig_allocateaction(void)
 		sig_allocateactionblock();
 
 		/* And try again */
-
+		flags = spin_lock_irqsave(&g_sigaction_spin);
 		sigact = (FAR sigactq_t *)sq_remfirst(&g_sigfreeaction);
+		spin_unlock_irqrestore(&g_sigaction_spin, flags);
 		ASSERT(sigact);
 	}
 
@@ -241,7 +247,7 @@ int sigaction(int signo, FAR const struct sigaction *act, FAR struct sigaction *
 		 * can be modified by the child thread.
 		 */
 
-		flags = irqsave();
+		flags = enter_critical_section();
 
 		/* Mark that status should be not be retained */
 
@@ -250,7 +256,7 @@ int sigaction(int signo, FAR const struct sigaction *act, FAR struct sigaction *
 		/* Free all pending exit status */
 
 		group_removechildren(rtcb->group);
-		irqrestore(flags);
+		leave_critical_section(flags);
 	}
 #endif
 
@@ -316,7 +322,10 @@ int sigaction(int signo, FAR const struct sigaction *act, FAR struct sigaction *
 
 void sig_releaseaction(FAR sigactq_t *sigact)
 {
+	irqstate_t flags;
 	/* Just put it back on the free list */
 
+	flags = spin_lock_irqsave(&g_sigaction_spin);
 	sq_addlast((FAR sq_entry_t *)sigact, &g_sigfreeaction);
+	spin_unlock_irqrestore(&g_sigaction_spin, flags);
 }

@@ -124,6 +124,21 @@ static void sig_timeout(int argc, uint32_t itcb)
 	u.itcb = itcb;
 	ASSERT(u.wtcb);
 
+#ifdef CONFIG_SMP
+	irqstate_t flags;
+
+	/* We must be in a critical section in order to call up_unblock_task()
+	 * below.  If we are running on a single CPU architecture, then we know
+	 * interrupts a disabled an there is no need to explicitly call
+	 * enter_critical_section().  However, in the SMP case,
+	 * enter_critical_section() does much more than just disable interrupts on
+	 * the local CPU; it also manages spinlocks to assure the stability of the
+	 * TCB that we are manipulating.
+	 */
+
+	flags = enter_critical_section();
+#endif
+
 	/* There may be a race condition -- make sure the task is
 	 * still waiting for a signal
 	 */
@@ -138,6 +153,10 @@ static void sig_timeout(int argc, uint32_t itcb)
 #endif
 		up_unblock_task(u.wtcb);
 	}
+
+#ifdef CONFIG_SMP
+	leave_critical_section(flags);
+#endif
 }
 
 /****************************************************************************
@@ -207,7 +226,7 @@ int sigtimedwait(FAR const sigset_t *set, FAR struct siginfo *info, FAR const st
 	 * can only be eliminated by disabling interrupts!
 	 */
 
-	saved_state = irqsave();
+	saved_state = enter_critical_section();
 
 	/* Check if there is a pending signal corresponding to one of the
 	 * signals in the pending signal set argument.
@@ -236,7 +255,7 @@ int sigtimedwait(FAR const sigset_t *set, FAR struct siginfo *info, FAR const st
 		/* Then dispose of the pending signal structure properly */
 
 		sig_releasependingsignal(sigpend);
-		irqrestore(saved_state);
+		leave_critical_section(saved_state);
 	}
 
 	/* We will have to wait for a signal to be posted to this task. */
@@ -348,7 +367,7 @@ int sigtimedwait(FAR const sigset_t *set, FAR struct siginfo *info, FAR const st
 			memcpy(info, &rtcb->sigunbinfo, sizeof(struct siginfo));
 		}
 
-		irqrestore(saved_state);
+		leave_critical_section(saved_state);
 	}
 
 	leave_cancellation_point();

@@ -138,7 +138,7 @@ static int task_assignpid(FAR struct tcb_s *tcb)
 	 * for the following operation.
 	 */
 
-	(void)sched_lock();
+	irqstate_t flags = enter_critical_section();
 
 	/* We'll try every allowable pid */
 
@@ -166,10 +166,8 @@ static int task_assignpid(FAR struct tcb_s *tcb)
 		hash_ndx = PIDHASH(next_pid);
 
 		/* Check if there is a (potential) duplicate of this pid */
-
 		if (!g_pidhash[hash_ndx].tcb) {
 			/* Assign this PID to the task */
-
 			g_pidhash[hash_ndx].tcb = tcb;
 			g_pidhash[hash_ndx].pid = next_pid;
 #ifdef CONFIG_SCHED_CPULOAD
@@ -183,7 +181,7 @@ static int task_assignpid(FAR struct tcb_s *tcb)
 			/* Increment the task count */
 			g_alive_taskcount++;
 
-			(void)sched_unlock();
+			leave_critical_section(flags);
 			trace_end(TTRACE_TAG_TASK);
 			return OK;
 		}
@@ -193,11 +191,43 @@ static int task_assignpid(FAR struct tcb_s *tcb)
 	 * We cannot allow another task to be started.
 	 */
 
-	(void)sched_unlock();
+	leave_critical_section(flags);
 	set_errno(EBUSY);
 	trace_end(TTRACE_TAG_TASK);
 	return ERROR;
 }
+
+/****************************************************************************
+ * Name: task_inherit_affinity
+ *
+ * Description:
+ *   exec(), task_create(), and vfork() all inherit the affinity mask from
+ *   the parent thread.  This is the default for pthread_create() as well
+ *   but the affinity mask can be specified in the pthread attributes as
+ *   well.  pthread_setup() will have to fix up the affinity mask in this
+ *   case.
+ *
+ * Input Parameters:
+ *   tcb - The TCB of the new task.
+ *
+ * Returned Value:
+ *   None
+ *
+ * Assumptions:
+ *   The parent of the new task is the task at the head of the assigned task
+ *   list for the current CPU.
+ *
+ ****************************************************************************/
+
+#ifdef CONFIG_SMP
+static inline void task_inherit_affinity(FAR struct tcb_s *tcb)
+{
+	FAR struct tcb_s *rtcb = this_task();
+	tcb->affinity = rtcb->affinity;
+}
+#else
+#define task_inherit_affinity(tcb)
+#endif
 
 /****************************************************************************
  * Name: task_saveparent
@@ -427,6 +457,17 @@ static int thread_schedsetup(FAR struct tcb_s *tcb, int priority, start_t start,
 		 */
 
 		task_saveparent(tcb, ttype);
+
+#ifdef CONFIG_SMP
+		/* exec(), task_create(), and vfork() all inherit the affinity mask
+		 * from the parent thread.  This is the default for pthread_create()
+		 * as well but the affinity mask can be specified in the pthread
+		 * attributes as well.  pthread_create() will have to fix up the
+		 * affinity mask in this case.
+		 */
+
+		task_inherit_affinity(tcb);
+#endif
 
 		/* exec(), pthread_create(), task_create(), and vfork() all
 		 * inherit the signal mask of the parent thread.
