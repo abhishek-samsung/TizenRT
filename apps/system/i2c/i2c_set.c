@@ -254,6 +254,7 @@ int i2ctool_set(FAR struct i2ctool_s *i2ctool, FAR struct i2c_dev_s *dev, uint8_
 		}
 	} else {
 		ret = I2C_TRANSFER(dev, msg, 2);
+		if (ret > 0) ret = 0;
 	}
 
 	return ret;
