@@ -341,6 +341,9 @@ void board_initialize(void)
 #ifdef CONFIG_AMEBASMART_BLE
 	bt_ipc_api_init_host();
 #endif
+#ifdef CONFIG_AUDIO_UB6470
+	rtl8730e_ub6470_initialize(0);
+#endif
 }
 #else
 #error "CONFIG_BOARD_INITIALIZE MUST ENABLE"
