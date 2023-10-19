@@ -71,6 +71,17 @@ int main(int argc, FAR char *argv[])
 int hello_main(int argc, char *argv[])
 #endif
 {
+
+/*
+ * Once the device is powered on (we are doing the reset in rtl8730e_boot.c),
+ * we need to be able to write to the following registers.
+ *
+ * {0x04, 0x00},
+ * {0x05, 0x3F},
+ * {0x03, 0x01},
+ *
+ */
+
     FAR struct i2c_dev_s *dev;
 
     dev = up_i2cinitialize(1);

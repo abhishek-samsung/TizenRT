@@ -341,6 +341,22 @@ void board_initialize(void)
 #ifdef CONFIG_AMEBASMART_BLE
 	bt_ipc_api_init_host();
 #endif
+	lldbg("resetting the i2c device\n");
+
+	gpio_t i2c_device_reset;
+	i2c_device_reset.pin = PA_22;
+
+	gpio_init(&(i2c_device_reset), PA_22);
+	gpio_dir(&(i2c_device_reset), PIN_OUTPUT);
+	gpio_mode(&(i2c_device_reset), PullUp);
+
+	lldbg("pulling reset to low\n");
+	gpio_write(&(i2c_device_reset), 0);
+	up_mdelay(2000);
+	lldbg("setting reset to high\n");
+	gpio_write(&(i2c_device_reset), 1);
+	up_mdelay(2000);
+	lldbg("reset done\n");
 }
 #else
 #error "CONFIG_BOARD_INITIALIZE MUST ENABLE"
