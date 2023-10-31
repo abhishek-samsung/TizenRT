@@ -106,6 +106,7 @@ struct amebasmart_spidev_s {
 	int8_t nbits;               /* Width of word in bits */
 	uint8_t mode;               /* Mode 0,1,2,3 */
 	int role;
+	gpio_t gpio_cs0;
 };
 
 enum amebasmart_delay_e {
@@ -613,6 +614,12 @@ static int amebasmart_spi_lock(FAR struct spi_dev_s *dev, bool lock)
  ************************************************************************************/
 void amebasmart_spi0select(FAR struct spi_dev_s *dev, enum spi_dev_e devid, bool selected)
 {
+	FAR struct amebasmart_spidev_s *priv = (FAR struct amebasmart_spidev_s *)dev;
+	if (selected == 1) {
+		gpio_write(&priv->gpio_cs0, 0);
+	} else {
+		gpio_write(&priv->gpio_cs0, 1);
+	}
 	return;
 }
 
@@ -674,6 +681,12 @@ int amebasmart_spi0cmddata(FAR struct spi_dev_s *dev, uint32_t devid, bool cmd)
  ************************************************************************************/
 void amebasmart_spi1select(FAR struct spi_dev_s *dev, enum spi_dev_e devid, bool selected)
 {
+	FAR struct amebasmart_spidev_s *priv = (FAR struct amebasmart_spidev_s *)dev;
+	if (selected == 1) {
+		gpio_write(&priv->gpio_cs0, 0);
+	} else {
+		gpio_write(&priv->gpio_cs0, 1);
+	}
 	return;
 }
 
@@ -970,7 +983,6 @@ static void amebasmart_spi_exchange_nodma(FAR struct spi_dev_s *dev,
 			} else {
 				word = 0xff;
 			}
-
 			/* Exchange one word */
 
 			word = (uint8_t)amebasmart_spi_send(dev, (uint16_t) word);
@@ -1091,6 +1103,11 @@ static void amebasmart_spi_bus_initialize(struct amebasmart_spidev_s *priv)
 	spi_init(&priv->spi_object, priv->spi_mosi, priv->spi_miso, priv->spi_sclk, priv->spi_cs);
 	spi_format(&priv->spi_object, priv->nbits, priv->mode, priv->role);
 	sem_init(&priv->exclsem, 0, 1);
+
+	gpio_init(&priv->gpio_cs0, priv->spi_cs);
+	gpio_write(&priv->gpio_cs0, 1);
+	gpio_dir(&priv->gpio_cs0, PIN_OUTPUT);
+	gpio_mode(&priv->gpio_cs0, PullNone);
 }
 
 /************************************************************************************
