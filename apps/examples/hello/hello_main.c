@@ -56,6 +56,7 @@
 
 #include <tinyara/config.h>
 #include <stdio.h>
+#include <tinyara/spi/spi.h>
 
 /****************************************************************************
  * hello_main
@@ -67,6 +68,76 @@ int main(int argc, FAR char *argv[])
 int hello_main(int argc, char *argv[])
 #endif
 {
-	printf("Hello, World!!\n");
+	printf("SPI read/write test with a neural chip\n");
+
+	uint8_t read_flag = 1 << 7; /* msb for read is 1 and write is 0 */
+
+	uint8_t data[2];
+	data[0] = 0x00 | read_flag;
+	data[1] = 0xFF;
+
+	uint8_t recv[2];
+	recv[0] = 0x00;
+	recv[1] = 0x00;
+
+	FAR struct spi_dev_s *spi = up_spiinitialize(1);
+
+	SPI_SETMODE(spi, SPIDEV_MODE0);
+	SPI_SETFREQUENCY(spi, 1000000);
+	SPI_SETBITS(spi, 8);
+
+	SPI_SELECT(spi, 0, true);
+	SPI_EXCHANGE(spi, data, recv, 2);
+	SPI_SELECT(spi, 0, false);
+
+	for (int i = 0; i < 2; i++)
+	printf("read test result sent : %x rec : %x\n", data[i], recv[i]);
+
+	/*use write read instead of exchange*/
+	uint8_t read_addr = data[0]; /* with read flag */
+	uint8_t device_id = 0xFF;
+
+	SPI_SELECT(spi, 0, true);
+	SPI_SNDBLOCK(spi, &read_addr, 1);
+	SPI_RECVBLOCK(spi, &device_id, 1);
+	SPI_SELECT(spi, 0, false);
+
+	printf("device id read with SNDBLOCK & RECVBLOCK : %x\n", device_id);
+
+	data[0] = 0x20 | read_flag;
+	data[1] = 0xFF;
+
+	recv[0] = recv[1] = 0x00;
+
+	SPI_SELECT(spi, 0, true);
+	SPI_EXCHANGE(spi, data, recv, 2);
+	SPI_SELECT(spi, 0, false);
+
+	for (int i = 0; i < 2; i++)
+	printf("pre write read sent : %x rec : %x\n", data[i], recv[i]);
+
+	data[0] = 0x20;
+	data[1] = 0x95;
+
+	recv[0] = recv[1] = 0x00;
+
+	SPI_SELECT(spi, 0, true);
+	SPI_EXCHANGE(spi, data, recv, 2);
+	SPI_SELECT(spi, 0, false);
+
+	for (int i = 0; i < 2; i++)
+	printf("write result sent : %x rec : %x\n", data[i], recv[i]);
+
+	data[0] |= read_flag;
+	data[1] = 0xFF;
+	recv[0] = recv[1] = 0x00;
+
+	SPI_SELECT(spi, 0, true);
+	SPI_EXCHANGE(spi, data, recv, 2);
+	SPI_SELECT(spi, 0, false);
+
+	for (int i = 0; i < 2; i++)
+	printf("post write read result sent : %x rec : %x\n", data[i], recv[i]);
+
 	return 0;
 }
