@@ -58,6 +58,9 @@
 #include <stdio.h>
 #include <tinyara/spi/spi.h>
 
+#define NDP10X_SPI_MADDR(i) (0x40 + ((i) << 0))
+#define NDP10X_SPI_MDATA(i) (0x44 + ((i) << 0))
+
 /****************************************************************************
  * hello_main
  ****************************************************************************/
@@ -72,11 +75,11 @@ int hello_main(int argc, char *argv[])
 
 	uint8_t read_flag = 1 << 7; /* msb for read is 1 and write is 0 */
 
-	uint8_t data[2];
+	uint8_t data[5];
 	data[0] = 0x00 | read_flag;
 	data[1] = 0xFF;
 
-	uint8_t recv[2];
+	uint8_t recv[6];
 	recv[0] = 0x00;
 	recv[1] = 0x00;
 
@@ -138,6 +141,39 @@ int hello_main(int argc, char *argv[])
 
 	for (int i = 0; i < 2; i++)
 	printf("post write read result sent : %x rec : %x\n", data[i], recv[i]);
+	
+	printf("\nMCU write and read test\n");
+	
+	uint8_t mcu_addr[9];
+
+	mcu_addr[0] = NDP10X_SPI_MADDR(0);
+	uint32_t addr = 0x20000000;
+	memcpy(&mcu_addr[1], &addr, sizeof(addr));
+
+	uint32_t ddata = 0x11223344;
+	memcpy(&mcu_addr[5], &ddata, sizeof(data));
+
+	SPI_SELECT(spi, 0, true);
+        SPI_EXCHANGE(spi, mcu_addr, NULL, 9);
+        SPI_SELECT(spi, 0, false);
+
+	uint8_t mcu_read[5];
+
+	SPI_SELECT(spi, 0, true);
+        SPI_EXCHANGE(spi, mcu_addr, NULL, 5);
+        SPI_SELECT(spi, 0, false);
+
+	uint8_t mcu_read_tx[5];
+	uint8_t mcu_read_rx[5];
+
+	mcu_read_tx[0] = 0x80 | (NDP10X_SPI_MDATA(0) - 0);
+	SPI_SELECT(spi, 0, true);
+        SPI_EXCHANGE(spi, mcu_read_tx, mcu_read_rx, 5);
+        SPI_SELECT(spi, 0, false);
+
+	for (int i = 0; i < 5; i++) {
+		printf("mcu read rx[%d] : %x\n", i, mcu_read_rx[i]);
+	}
 
 	return 0;
 }
