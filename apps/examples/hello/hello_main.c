@@ -150,11 +150,13 @@ int hello_main(int argc, char *argv[])
 	uint32_t addr = 0x20000000;
 	memcpy(&mcu_addr[1], &addr, sizeof(addr));
 
-	uint32_t ddata = 0x11223344;
+	uint32_t ddata = 0xdeadbeef;
 	memcpy(&mcu_addr[5], &ddata, sizeof(data));
 
 	SPI_SELECT(spi, 0, true);
-        SPI_EXCHANGE(spi, mcu_addr, NULL, 9);
+        //SPI_EXCHANGE(spi, mcu_addr, NULL, 9);
+	SPI_SNDBLOCK(spi, mcu_addr, 5);
+	SPI_SNDBLOCK(spi, &mcu_addr[5], 4);
         SPI_SELECT(spi, 0, false);
 
 	uint8_t mcu_read[5];
@@ -168,7 +170,9 @@ int hello_main(int argc, char *argv[])
 
 	mcu_read_tx[0] = 0x80 | (NDP10X_SPI_MDATA(0) - 0);
 	SPI_SELECT(spi, 0, true);
-        SPI_EXCHANGE(spi, mcu_read_tx, mcu_read_rx, 5);
+        //SPI_EXCHANGE(spi, mcu_read_tx, mcu_read_rx, 5);
+	SPI_SNDBLOCK(spi, mcu_read_tx, 1);
+	SPI_RECVBLOCK(spi, mcu_read_rx, 4);
         SPI_SELECT(spi, 0, false);
 
 	for (int i = 0; i < 5; i++) {
