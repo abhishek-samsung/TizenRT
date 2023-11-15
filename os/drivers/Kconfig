@@ -504,6 +504,15 @@ if SENSOR
 source drivers/sensors/Kconfig
 endif # SENSOR
 
+menuconfig AI_SOC
+	bool "AI SoC driver support"
+	default n
+	---help---
+		This selection enables building of the AiSoC driver.
+
+if AI_SOC
+source drivers/ai_soc/Kconfig
+endif # AI_SOC
 
 menuconfig USBDEV
 	bool "USB Device Driver Support"
