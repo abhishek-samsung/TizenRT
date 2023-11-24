@@ -57,6 +57,11 @@
 #include <tinyara/config.h>
 #include <stdio.h>
 
+#include <tinyara/spi/spi.h>
+
+#define SPI_MADDR(i) (0x40 + ((i) << 0))
+#define SPI_MDATA(i) (0x44 + ((i) << 0))
+
 /****************************************************************************
  * hello_main
  ****************************************************************************/
@@ -67,6 +72,111 @@ int main(int argc, FAR char *argv[])
 int hello_main(int argc, char *argv[])
 #endif
 {
-	printf("Hello, World!!\n");
+	uint8_t read_flag = 1 << 7; /* msb for read is 1 and write is 0 */
+
+	uint8_t data[5];
+	data[0] = 0x00 | read_flag;
+	data[1] = 0xFF;
+
+	uint8_t recv[6];
+	recv[0] = 0x00;
+	recv[1] = 0x00;
+
+	FAR struct spi_dev_s *spi = up_spiinitialize(0);
+
+	SPI_SETMODE(spi, SPIDEV_MODE0);
+	SPI_SETFREQUENCY(spi, 1000000);
+	SPI_SETBITS(spi, 8);
+
+	SPI_SELECT(spi, 0, true);
+	SPI_EXCHANGE(spi, data, recv, 2);
+	SPI_SELECT(spi, 0, false);
+
+	for (int i = 0; i < 2; i++)
+	printf("read test result sent : %x rec : %x\n", data[i], recv[i]);
+
+	/*use write read instead of exchange*/
+	uint8_t read_addr = data[0]; /* with read flag */
+	uint8_t device_id = 0xFF;
+
+	SPI_SELECT(spi, 0, true);
+	SPI_SNDBLOCK(spi, &read_addr, 1);
+	SPI_RECVBLOCK(spi, &device_id, 1);
+	SPI_SELECT(spi, 0, false);
+
+	printf("device id read with SNDBLOCK & RECVBLOCK : %x\n", device_id);
+
+	data[0] = 0x20 | read_flag;
+	data[1] = 0xFF;
+
+	recv[0] = recv[1] = 0x00;
+
+	SPI_SELECT(spi, 0, true);
+	SPI_EXCHANGE(spi, data, recv, 2);
+	SPI_SELECT(spi, 0, false);
+
+	for (int i = 0; i < 2; i++)
+	printf("pre write read sent : %x rec : %x\n", data[i], recv[i]);
+
+	data[0] = 0x20;
+	data[1] = 0x95;
+
+	recv[0] = recv[1] = 0x00;
+
+	SPI_SELECT(spi, 0, true);
+	SPI_EXCHANGE(spi, data, recv, 2);
+	SPI_SELECT(spi, 0, false);
+
+	for (int i = 0; i < 2; i++)
+	printf("write result sent : %x rec : %x\n", data[i], recv[i]);
+
+	data[0] |= read_flag;
+	data[1] = 0xFF;
+	recv[0] = recv[1] = 0x00;
+
+	SPI_SELECT(spi, 0, true);
+	SPI_EXCHANGE(spi, data, recv, 2);
+	SPI_SELECT(spi, 0, false);
+
+	for (int i = 0; i < 2; i++)
+	printf("post write read result sent : %x rec : %x\n", data[i], recv[i]);
+	
+	printf("\nMCU write and read test\n");
+	
+	uint8_t mcu_addr[9];
+
+	mcu_addr[0] = SPI_MADDR(0);
+	uint32_t addr = 0x20000000;
+	memcpy(&mcu_addr[1], &addr, sizeof(addr));
+
+	uint32_t ddata = 0xdeadbeef;
+	memcpy(&mcu_addr[5], &ddata, sizeof(data));
+
+	SPI_SELECT(spi, 0, true);
+        //SPI_EXCHANGE(spi, mcu_addr, NULL, 9);
+	SPI_SNDBLOCK(spi, mcu_addr, 5);
+	SPI_SNDBLOCK(spi, &mcu_addr[5], 4);
+        SPI_SELECT(spi, 0, false);
+
+	uint8_t mcu_read[5];
+
+	SPI_SELECT(spi, 0, true);
+        SPI_EXCHANGE(spi, mcu_addr, NULL, 5);
+        SPI_SELECT(spi, 0, false);
+
+	uint8_t mcu_read_tx[5];
+	uint8_t mcu_read_rx[5];
+
+	mcu_read_tx[0] = 0x80 | (SPI_MDATA(0) - 0);
+	SPI_SELECT(spi, 0, true);
+        //SPI_EXCHANGE(spi, mcu_read_tx, mcu_read_rx, 5);
+	SPI_SNDBLOCK(spi, mcu_read_tx, 1);
+	SPI_RECVBLOCK(spi, mcu_read_rx, 4);
+        SPI_SELECT(spi, 0, false);
+
+	for (int i = 0; i < 5; i++) {
+		printf("mcu read rx[%d] : %x\n", i, mcu_read_rx[i]);
+	}
+
 	return 0;
 }
