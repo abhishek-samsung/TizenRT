@@ -104,8 +104,8 @@ bool MyMediaPlayer::init(int test)
 	switch (test) {
 	case TEST_PCM:
 		makeSource = []() {
-			auto source = std::move(unique_ptr<FileInputDataSource>(new FileInputDataSource("/rom/44100.pcm")));
-			source->setSampleRate(44100);
+			auto source = std::move(unique_ptr<FileInputDataSource>(new FileInputDataSource("/mnt/file.raw")));
+			source->setSampleRate(48000);
 			source->setChannels(2);
 			source->setPcmFormat(AUDIO_FORMAT_TYPE_S16_LE);
 			return std::move(source);
@@ -316,7 +316,7 @@ public:
 	{
 		while (true) {
 			vector<string> sourceList = {"Exit APP", "Test PCM", "Test BUFFER", "Test HTTP"};
-			listDirEntries("/rom", sourceList);
+			listDirEntries("/mnt", sourceList);
 			auto test = view.selectSource(sourceList);
 			if (test == 0) {
 				break;

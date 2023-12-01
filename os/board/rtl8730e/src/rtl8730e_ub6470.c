@@ -31,15 +31,15 @@ extern FAR struct i2s_dev_s *amebasmart_i2s_initialize(uint16_t port);
 #define UB6470_I2C_ADDRLEN		7
 
 #define UB6470_I2C_ADDR_H		0x1B /* TODO: need to confirm this, the data sheet shows different values, also can be changed based on 2 gpio pin configs */
-#define UB6470_I2C_ADDR_L		0x1A 
+#define UB6470_I2C_ADDR_L		0x28 
 
 /* i2s config */
-#define UB6470_I2S_PORT			3 /* TODO: need to see if anything new to be done for port number 3 */
+#define UB6470_I2S_PORT			2 /* TODO: need to see if anything new to be done for port number 3 */
 #define UB6470_I2S_IS_MASTER		1
 #define UB6470_I2S_IS_OUTPUT		1
 
 /*other pin config */
-#define UB6470_GPIO_RESET_PIN 		PA_22 /* TODO: need to get the reset pin from the pin mappings chart */
+#define UB6470_GPIO_RESET_PIN 		PA_21 /* TODO: need to get the reset pin from the pin mappings chart */
 
 #define UB6470_AVAILABLE_MINOR_MIN 0
 #define UB6470_AVAILABLE_MINOR_MAX 25
@@ -85,6 +85,7 @@ static struct rtl8730e_ub6470_audioinfo_s g_ub6470info = {
 
 static void ub6470_control_reset_pin(bool active)
 {
+#if 0
 	if(active)
 	{
 		/* Need to hold it low for some time of around 10ms for reset */
@@ -97,6 +98,7 @@ static void ub6470_control_reset_pin(bool active)
 	{
 		audvdbg("exit hw reset\n");
 	}
+#endif
 }
 
 static void ub6470_control_powerdown(bool enter_powerdown)
@@ -144,6 +146,14 @@ int rtl8730e_ub6470_initialize(int minor)
 	static bool initialized = false; // for compilation sake
 	char devname[12];
 	int ret;
+
+	lldbg("set SDB pin(PA22) of amp to 1,\n");
+	gpio_t reset;
+	gpio_init(&reset, PA_22);
+	gpio_dir(&reset, PIN_OUTPUT);
+	gpio_mode(&reset, PullNone);
+	gpio_write(&reset, 1);
+	lldbg("now AMP should be on\n");
 
 	audvdbg("minor %d\n", minor);
 	DEBUGASSERT(minor >= UB6470_AVAILABLE_MINOR_MIN && minor <= UB6470_AVAILABLE_MINOR_MAX);

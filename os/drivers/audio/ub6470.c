@@ -111,6 +111,7 @@ static void delay(unsigned int mS)
  ****************************************************************************/
 uint8_t ub6470_readreg_1byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr)
 {
+	return 0;
         uint8_t reg[4];
         FAR struct i2c_dev_s *dev = priv->i2c;
         FAR struct i2c_config_s *ub6470_i2c_config = &(priv->lower->i2c_config);
@@ -137,6 +138,7 @@ uint8_t ub6470_readreg_1byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr)
  ****************************************************************************/
 uint32_t ub6470_readreg_4byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr)
 {
+	return 0;
         int32_t ret;
         uint8_t reg[4];
         uint32_t regval;
@@ -169,6 +171,7 @@ uint32_t ub6470_readreg_4byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr)
  ************************************************************************************/
 static int ub6470_writereg_1byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr, uint8_t regval)
 {
+	return 0;
         int ret;
         uint8_t reg[2];
         FAR struct i2c_dev_s *dev = priv->i2c;
@@ -196,6 +199,7 @@ static int ub6470_writereg_1byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr,
  ************************************************************************************/
 static int ub6470_writereg_4byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr, uint8_t regval[4])
 {
+	return 0;
         int ret;
         uint8_t reg[5];
         FAR struct i2c_dev_s *dev = priv->i2c;
@@ -224,6 +228,7 @@ static int ub6470_writereg_4byte(FAR struct ub6470_dev_s *priv, uint8_t regaddr,
  ************************************************************************************/
 static int ub6470_exec_i2c_script(FAR struct ub6470_dev_s *priv, t_codec_init_script_entry *script, uint32_t size)
 {
+	return 0;
         uint32_t i;
         uint16_t ret = 0;
         UB6470_REG_DATA_TYPE reg_acc;
@@ -972,12 +977,12 @@ static int ub6470_ioctl(FAR struct audio_lowerhalf_s *dev, int cmd, unsigned lon
 		//ub6470_exec_i2c_script(priv, codec_initial_script, sizeof(codec_initial_script) / sizeof(t_codec_init_script_entry));
 		
 		/* Amp Error Check */ // add error reg here
-		ub6470_writereg_1byte(priv, (uint8_t)0x0E, 0x00);
+/*		ub6470_writereg_1byte(priv, (uint8_t)0x0E, 0x00);
 		regval = ub6470_readreg_1byte(priv, 0x0E);
 		if (regval != 0x00) {
 		 	auddbg("ERROR: Amp has some error! register : 0x%02x value : 0x%02x \n", 0x0E, regval);
 		}
-
+*/
 		/* Resume I2S */
 		I2S_RESUME(priv->i2s, I2S_TX);
 
@@ -1129,6 +1134,7 @@ static void ub6470_reconfigure(FAR struct ub6470_dev_s *priv)
 	/* Software reset.	This puts all UB6470 registers back in their
 	 * default state.
 	 */
+	return;
 	int res = ub6470_exec_i2c_script(priv, codec_initial_script, sizeof(codec_initial_script) / sizeof(t_codec_init_script_entry));
 	uint8_t regval2;
        	while (true) {
