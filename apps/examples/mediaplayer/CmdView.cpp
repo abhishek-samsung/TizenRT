@@ -51,6 +51,8 @@ int CmdView::getUserInput(int min, int max)
 	}
 }
 
+bool first = true;
+
 int CmdView::selectSource(vector<string> sourceList)
 {
 	cout << "====================" << endl;
@@ -59,6 +61,7 @@ int CmdView::selectSource(vector<string> sourceList)
 	}
 	cout << "====================" << endl;
 
+	if (first) return 1;
 	return getUserInput(0, sourceList.size());
 }
 
@@ -70,7 +73,9 @@ int CmdView::selectPlayer(void)
 	cout << " 2. Select PLAYER B " << endl;
 	cout << "====================" << endl;
 
-	int player = getUserInput(0, 2) - 1;
+	int player;
+	if (first) player = 1 - 1;
+	else player = getUserInput(0, 2) - 1;
 	if (player != -1) {
 		cout << "PLAYER " << (char)('A' + player) << " is selected" << endl;
 	}
@@ -89,6 +94,10 @@ int CmdView::selectCommand(void)
 	cout << " 6. VOLUME_UP       " << endl;
 	cout << " 7. VOLUME_DOWN     " << endl;
 	cout << "====================" << endl;
+	if (first) {
+		first = false;
+		return 1;
+	}
 	return getUserInput(0, 7);
 }
 }

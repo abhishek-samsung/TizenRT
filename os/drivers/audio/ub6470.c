@@ -703,6 +703,7 @@ static int ub6470_start(FAR struct audio_lowerhalf_s *dev, FAR void *session)
 static int ub6470_start(FAR struct audio_lowerhalf_s *dev)
 #endif
 {
+	lldbg("start called\n");
 	FAR struct ub6470_dev_s *priv = (FAR struct ub6470_dev_s *)dev;
 
 	if (!priv) {
