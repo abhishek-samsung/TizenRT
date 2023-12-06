@@ -162,6 +162,10 @@ static void i2s_tx_isr(void *sp_data)
 	/* Clear Pending ISR */
 	GDMA_ClearINT(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
 
+	pTX_BLOCK ptx_block = &(sp_tx_info[i2s_index].tx_block[sp_tx_info[i2s_index].tx_usr_cnt]);
+
+	I2SUserCB[i2s_index].TxCCB((uint32_t)NULL, (void *)(uint32_t)ptx_block->tx_addr);
+
 	i2s_release_tx_page(i2s_index);
 	i2s_get_ready_tx_page(i2s_index);
 }
@@ -295,6 +299,8 @@ void i2s_tx_irq_handler(i2s_t *obj, i2s_irq_handler handler, uint32_t id)
 	uint8_t i2s_index = obj->i2s_idx;
 	SP_GDMA_STRUCT *sp_str = &SPGdmaStruct[i2s_index];
 	sp_str->i2s_idx = i2s_index;	/* Store I2S index */
+
+	I2SUserCB[i2s_index].TxCCB = handler;
 
 	i2s_get_ready_tx_page(i2s_index);
 	AUDIO_SP_LLPTXGDMA_Init(i2s_index, GDMA_INT, &sp_str->SpTxGdmaInitStruct, sp_str, (IRQ_FUN )handler, sp_tx_info[i2s_index].tx_page_size,

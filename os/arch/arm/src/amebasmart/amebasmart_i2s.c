@@ -406,6 +406,7 @@ static int amebasmart_i2s_tx(struct amebasmart_i2s_s *priv, struct amebasmart_bu
 		apb->curbyte += tx_size; /* No padding, ptx_buf is big enough to fill the whole tx_size */
 
 		i2s_enable(&priv->i2s_object);
+		lldbg("i2s send page called\n");
 		i2s_send_page(&priv->i2s_object, (uint32_t *)ptx_buf);
 	}
 	return ret;
@@ -691,6 +692,7 @@ static int i2s_send(struct i2s_dev_s *dev, struct ap_buffer_s *apb, i2s_callback
 
 void i2s_transfer_tx_handleirq(void *data, char *pbuf)
 {
+	lldbg("In i2s tx irq handler\n");
 	/* This handler is called after every completion of i2s_send_page() */
 	struct amebasmart_i2s_s *priv = (struct amebasmart_i2s_s *)data;
 	int tx_size;
@@ -711,7 +713,7 @@ void i2s_transfer_tx_handleirq(void *data, char *pbuf)
 			memcpy((void *)ptx_buf, (void *)&priv->apb_tx->samp[priv->apb_tx->curbyte], I2S_DMA_PAGE_SIZE);
 		}
 		priv->apb_tx->curbyte += tx_size; /* No padding, ptx_buf is big enough to fill the whole tx_size */
-
+		lldbg("i2s send page called\n");
 		i2s_send_page(&priv->i2s_object, (uint32_t *)ptx_buf);
 	}
 }
