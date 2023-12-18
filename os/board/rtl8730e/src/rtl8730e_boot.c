@@ -72,6 +72,7 @@
 #endif
 #include <arch/board/board.h>
 #include "gpio_api.h"
+#include "gpio_irq_api.h"
 #include "timer_api.h"
 #include "ameba_i2c.h"
 #include "ameba_spi.h"
@@ -324,6 +325,12 @@ void amebasmart_memory_initialize(void)
 
 }
 
+static void rtl8730e_gpio_irq_handler(uint32_t id, gpio_irq_event event)
+{
+	lldbg("Interrupt recieved on gpio : PA_23\n");
+	/* add logic here for handling gpio interrupt */
+}
+
 /****************************************************************************
  * Name: board_initialize
  *
@@ -388,6 +395,12 @@ void board_initialize(void)
 #ifdef CONFIG_AMEBASMART_BLE
 	bt_ipc_api_init_host();
 #endif
+
+	gpio_irq_t data_ready;
+	gpio_irq_init(&data_ready, PA_23, rtl8730e_gpio_irq_handler, 1);
+	gpio_irq_set(&data_ready, IRQ_RISE, 1); // Rising edge trigger
+
+	gpio_irq_enable(&data_ready);
 }
 #else
 #error "CONFIG_BOARD_INITIALIZE MUST ENABLE"
