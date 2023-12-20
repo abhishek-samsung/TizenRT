@@ -68,6 +68,7 @@
  ****************************************************************************/
 
 #include <tinyara/config.h>
+#include <stdint.h>
 #ifndef NXFUSE_HOST_BUILD
 #include <tinyara/compiler.h>
 #include <tinyara/logm.h>

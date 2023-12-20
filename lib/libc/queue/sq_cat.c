@@ -24,6 +24,7 @@
 
 #include <assert.h>
 #include <queue.h>
+#include <debug.h>
 
 /****************************************************************************
  * Public Functions
