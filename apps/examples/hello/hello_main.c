@@ -56,10 +56,15 @@
 
 #include <tinyara/config.h>
 #include <stdio.h>
-
+#include <iotbus/iotbus_gpio.h>
 /****************************************************************************
  * hello_main
  ****************************************************************************/
+
+static void gpio_callback_event(void *user_data)
+{
+        printf("gpio_callback_event!!\n");
+}
 
 #ifdef CONFIG_BUILD_KERNEL
 int main(int argc, FAR char *argv[])
@@ -68,5 +73,22 @@ int hello_main(int argc, char *argv[])
 #endif
 {
 	printf("Hello, World!!\n");
+	
+	iotapi_initialize();
+	
+	/* open gpio */
+	iotbus_gpio_context_h a_gpio = iotbus_gpio_open(23);
+	printf("return value of gpio open : %p\n", a_gpio);
+
+	printf("gpio write return value : %d\n", iotbus_gpio_write(a_gpio, 1));
+
+	/* register callback */
+	printf("return value of register callback : %d\n", iotbus_gpio_register_cb(a_gpio, IOTBUS_GPIO_EDGE_RISING, gpio_callback_event, (void *)a_gpio));
+
+	/* write to gpio */
+	printf("gpio write return value : %d\n", iotbus_gpio_write(a_gpio, 1));
+	
+	sleep(2);
+	iotbus_gpio_close(a_gpio);
 	return 0;
 }
