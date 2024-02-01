@@ -72,6 +72,7 @@
 #endif
 #include <arch/board/board.h>
 #include "gpio_api.h"
+#include "gpio_irq_api.h"
 #include "timer_api.h"
 #include "ameba_i2c.h"
 #include "ameba_spi.h"
@@ -354,6 +355,25 @@ void app_ftl_init(void)
  *
  ****************************************************************************/
 
+int app_pid = -1;
+int app_signo = -1;
+
+void register_rtl_gpio_callback(int pid, int signo) {
+        app_pid = pid;
+        app_signo = signo;
+}
+
+void unregister_rtl_gpio_callback() {
+        app_pid = -1;
+        app_signo = -1;
+}
+
+static void rtl8730e_gpio_irq_handler(uint32_t id, gpio_irq_event event)
+{
+        /* add logic here for handling gpio interrupt */
+        if (app_pid != -1) sigqueue(app_pid, app_signo, (union sigval)NULL);
+}
+
 #ifdef CONFIG_BOARD_INITIALIZE
 void board_initialize(void)
 {
@@ -415,6 +435,11 @@ void board_initialize(void)
 #ifdef CONFIG_AUDIO_ALC1019
 	rtl8730e_alc1019_initialize(0);
 #endif
+	gpio_irq_t data_ready;
+        gpio_irq_init(&data_ready, PA_23, rtl8730e_gpio_irq_handler, 1);
+        gpio_irq_set(&data_ready, IRQ_RISE, 1); // Rising edge trigger
+
+        gpio_irq_enable(&data_ready);
 }
 #else
 #error "CONFIG_BOARD_INITIALIZE MUST ENABLE"

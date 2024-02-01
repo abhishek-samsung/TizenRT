@@ -211,13 +211,13 @@ static struct amebasmart_spidev_s g_spi0dev = {
 	.spi_object = {0},
 
 	.spi_idx = MBED_SPI0,
-	.spi_mosi = PB_29,
-	.spi_miso = PB_30,
-	.spi_sclk = PB_31,
-	.spi_cs = PC_0,
-	.nbits = 8,
-	.mode = SPIDEV_MODE0,
-	.role = AMEBASMART_SPI_MASTER,
+        .spi_mosi = PB_4,
+        .spi_miso = PB_3,
+        .spi_sclk = PB_6,
+        .spi_cs = PB_5,
+        .nbits = 8,
+        .mode = SPIDEV_MODE0,
+        .role = AMEBASMART_SPI_MASTER,
 };
 
 static const struct spi_ops_s g_spi1ops = {
