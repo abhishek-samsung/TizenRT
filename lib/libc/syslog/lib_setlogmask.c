@@ -113,12 +113,11 @@ int setlogmask(int mask)
 	/* These operations must be exclusive with respect to other threads as well
 	 * as interrupts.
 	 */
-
-	flags = enter_critical_section();
+	flags = irqsave();
 
 	oldmask = g_syslog_mask;
 	g_syslog_mask = (uint8_t)mask;
 
-	leave_critical_section(flags);
+	irqrestore(flags);
 	return oldmask;
 }
