@@ -25,13 +25,17 @@
 #include <tinyara/elf.h>
 
 #include <unwind.h>
+#include <tinyara/userspace.h>
 
 /****************************************************************************
  * Private Data
  ****************************************************************************/
 
-extern void *__exidx_start;
-extern void *__exidx_end;
+void *__exidx_start_ptr;
+void *__exidx_end_ptr;
+
+extern void * __exidx_start;
+extern void * __exidx_end;
 
 /****************************************************************************
  * Public Functions
@@ -48,6 +52,11 @@ extern void *__exidx_end;
  *    It is needed to support exception handling for loadable ELF modules.
  *
  ****************************************************************************/
+
+void up_init_exidx(void * exidx_start, void * exidx_end) {
+	__exidx_start_ptr = exidx_start;
+	__exidx_end_ptr = exidx_end;
+}
 
 _Unwind_Ptr __gnu_Unwind_Find_exidx(_Unwind_Ptr return_address, int *nrecp)
 {

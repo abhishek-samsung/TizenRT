@@ -182,6 +182,7 @@
 #define SHF_WRITE          1
 #define SHF_ALLOC          2
 #define SHF_EXECINSTR      4
+#define SHF_LINK_ORDER     (1 << 7)
 #define SHF_MASKPROC       0xf0000000
 
 /* Definitions for Elf32_Sym::st_info */

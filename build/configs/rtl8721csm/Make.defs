@@ -249,7 +249,7 @@ ifeq ($(CONFIG_APP_BINARY_SEPARATION),y)
 CELFFLAGS = $(CFLAGS) -mlong-calls # --target1-abs
 CXXELFFLAGS = $(CXXFLAGS) -mlong-calls # --target1-abs
 
-LDELFFLAGS = -r -e main
+LDELFFLAGS = -r -e main --gc-sections
 
 ifeq ($(WINTOOL),y)
 	LDELFFLAGS += -T "${shell cygpath -w $(TOPDIR)/userspace/userspace_apps.ld}"

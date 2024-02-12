@@ -115,6 +115,8 @@ static void elf_elfsize(struct elf_loadinfo_s *loadinfo)
 #ifdef CONFIG_OPTIMIZE_APP_RELOAD_TIME
 	size_t rosize = 0;
 #endif
+	size_t exidx = 0;
+
 	int i;
 
 	/* Accumulate the size each section into memory that is marked SHF_ALLOC */
@@ -143,6 +145,10 @@ static void elf_elfsize(struct elf_loadinfo_s *loadinfo)
 #ifdef CONFIG_OPTIMIZE_APP_RELOAD_TIME
 			else if ((shdr->sh_flags & SHF_EXECINSTR) != 0) {
 				textsize += ELF_ALIGNUP(shdr->sh_size);
+			} else if ((shdr->sh_flags & SHF_LINK_ORDER) != 0) {
+					/* currently link order is only for exidx */
+					/* should not resize each one.... */
+					exidx += shdr->sh_size;
 			} else {
 				rosize += ELF_ALIGNUP(shdr->sh_size);
 			}
@@ -160,6 +166,7 @@ static void elf_elfsize(struct elf_loadinfo_s *loadinfo)
 #ifdef CONFIG_OPTIMIZE_APP_RELOAD_TIME
 	loadinfo->binp->sizes[BIN_RO] = rosize;
 #endif
+	loadinfo->binp->sizes[BIN_EXIDX] = ELF_ALIGNUP(exidx);
 
 }
 
@@ -176,6 +183,9 @@ static void elf_elfsize(struct elf_loadinfo_s *loadinfo)
  *
  ****************************************************************************/
 
+void * abhi_exidx_start = NULL;
+void * abhi_exidx_end = NULL;
+
 static inline int elf_loadfile(FAR struct elf_loadinfo_s *loadinfo)
 {
 	FAR uint8_t *text;
@@ -183,6 +193,7 @@ static inline int elf_loadfile(FAR struct elf_loadinfo_s *loadinfo)
 #ifdef CONFIG_OPTIMIZE_APP_RELOAD_TIME
 	FAR uint8_t *ro;
 #endif
+	FAR uint8_t *exidx;
 	FAR uint8_t **pptr;
 	int ret;
 	int i;
@@ -195,6 +206,7 @@ static inline int elf_loadfile(FAR struct elf_loadinfo_s *loadinfo)
 #ifdef CONFIG_OPTIMIZE_APP_RELOAD_TIME
 	ro = (FAR uint8_t *)loadinfo->binp->sections[BIN_RO];
 #endif
+	exidx = (FAR uint8_t *)loadinfo->binp->sections[BIN_EXIDX];
 
 	for (i = 0; i < loadinfo->ehdr.e_shnum; i++) {
 		FAR Elf32_Shdr *shdr = &loadinfo->shdr[i];
@@ -215,6 +227,10 @@ static inline int elf_loadfile(FAR struct elf_loadinfo_s *loadinfo)
 #ifdef CONFIG_OPTIMIZE_APP_RELOAD_TIME
 		} else if ((shdr->sh_flags & SHF_EXECINSTR) != 0) {
 			pptr = &text;
+		} else if ((shdr->sh_flags & SHF_LINK_ORDER) != 0) {
+		        if (abhi_exidx_start == NULL) abhi_exidx_start = *pptr;
+			pptr = &exidx;
+			lldbg("exidx copied to %x\n", *pptr);	
 		} else {
 			pptr = &ro;
 		}
@@ -246,10 +262,11 @@ static inline int elf_loadfile(FAR struct elf_loadinfo_s *loadinfo)
 		shdr->sh_addr = (uintptr_t)*pptr;
 
 		/* Setup the memory pointer for the next time through the loop */
-
-		*pptr += ELF_ALIGNUP(shdr->sh_size);
+		
+		if ((shdr->sh_flags & SHF_LINK_ORDER) != 0) *pptr += shdr->sh_size;
+		else *pptr += ELF_ALIGNUP(shdr->sh_size);
 	}
-
+		abhi_exidx_end = exidx;
 	return OK;
 }
 

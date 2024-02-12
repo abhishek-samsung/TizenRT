@@ -47,7 +47,7 @@
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
-
+extern void up_init_exidx(void * exidx_start, void * exidx_end);
 /****************************************************************************
  * Public Data
  ****************************************************************************/
@@ -61,7 +61,7 @@ const struct userspace_s userspace __attribute__((section(".userspace"))) = {
 #ifndef CONFIG_DISABLE_SIGNALS
 	.signal_handler = up_signal_handler,
 #endif
-
+	.up_init_exidx = up_init_exidx,
 };
 
 /****************************************************************************

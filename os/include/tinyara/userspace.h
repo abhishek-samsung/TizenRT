@@ -90,6 +90,7 @@ struct userspace_s {
 #ifndef CONFIG_DISABLE_SIGNALS
 	void (*signal_handler)(_sa_sigaction_t sighand, int signo, FAR siginfo_t *info, FAR void *ucontext);
 #endif
+	void (*up_init_exidx)(void * exidx_start, void * exidx_end);
 };
 
 /****************************************************************************
@@ -146,6 +147,8 @@ void task_startup(main_t entrypt, int argc, FAR char *argv[]) noreturn_function;
 #if defined(CONFIG_BUILD_PROTECTED) && !defined(__KERNEL__) && !defined(CONFIG_DISABLE_PTHREAD)
 void pthread_startup(pthread_startroutine_t entrypt, pthread_addr_t arg);
 #endif
+
+void up_int_exidx(void * exidx_start, void * exidx_end);
 
 #undef EXTERN
 #ifdef __cplusplus

@@ -80,6 +80,18 @@ SECTIONS
       _etext_flash = . ;
     }
 
+      .ARM.extab 0x00000000 :
+    {
+      *(.ARM.extab*)
+    }
+
+  .ARM.exidx 0x00000000 :
+    {
+      __exidx_start = .;
+      *(.ARM.exidx*)
+      __exidx_end = .;
+    }
+
   .rodata :
     {
       _srodata = . ;
@@ -116,7 +128,7 @@ SECTIONS
     {
       _sctors = . ;
       *(.ctors)       /* Old ABI:  Unallocated */
-      *(.init_array)  /* New ABI:  Allocated */
+      KEEP(*(.init_array))  /* New ABI:  Allocated */
       _ectors = . ;
     }
 
@@ -126,18 +138,6 @@ SECTIONS
       *(.dtors)       /* Old ABI:  Unallocated */
       *(.fini_array)  /* New ABI:  Allocated */
       _edtors = . ;
-    }
-
-  .ARM.extab :
-    {
-      *(.ARM.extab*)
-    }
-
-  .ARM.exidx :
-    {
-      __exidx_start = . ;
-      *(.ARM.exidx*)
-      __exidx_end = . ;
     }
 
   .bss :

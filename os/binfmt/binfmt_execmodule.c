@@ -62,7 +62,6 @@
 #include <sched.h>
 #include <debug.h>
 #include <errno.h>
-
 #include <tinyara/arch.h>
 #include <tinyara/kmalloc.h>
 #include <tinyara/mm/shm.h>
@@ -118,6 +117,8 @@
 #ifdef CONFIG_BINFMT_CONSTRUCTORS
 static void exec_ctors(FAR void *arg)
 {
+	lldbg("setting up exidx");
+
 	FAR const struct binary_s *binp = (FAR const struct binary_s *)arg;
 	binfmt_ctor_t *ctor;
 	int i;
@@ -127,7 +128,7 @@ static void exec_ctors(FAR void *arg)
 	if (g_lib_binp->run_library_ctors) {
 		ctor = g_lib_binp->ctors;
 		for (i = 0; i < g_lib_binp->nctors; i++) {
-			binfo("Calling ctor %d at %p\n", i, (FAR void *)ctor);
+			lldbg("Calling ctor %d at %p\n", i, (FAR void *)ctor);
 
 			(*ctor)();
 			ctor++;
@@ -141,7 +142,7 @@ static void exec_ctors(FAR void *arg)
 	/* Execute each constructor */
 
 	for (i = 0; i < binp->nctors; i++) {
-		binfo("Calling ctor %d at %p\n", i, (FAR void *)ctor);
+		lldbg("Calling ctor %d at %p\n", i, (FAR void *)ctor);
 
 		(*ctor)();
 		ctor++;
@@ -287,6 +288,9 @@ int exec_module(FAR struct binary_s *binp)
 
 	task_starthook(newtcb, exec_ctors, (FAR void *)binp);
 #endif
+	extern void * abhi_exidx_start;
+        extern void * abhi_exidx_end;
+
 
 	/* Get the assigned pid before we start the task */
 
@@ -309,6 +313,8 @@ int exec_module(FAR struct binary_s *binp)
 	/* The app's userspace object will be found at an offset of 4 bytes from the start of the binary */
 	newtcb->cmn.uspace = binp->sections[BIN_TEXT] + 4;
 	newtcb->cmn.uheap = (uint32_t)binp->uheap;
+
+	//((struct userspace_s *)newtcb->cmn.uspace)->up_init_exidx(abhi_exidx_start, abhi_exidx_end);
 
 #ifdef CONFIG_BINARY_MANAGER
 	newtcb->cmn.app_id = binp->binary_idx;

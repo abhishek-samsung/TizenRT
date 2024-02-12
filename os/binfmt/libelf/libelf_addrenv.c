@@ -79,7 +79,7 @@
 #ifdef CONFIG_OPTIMIZE_APP_RELOAD_TIME
 static int allocateregions(FAR struct elf_loadinfo_s *loadinfo)
 {
-	size_t sizes[NUM_APP_REGIONS] = {loadinfo->binp->sizes[BIN_TEXT], loadinfo->binp->sizes[BIN_RO], loadinfo->binp->ramsize};
+	size_t sizes[NUM_APP_REGIONS] = {loadinfo->binp->sizes[BIN_TEXT] + loadinfo->binp->sizes[BIN_EXIDX], loadinfo->binp->sizes[BIN_RO], loadinfo->binp->ramsize};
 	uintptr_t *allocs[NUM_APP_REGIONS] = {&loadinfo->binp->sections[BIN_TEXT], &loadinfo->binp->sections[BIN_RO], &loadinfo->binp->sections[BIN_DATA]};
 	int count = 0;
 	int i;
@@ -130,6 +130,9 @@ static int allocateregions(FAR struct elf_loadinfo_s *loadinfo)
 		}
 	}
 #endif
+	loadinfo->binp->sections[BIN_EXIDX] = loadinfo->binp->sections[BIN_TEXT] + loadinfo->binp->sizes[BIN_EXIDX];
+       lldbg("exidx start : %x\n", loadinfo->binp->sections[BIN_EXIDX]);	
+	loadinfo->binp->sections[BIN_TEXT] += loadinfo->binp->sizes[BIN_EXIDX];
 	return 0;
 }
 #endif
@@ -164,6 +167,7 @@ int elf_addrenv_alloc(FAR struct elf_loadinfo_s *loadinfo)
 
 	loadinfo->binp->sizes[BIN_TEXT] = binfmt_arch_align_mem(loadinfo->binp->sizes[BIN_TEXT]);
 	loadinfo->binp->sizes[BIN_RO] = binfmt_arch_align_mem(loadinfo->binp->sizes[BIN_RO]);
+	loadinfo->binp->sizes[BIN_EXIDX] = binfmt_arch_align_mem(loadinfo->binp->sizes[BIN_EXIDX]);
 	datamemsize = binfmt_arch_align_mem(datamemsize);
 	
 	loadinfo->binp->ramsize = datamemsize;
