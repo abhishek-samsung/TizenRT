@@ -170,7 +170,7 @@ else ifeq ($(CONFIG_CXX_VERSION_14),y)
 else
   CXXFLAGS += -std=c++11
 endif
-  CXXFLAGS += -pedantic -D_DEBUG -D_LIBCPP_BUILD_STATIC -ffunction-sections -fdata-sections -D__GLIBCXX__
+  CXXFLAGS += -pedantic -D_DEBUG -D_LIBCPP_BUILD_STATIC -ffunction-sections -fdata-sections -D__GLIBCXX__ -DCONFIG_WCHAR_BUILTIN
 endif
 
 ifeq ($(CONFIG_EXTERNAL_TFMICRO),y)

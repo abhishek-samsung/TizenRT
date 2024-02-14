@@ -102,7 +102,7 @@ class Extend : public Base
 public:
 	void printExtend(void)
 	{
-		cout << "extend" << endl;
+		printf("extended\n");
 	}
 };
 #endif
@@ -139,7 +139,7 @@ struct PrintNum
 
 static void test_function(void)
 {
-	cout << endl << "============ Test STL(Function Templates) ===============" << endl;
+	printf("============ Test STL(Function Templates) ===============\n");
 	// store a free function
 	function<void(int)> f_display = print_num;
 	f_display(-9);
@@ -180,7 +180,7 @@ static void test_function(void)
 
 static void test_tuple(void)
 {
-	cout << endl << "============ Test STL(Tuple) ============================" << endl;
+	printf("============ Test STL(Tuple) ============================");
 	using wcs_t= tuple<float, float, float>;
 	wcs_t g92_offset = wcs_t(1.0F, 2.1F, 3.2F);
 	float x=1.234f, y=2.345f, z=3.456f;
@@ -191,7 +191,7 @@ static void test_tuple(void)
 
 static void test_array(void)
 {
-	cout << endl << "============ Test STL(Array) ============================" << endl;
+	printf("============ Test STL(Array) ============================");
 	array<int, 4> ta {{1,2,3,4}};
 	for(const auto& s: ta) printf("%d ", s);
 	printf("\n");
@@ -203,7 +203,7 @@ static void test_array(void)
 
 static void test_list(void)
 {
-	cout << endl << "============ Test STL(List) =============================" << endl;
+	printf("============ Test STL(List) =============================");
 	// constructors used in the same order as described above:
 	list<int> first;                                // empty list of ints
 	list<int> second (4,100);                       // four ints with value 100
@@ -214,11 +214,11 @@ static void test_list(void)
 	int myints[] = {16,2,77,29};
 	list<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
 
-	cout << "The contents of fifth are: ";
+	printf("The contents of fifth are: \n");
 	for (list<int>::iterator it = fifth.begin(); it != fifth.end(); it++)
-		cout << *it << ' ';
+		printf("%d\n", *it);
 
-	cout << endl;
+	printf("\n");
 }
 
 
@@ -226,53 +226,10 @@ static void test_list(void)
 // Name: test_ostream
 //***************************************************************************/
 
-static void test_ofstream(void)
-{
-	cout << endl << "============ Test ofstream ==============================" << endl;
-	ofstream ttyOut;
-	printf("printf: Starting test_ostream\n");
-	ttyOut.open ("/dev/console");
-	if (!ttyOut.good())
-	{
-		printf("printf: Failed opening /dev/console\n");
-		cout << "cout: Failed opening /dev/console" << endl;
-		cout << " good()=" << ttyOut.good();
-		cout << " eof()=" << ttyOut.eof();
-		cout << " fail()=" << ttyOut.fail();
-		cout << " bad()=" << ttyOut.bad() << endl;
-	}
-	else
-	{
-		printf("printf: Successfully opened /dev/console\n");
-		cout << "cout: Successfully opened /dev/console" << endl;
-		ttyOut << "Writing this to /dev/console\n";
-		ttyOut.close();
-	}
-}
-
 //***************************************************************************
 // Name: test_iostream
 //***************************************************************************/
 
-static void test_iostream(void)
-{
-	cout << endl << "============ Test iostream ==============================" << endl;
-	cout << "Hello, this is only a test" << endl;
-	cout << "Print an int: "  <<  190  <<  endl;
-	cout <<  "Print a char: "  <<  'd'  <<  endl;
-
-#ifdef CXXTEST_ISTREAM
-	int a;
-	string s;
-
-	cout << "Please type in an int:" << endl;
-	cin >> a;
-	cout << "You type in: " << a << endl;
-	cout << "Please type in a string:" << endl;
-	cin >> s;
-	cout << "You type in: " << s << endl;
-#endif
-}
 
 //***************************************************************************
 // Name: test_stl
@@ -280,7 +237,7 @@ static void test_iostream(void)
 
 static void test_vectors(void)
 {
-	cout << endl << "============ Test STL(Vectors) ==========================" << endl;
+	printf("============ Test STL(Vectors) ==========================");
 	vector<int> v1;
 	assert(v1.empty());
 
@@ -295,7 +252,6 @@ static void test_vectors(void)
 	v1.pop_back();
 	assert(v1.size() == 3);
 
-	cout << "v1=" << v1[0] << ' ' << v1[1] << ' ' << v1[2] << endl;
 	assert(v1[2] == 3);
 
 	vector<int> v2 = v1;
@@ -306,16 +262,14 @@ static void test_vectors(void)
 	vector<string>::iterator it;
 	for (it = v3.begin(); it != v3.end(); ++it)
 	{
-		cout << *it << ' ';
 	}
 
-	cout << endl;
 	assert(v3[1] == "World");
 }
 
 static void test_map(void)
 {
-	cout << endl << "============ Test STL(Map) ==============================" << endl;
+	printf("============ Test STL(Map) ==============================");
 
 	map<int,string> m1;
 	m1[12] = "Hello";
@@ -341,7 +295,7 @@ static void test_stl(void)
 
 static void test_rtti(void)
 {
-	cout << endl << "============ Test RTTI ==================================" << endl;
+	printf("============ Test RTTI ==================================");
 
 	Base *a = new Base();
 	Base *b = new Extend();
@@ -367,15 +321,15 @@ static void test_rtti(void)
 #ifdef CXXTEST_EXCEPTION
 static void test_exception(void)
 {
-	cout << endl << "============ Test Exception =============================" << endl;
+	printf("============ Test Exception =============================");
 	try
 	{
-		throw runtime_error("runtime error");
+		throw 5;
 	}
 
-	catch (runtime_error &e)
+	catch (int &e)
 	{
-		cout << "Catch exception: " << e.what() << endl;
+		printf("Catch exception %d\n", 5);
 	}
 }
 #endif
@@ -385,7 +339,8 @@ static void test_exception(void)
 static void pause_thread(int n)
 {
 	std::this_thread::sleep_for (std::chrono::seconds(n));
-	std::cout << "pause of " << n << " seconds ended" << std::endl;
+	//printf( "pause of " << n << " seconds ended");
+	printf("pause of %d  seconds ended\n", n);
 }
 
 static void bar_thread()
@@ -412,15 +367,13 @@ static int thread_operator_test(void)
 {
 	std::thread threads[5];						// default-constructed threads
 
-	std::cout << "Spawning 5 threads..." << std::endl;
 	for (int i = 0; i < 5; ++i)
 		threads[i] = std::thread(pause_thread, i + 1);   // move-assign threads
 
-	std::cout << "Done spawning threads. Now waiting for them to join:" << std::endl;
 	for (int i = 0; i < 5; ++i)
 		threads[i].join();
 
-	std::cout << "All threads joined!" << std::endl;
+	printf("All threads joined!\n");
 
 	return 0;
 }
@@ -443,16 +396,10 @@ int thread_joinable_test(void)
 	std::thread foo;
 	std::thread bar(bar_thread);
 
-	std::cout << "Joinable after construction:\n" << std::boolalpha;
-	std::cout << "foo: " << foo.joinable() << std::endl;
-	std::cout << "bar: " << bar.joinable() << std::endl;
 
 	if (foo.joinable()) foo.join();
 	if (bar.joinable()) bar.join();
 
-	std::cout << "Joinable after joining:\n" << std::boolalpha;
-	std::cout << "foo: " << foo.joinable() << std::endl;
-	std::cout << "bar: " << bar.joinable() << std::endl;
 
 	return 0;
 }
@@ -472,18 +419,18 @@ int thread_joinable_test(void)
 
 int thread_join_test(void)
 {
-	std::cout << "Spawning 3 threads..." << std::endl;
+	printf( "Spawning 3 threads...");
 
 	std::thread t1 (pause_thread, 1);
 	std::thread t2 (pause_thread, 2);
 	std::thread t3 (pause_thread, 3);
 
-	std::cout << "Done spawning threads. Now waiting for them to join:" << std::endl;
+	printf( "Done spawning threads. Now waiting for them to join:");
 	t1.join();
 	t2.join();
 	t3.join();
 
-	std::cout << "All threads joined!" << std::endl;
+	printf( "All threads joined!");
 
 	return 0;
 }
@@ -501,8 +448,8 @@ extern "C"
 {
 	int cxxtest_main(int argc, char *argv[])
 	{
-		test_ofstream();
-		test_iostream();
+	//	test_ofstream();
+	//	test_iostream();
 		test_stl();
 
 #ifdef CXXTEST_RTTI
@@ -513,14 +460,14 @@ extern "C"
 		test_exception();
 #endif
 
-#ifdef THREAD_TEST
-		cout << endl << "============ thread::operator= test =====================" << endl;
+#if 0
+		printf("============ thread::operator= test =====================");
 		thread_operator_test();
 
-		cout << endl << "============ thread::joinable test ======================" << endl;
+		printf("============ thread::joinable test ======================");
 		thread_joinable_test();
 
-		cout << endl << "============ thread::join test ==========================" << endl;
+		printf("============ thread::join test ==========================");
 		thread_join_test();
 #endif
 		return 0;

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python2
 ############################################################################
 #
 # Copyright 2021 Samsung Electronics All Rights Reserved.
@@ -73,5 +73,5 @@ mkchecksum_path = TOOL_DIR + '/mkchecksum.py'
 ############################################################################
 # Generate Samsung headers
 ############################################################################
-os.system('python %s %s %s %s' % (mkbinheader_path, binary_path, binary_type, secure_header_size))
-os.system('python %s %s' % (mkchecksum_path, binary_path))
+os.system('python2 %s %s %s %s' % (mkbinheader_path, binary_path, binary_type, secure_header_size))
+os.system('python2 %s %s' % (mkchecksum_path, binary_path))

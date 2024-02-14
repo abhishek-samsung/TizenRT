@@ -6,7 +6,6 @@
 config EXAMPLES_CXXTEST
 	bool "C++ test program"
 	default n
-	depends on HAVE_CXXINITIALIZE
 	---help---
 		Enable the C++ Test program
 

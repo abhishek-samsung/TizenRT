@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python2
 ###########################################################################
 #
 # Copyright 2022 Samsung Electronics All Rights Reserved.
@@ -32,13 +32,13 @@ output_folder = os_folder + '/../build/output/bin/'
 
 def check_partition_configuration():
     # Run script for checking partition configuration
-    ret = os.system('python ' + tool_folder + 'check_partition.py')
+    ret = os.system('python2 ' + tool_folder + 'check_partition.py')
     if ret != 0 :
         sys.exit(1)
 
 def check_package_size():
     # Run script for checking binary sizes
-    ret = os.system('python ' + tool_folder + 'check_package_size.py')
+    ret = os.system('python2 ' + tool_folder + 'check_package_size.py')
     if ret != 0 :
         sys.exit(1)
 
@@ -46,7 +46,7 @@ def check_package_header():
     # Run script for checking binary sizes
     for file in os.listdir(output_folder):
         if file.endswith('.trpk'):
-            os.system('python ' + tool_folder + 'check_package_header.py ' + output_folder + file)
+            os.system('python2 ' + tool_folder + 'check_package_header.py ' + output_folder + file)
 
 ############################################################################
 # Validates packages

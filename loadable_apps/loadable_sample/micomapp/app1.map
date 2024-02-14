@@ -1,0 +1,1328 @@
+Archive member included to satisfy reference by file (symbol)
+
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+                              micomapp.o (getpid)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+                              micomapp.o (printf)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o) (vfprintf)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o) (lib_stdoutstream)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o) (lib_noflush)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+                              micomapp.o (sleep)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+                              /home/abhishek/TizenRT/os/userspace/up_userspace.o (task_startup)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+                              /home/abhishek/TizenRT/os/userspace/up_userspace.o (pthread_startup)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o) (lib_take_semaphore)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o) (lib_vsprintf)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o) (lib_fflush)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o) (fputc)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o) (strnlen)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o) (sem_init)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o) (__dtoa_engine)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o) (__ultoa_invert)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o) (lib_fwrite)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o) (lib_rdflush)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o) (g_dtoa_round)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o) (fseek)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o) (lib_wrflush)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuarch.a(up_signal_handler.o)
+                              /home/abhishek/TizenRT/os/userspace/up_userspace.o (up_signal_handler)
+/home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+                              micomapp.o (binary_manager_notify_binary_started)
+/home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o) (binary_manager_set_request)
+/usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldf3.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o) (__aeabi_dmul)
+/usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_addsubdf3.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o) (__aeabi_dadd)
+/usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldivdf3.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o) (__aeabi_ddiv)
+/usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_cmpdf2.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o) (__aeabi_dcmpeq)
+/usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_ldivmod.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o) (__aeabi_ldivmod)
+/usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_uldivmod.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o) (__aeabi_uldivmod)
+/usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o) (__aeabi_d2ulz)
+/usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+                              /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_ldivmod.o) (__udivmoddi4)
+/usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_dvmd_tls.o)
+                              /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_ldivmod.o) (__aeabi_ldiv0)
+/usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_fixunsdfsi.o)
+                              /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o) (__aeabi_d2uiz)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o) (exit)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o) (get_errno)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o) (lseek)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o) (mq_close)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o) (mq_open)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o) (mq_receive)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o) (mq_send)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o) (mq_unlink)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o) (nanosleep)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o) (pthread_exit)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o) (sched_getstreams)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o) (sem_post)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o) (sem_wait)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o) (set_errno)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o) (up_assert)
+/home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o) (write)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o) (snprintf)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o) (lib_memoutstream)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o) (lib_nulloutstream)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o) (syslog)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o) (g_syslog_mask)
+/home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+                              /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o) (lib_rawoutstream)
+
+Discarded input sections
+
+ .text          0x0000000000000000        0x0 micomapp.o
+ .data          0x0000000000000000        0x0 micomapp.o
+ .bss           0x0000000000000000        0x0 micomapp.o
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/userspace/up_userspace.o
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/userspace/up_userspace.o
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/userspace/up_userspace.o
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .text.lib_sem_initialize
+                0x0000000000000000       0x1a /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .text.sem_init
+                0x0000000000000000       0x30 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .debug_info    0x0000000000000000      0x1b1 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .debug_abbrev  0x0000000000000000       0xdd /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .debug_loc     0x0000000000000000       0xfd /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .debug_ranges  0x0000000000000000       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .debug_line    0x0000000000000000      0x11d /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .debug_str     0x0000000000000000      0x243 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .comment       0x0000000000000000       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .debug_frame   0x0000000000000000       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .ARM.attributes
+                0x0000000000000000       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(sem_init.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuarch.a(up_signal_handler.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuarch.a(up_signal_handler.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .rodata.binary_manager_receive_response.str1.1
+                0x0000000000000000       0x30 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .text.binary_manager_receive_response
+                0x0000000000000000       0xc0 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .rodata.__FUNCTION__.0
+                0x0000000000000000       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .text          0x0000000000000000      0x254 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldf3.o)
+ .data          0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldf3.o)
+ .bss           0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldf3.o)
+ .debug_line    0x0000000000000000      0x10c /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldf3.o)
+ .debug_info    0x0000000000000000       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldf3.o)
+ .debug_abbrev  0x0000000000000000       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldf3.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldf3.o)
+ .debug_str     0x0000000000000000       0xac /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldf3.o)
+ .debug_frame   0x0000000000000000       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldf3.o)
+ .ARM.attributes
+                0x0000000000000000       0x22 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldf3.o)
+ .data          0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_addsubdf3.o)
+ .bss           0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_addsubdf3.o)
+ .data          0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldivdf3.o)
+ .bss           0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldivdf3.o)
+ .data          0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_cmpdf2.o)
+ .bss           0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_cmpdf2.o)
+ .text          0x0000000000000000       0xa0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_ldivmod.o)
+ .data          0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_ldivmod.o)
+ .bss           0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_ldivmod.o)
+ .debug_line    0x0000000000000000       0x7e /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_ldivmod.o)
+ .debug_info    0x0000000000000000       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_ldivmod.o)
+ .debug_abbrev  0x0000000000000000       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_ldivmod.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_ldivmod.o)
+ .debug_str     0x0000000000000000       0xa7 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_ldivmod.o)
+ .debug_frame   0x0000000000000000       0x44 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_ldivmod.o)
+ .ARM.attributes
+                0x0000000000000000       0x22 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_ldivmod.o)
+ .data          0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_uldivmod.o)
+ .bss           0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_uldivmod.o)
+ .data          0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o)
+ .bss           0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o)
+ .data          0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+ .bss           0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+ .ARM.extab     0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+ .data          0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_dvmd_tls.o)
+ .bss           0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_dvmd_tls.o)
+ .data          0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_fixunsdfsi.o)
+ .bss           0x0000000000000000        0x0 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_fixunsdfsi.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .text.mq_receive
+                0x0000000000000000       0x12 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .debug_info    0x0000000000000000      0x277 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .debug_abbrev  0x0000000000000000       0xf7 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .debug_loc     0x0000000000000000      0x127 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .debug_ranges  0x0000000000000000       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .debug_line    0x0000000000000000      0x165 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .debug_str     0x0000000000000000      0x266 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .comment       0x0000000000000000       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .debug_frame   0x0000000000000000       0x2c /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .ARM.attributes
+                0x0000000000000000       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_receive.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .text.mq_unlink
+                0x0000000000000000        0x8 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .debug_info    0x0000000000000000      0x157 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .debug_abbrev  0x0000000000000000       0xf5 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .debug_loc     0x0000000000000000       0x5b /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .debug_ranges  0x0000000000000000       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .debug_line    0x0000000000000000      0x11a /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .debug_str     0x0000000000000000      0x203 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .comment       0x0000000000000000       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .debug_frame   0x0000000000000000       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .ARM.attributes
+                0x0000000000000000       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_unlink.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .text.setlogmask
+                0x0000000000000000       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .text          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+ .data          0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+ .bss           0x0000000000000000        0x0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+
+.text           0x0000000000000000     0x1dec
+                0x0000000000000000                _stext_flash = .
+                0x0000000000000000        0x4 LONG 0x0
+ *(.userspace)
+ .userspace     0x0000000000000004        0xc /home/abhishek/TizenRT/os/userspace/up_userspace.o
+                0x0000000000000004                userspace
+ *(.text)
+ .text          0x0000000000000010       0x18 /home/abhishek/TizenRT/os/../build/output/libraries/libuarch.a(up_signal_handler.o)
+                0x0000000000000010                up_signal_handler
+ .text          0x0000000000000028      0x378 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_addsubdf3.o)
+                0x0000000000000028                __aeabi_drsub
+                0x0000000000000030                __aeabi_dsub
+                0x0000000000000030                __subdf3
+                0x0000000000000034                __adddf3
+                0x0000000000000034                __aeabi_dadd
+                0x00000000000002ac                __aeabi_ui2d
+                0x00000000000002ac                __floatunsidf
+                0x00000000000002cc                __floatsidf
+                0x00000000000002cc                __aeabi_i2d
+                0x00000000000002f0                __extendsfdf2
+                0x00000000000002f0                __aeabi_f2d
+                0x0000000000000334                __aeabi_ul2d
+                0x0000000000000334                __floatundidf
+                0x0000000000000344                __floatdidf
+                0x0000000000000344                __aeabi_l2d
+ .text          0x00000000000003a0      0x424 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldivdf3.o)
+                0x00000000000003a0                __aeabi_dmul
+                0x00000000000003a0                __muldf3
+                0x00000000000005f4                __aeabi_ddiv
+                0x00000000000005f4                __divdf3
+ .text          0x00000000000007c4      0x110 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_cmpdf2.o)
+                0x00000000000007c4                __gtdf2
+                0x00000000000007c4                __gedf2
+                0x00000000000007cc                __ltdf2
+                0x00000000000007cc                __ledf2
+                0x00000000000007d4                __cmpdf2
+                0x00000000000007d4                __eqdf2
+                0x00000000000007d4                __nedf2
+                0x0000000000000850                __aeabi_cdrcmple
+                0x0000000000000860                __aeabi_cdcmple
+                0x0000000000000860                __aeabi_cdcmpeq
+                0x0000000000000870                __aeabi_dcmpeq
+                0x0000000000000884                __aeabi_dcmplt
+                0x0000000000000898                __aeabi_dcmple
+                0x00000000000008ac                __aeabi_dcmpge
+                0x00000000000008c0                __aeabi_dcmpgt
+ .text          0x00000000000008d4       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_uldivmod.o)
+                0x00000000000008d4                __aeabi_uldivmod
+ .text          0x0000000000000904       0x3c /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o)
+                0x0000000000000904                __aeabi_d2ulz
+                0x0000000000000904                __fixunsdfdi
+ .text          0x0000000000000940      0x2e8 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+                0x0000000000000940                __udivmoddi4
+ .text          0x0000000000000c28        0x4 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_dvmd_tls.o)
+                0x0000000000000c28                __aeabi_ldiv0
+                0x0000000000000c28                __aeabi_idiv0
+ .text          0x0000000000000c2c       0x40 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_fixunsdfsi.o)
+                0x0000000000000c2c                __fixunsdfsi
+                0x0000000000000c2c                __aeabi_d2uiz
+ *(.text.*)
+ .text.startup.main
+                0x0000000000000c6c       0x40 micomapp.o
+                0x0000000000000c6c                main
+ .text.getpid   0x0000000000000cac        0x8 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+                0x0000000000000cac                getpid
+ .text.printf   0x0000000000000cb4       0x24 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+                0x0000000000000cb4                printf
+ .text.vfprintf
+                0x0000000000000cd8       0x36 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+                0x0000000000000cd8                vfprintf
+ .text.stdoutstream_flush
+                0x0000000000000d0e        0x8 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ *fill*         0x0000000000000d16        0x2 
+ .text.stdoutstream_putc
+                0x0000000000000d18       0x38 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .text.lib_stdoutstream
+                0x0000000000000d50       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+                0x0000000000000d50                lib_stdoutstream
+ .text.lib_noflush
+                0x0000000000000d78        0x4 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+                0x0000000000000d78                lib_noflush
+ .text.sleep    0x0000000000000d7c       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+                0x0000000000000d7c                sleep
+ .text.task_startup
+                0x0000000000000db0       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+                0x0000000000000db0                task_startup
+ .text.pthread_startup
+                0x0000000000000dd0       0x1c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+                0x0000000000000dd0                pthread_startup
+ .text.lib_take_semaphore
+                0x0000000000000dec       0x44 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+                0x0000000000000dec                lib_take_semaphore
+ .text.lib_give_semaphore
+                0x0000000000000e30       0x48 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+                0x0000000000000e30                lib_give_semaphore
+ .text.lib_vsprintf
+                0x0000000000000e78      0x7b4 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+                0x0000000000000e78                lib_vsprintf
+ .text.lib_fflush
+                0x000000000000162c       0x8e /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+                0x000000000000162c                lib_fflush
+ .text.fputc    0x00000000000016ba       0x36 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+                0x00000000000016ba                fputc
+ .text.strnlen  0x00000000000016f0       0x18 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+                0x00000000000016f0                strnlen
+ .text.__dtoa_engine
+                0x0000000000001708      0x204 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+                0x0000000000001708                __dtoa_engine
+ .text.__ultoa_invert
+                0x000000000000190c       0x58 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+                0x000000000000190c                __ultoa_invert
+ .text.lib_fwrite
+                0x0000000000001964       0x92 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+                0x0000000000001964                lib_fwrite
+ .text.lib_rdflush
+                0x00000000000019f6       0x50 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+                0x00000000000019f6                lib_rdflush
+ .text.fseek    0x0000000000001a46       0x3c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+                0x0000000000001a46                fseek
+ .text.lib_wrflush
+                0x0000000000001a82       0x1a /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+                0x0000000000001a82                lib_wrflush
+ .text.binary_manager_notify_binary_started
+                0x0000000000001a9c       0x3c /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+                0x0000000000001a9c                binary_manager_notify_binary_started
+ .text.binary_manager_set_request
+                0x0000000000001ad8       0x7c /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+                0x0000000000001ad8                binary_manager_set_request
+ .text.binary_manager_send_request
+                0x0000000000001b54       0x70 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+                0x0000000000001b54                binary_manager_send_request
+ .text.exit     0x0000000000001bc4        0x8 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+                0x0000000000001bc4                exit
+ .text.get_errno
+                0x0000000000001bcc        0x6 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+                0x0000000000001bcc                get_errno
+ .text.lseek    0x0000000000001bd2       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+                0x0000000000001bd2                lseek
+ .text.mq_close
+                0x0000000000001be2        0x8 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+                0x0000000000001be2                mq_close
+ .text.mq_open  0x0000000000001bea       0x24 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+                0x0000000000001bea                mq_open
+ .text.mq_send  0x0000000000001c0e       0x12 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+                0x0000000000001c0e                mq_send
+ .text.nanosleep
+                0x0000000000001c20        0xc /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+                0x0000000000001c20                nanosleep
+ .text.pthread_exit
+                0x0000000000001c2c        0x8 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+                0x0000000000001c2c                pthread_exit
+ .text.sched_getstreams
+                0x0000000000001c34        0x6 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+                0x0000000000001c34                sched_getstreams
+ .text.sem_post
+                0x0000000000001c3a        0x8 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+                0x0000000000001c3a                sem_post
+ .text.sem_wait
+                0x0000000000001c42        0x8 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+                0x0000000000001c42                sem_wait
+ .text.set_errno
+                0x0000000000001c4a        0x8 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+                0x0000000000001c4a                set_errno
+ .text.up_assert
+                0x0000000000001c52        0xc /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+                0x0000000000001c52                up_assert
+ .text.write    0x0000000000001c5e       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+                0x0000000000001c5e                write
+ .text.snprintf
+                0x0000000000001c6e       0x2e /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+                0x0000000000001c6e                snprintf
+ .text.memoutstream_putc
+                0x0000000000001c9c       0x30 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .text.lib_memoutstream
+                0x0000000000001ccc       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+                0x0000000000001ccc                lib_memoutstream
+ .text.nulloutstream_putc
+                0x0000000000001cec       0x1c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .text.lib_nulloutstream
+                0x0000000000001d08       0x18 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+                0x0000000000001d08                lib_nulloutstream
+ .text.vsyslog  0x0000000000001d20       0x44 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+                0x0000000000001d20                vsyslog
+ .text.syslog   0x0000000000001d64       0x1a /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+                0x0000000000001d64                syslog
+ *fill*         0x0000000000001d7e        0x2 
+ .text.rawoutstream_putc
+                0x0000000000001d80       0x54 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+ .text.lib_rawoutstream
+                0x0000000000001dd4       0x18 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+                0x0000000000001dd4                lib_rawoutstream
+ *(.gnu.warning)
+ *(.stub)
+ *(.glue_7)
+ *(.glue_7t)
+ *(.jcr)
+ *(.gnu.linkonce.t.*)
+ *(.init)
+ *(.fini)
+                0x0000000000001dec                _etext_flash = .
+
+.rodata         0x0000000000001df0      0x305
+                0x0000000000001df0                _srodata = .
+ *(.rodata)
+ *(.rodata1)
+ *(.rodata.*)
+ .rodata.main.str1.1
+                0x0000000000001df0       0x33 micomapp.o
+ .rodata.stdoutstream_putc.str1.1
+                0x0000000000001e23       0x19 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .rodata.task_startup.str1.1
+                0x0000000000001e3c       0x15 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .rodata.pthread_startup.str1.1
+                0x0000000000001e51       0x1a /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .rodata.lib_take_semaphore.str1.1
+                0x0000000000001e6b       0x13 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .rodata.lib_vsprintf.str1.1
+                0x0000000000001e7e        0x8 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .rodata.g_nullstring
+                0x0000000000001e86        0x7 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ *fill*         0x0000000000001e8d        0x3 
+ .rodata.g_dtoa_round
+                0x0000000000001e90       0x80 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+                0x0000000000001e90                g_dtoa_round
+ .rodata.g_dtoa_scale_down
+                0x0000000000001f10       0x48 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+                0x0000000000001f10                g_dtoa_scale_down
+ .rodata.g_dtoa_scale_up
+                0x0000000000001f58       0x48 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+                0x0000000000001f58                g_dtoa_scale_up
+ .rodata.binary_manager_notify_binary_started.str1.1
+                0x0000000000001fa0       0x2e /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .rodata.__FUNCTION__.0
+                0x0000000000001fce       0x25 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .rodata.binary_manager_set_request.str1.1
+                0x0000000000001ff3       0x33 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .rodata.binary_manager_send_request.str1.1
+                0x0000000000002026       0x4c /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .rodata.__FUNCTION__.1
+                0x0000000000002072       0x1c /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .rodata.__FUNCTION__.2
+                0x000000000000208e       0x1b /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .rodata.memoutstream_putc.str1.1
+                0x00000000000020a9       0x19 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .rodata.nulloutstream_putc.str1.1
+                0x00000000000020c2       0x1a /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .rodata.rawoutstream_putc.str1.1
+                0x00000000000020dc       0x19 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+ *(.gnu.linkonce.r*)
+                0x00000000000020f5                _erodata = .
+                0x00000000000020f5                _eronly = .
+
+.data           0x0000000000000000        0x5
+                0x0000000000000000                _sdata = .
+                0x0000000000000000        0x4 LONG 0x0
+ *(.curapp)
+ *(.appheaptable)
+ *(.data)
+ *(.data1)
+ *(.data.*)
+ .data.g_syslog_mask
+                0x0000000000000004        0x1 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+                0x0000000000000004                g_syslog_mask
+ *(.gnu.linkonce.d*)
+                0x0000000000000005                _edata = .
+
+.ctors          0x0000000000000005        0x0
+                0x0000000000000005                _sctors = .
+ *(.ctors)
+ *(.init_array)
+                0x0000000000000005                _ectors = .
+
+.dtors          0x0000000000000005        0x0
+                0x0000000000000005                _sdtors = .
+ *(.dtors)
+ *(.fini_array)
+                0x0000000000000005                _edtors = .
+
+.ARM.extab
+ *(.ARM.extab*)
+
+.ARM.exidx      0x0000000000000008        0x8
+                0x0000000000000008                __exidx_start = .
+ *(.ARM.exidx*)
+ .ARM.exidx     0x0000000000000008        0x8 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+                0x0000000000000010                __exidx_end = .
+
+.bss            0x0000000000000010        0x0
+                0x0000000000000010                _sbss = .
+ *(.bss)
+ *(.bss.*)
+ *(.sbss)
+ *(.sbss.*)
+ *(.gnu.linkonce.b*)
+ *(COMMON)
+                0x0000000000000010                _ebss = .
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x0000000000000000      0x958
+ *(.comment)
+ .comment       0x0000000000000000       0x34 micomapp.o
+ .comment       0x0000000000000034       0x34 /home/abhishek/TizenRT/os/userspace/up_userspace.o
+ .comment       0x0000000000000068       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+ .comment       0x000000000000009c       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+ .comment       0x00000000000000d0       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+ .comment       0x0000000000000104       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .comment       0x0000000000000138       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+ .comment       0x000000000000016c       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+ .comment       0x00000000000001a0       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .comment       0x00000000000001d4       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .comment       0x0000000000000208       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .comment       0x000000000000023c       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .comment       0x0000000000000270       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+ .comment       0x00000000000002a4       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+ .comment       0x00000000000002d8       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+ .comment       0x000000000000030c       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+ .comment       0x0000000000000340       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+ .comment       0x0000000000000374       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+ .comment       0x00000000000003a8       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+ .comment       0x00000000000003dc       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+ .comment       0x0000000000000410       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+ .comment       0x0000000000000444       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+ .comment       0x0000000000000478       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .comment       0x00000000000004ac       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .comment       0x00000000000004e0       0x34 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o)
+ .comment       0x0000000000000514       0x34 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+ .comment       0x0000000000000548       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+ .comment       0x000000000000057c       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+ .comment       0x00000000000005b0       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+ .comment       0x00000000000005e4       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+ .comment       0x0000000000000618       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+ .comment       0x000000000000064c       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+ .comment       0x0000000000000680       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+ .comment       0x00000000000006b4       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+ .comment       0x00000000000006e8       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+ .comment       0x000000000000071c       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+ .comment       0x0000000000000750       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+ .comment       0x0000000000000784       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+ .comment       0x00000000000007b8       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+ .comment       0x00000000000007ec       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+ .comment       0x0000000000000820       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+ .comment       0x0000000000000854       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .comment       0x0000000000000888       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .comment       0x00000000000008bc       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+ .comment       0x00000000000008f0       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .comment       0x0000000000000924       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+
+.ARM.attributes
+                0x0000000000000000       0x36
+ .ARM.attributes
+                0x0000000000000000       0x34 micomapp.o
+ .ARM.attributes
+                0x0000000000000034       0x3a /home/abhishek/TizenRT/os/userspace/up_userspace.o
+ .ARM.attributes
+                0x000000000000006e       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+ .ARM.attributes
+                0x00000000000000a2       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+ .ARM.attributes
+                0x00000000000000d6       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+ .ARM.attributes
+                0x000000000000010a       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .ARM.attributes
+                0x000000000000013e       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+ .ARM.attributes
+                0x0000000000000172       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+ .ARM.attributes
+                0x00000000000001a6       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .ARM.attributes
+                0x00000000000001da       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .ARM.attributes
+                0x000000000000020e       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .ARM.attributes
+                0x0000000000000242       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .ARM.attributes
+                0x0000000000000276       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+ .ARM.attributes
+                0x00000000000002aa       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+ .ARM.attributes
+                0x00000000000002de       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+ .ARM.attributes
+                0x0000000000000312       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+ .ARM.attributes
+                0x0000000000000346       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+ .ARM.attributes
+                0x000000000000037a       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+ .ARM.attributes
+                0x00000000000003ae       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+ .ARM.attributes
+                0x00000000000003e2       0x3a /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+ .ARM.attributes
+                0x000000000000041c       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+ .ARM.attributes
+                0x0000000000000450       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+ .ARM.attributes
+                0x0000000000000484       0x25 /home/abhishek/TizenRT/os/../build/output/libraries/libuarch.a(up_signal_handler.o)
+ .ARM.attributes
+                0x00000000000004a9       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .ARM.attributes
+                0x00000000000004dd       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .ARM.attributes
+                0x0000000000000511       0x22 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_addsubdf3.o)
+ .ARM.attributes
+                0x0000000000000533       0x22 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldivdf3.o)
+ .ARM.attributes
+                0x0000000000000555       0x22 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_cmpdf2.o)
+ .ARM.attributes
+                0x0000000000000577       0x22 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_uldivmod.o)
+ .ARM.attributes
+                0x0000000000000599       0x32 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o)
+ .ARM.attributes
+                0x00000000000005cb       0x32 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+ .ARM.attributes
+                0x00000000000005fd       0x22 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_dvmd_tls.o)
+ .ARM.attributes
+                0x000000000000061f       0x22 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_fixunsdfsi.o)
+ .ARM.attributes
+                0x0000000000000641       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+ .ARM.attributes
+                0x0000000000000675       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+ .ARM.attributes
+                0x00000000000006a9       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+ .ARM.attributes
+                0x00000000000006dd       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+ .ARM.attributes
+                0x0000000000000711       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+ .ARM.attributes
+                0x0000000000000745       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+ .ARM.attributes
+                0x0000000000000779       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+ .ARM.attributes
+                0x00000000000007ad       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+ .ARM.attributes
+                0x00000000000007e1       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+ .ARM.attributes
+                0x0000000000000815       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+ .ARM.attributes
+                0x0000000000000849       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+ .ARM.attributes
+                0x000000000000087d       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+ .ARM.attributes
+                0x00000000000008b1       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+ .ARM.attributes
+                0x00000000000008e5       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+ .ARM.attributes
+                0x0000000000000919       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+ .ARM.attributes
+                0x000000000000094d       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .ARM.attributes
+                0x0000000000000981       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .ARM.attributes
+                0x00000000000009b5       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+ .ARM.attributes
+                0x00000000000009e9       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .ARM.attributes
+                0x0000000000000a1d       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+
+.debug_abbrev   0x0000000000000000     0x4104
+ *(.debug_abbrev)
+ .debug_abbrev  0x0000000000000000       0xce micomapp.o
+ .debug_abbrev  0x00000000000000ce      0x112 /home/abhishek/TizenRT/os/userspace/up_userspace.o
+ .debug_abbrev  0x00000000000001e0       0xc4 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+ .debug_abbrev  0x00000000000002a4       0xfa /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+ .debug_abbrev  0x000000000000039e      0x26e /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+ .debug_abbrev  0x000000000000060c      0x294 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .debug_abbrev  0x00000000000008a0       0xc0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+ .debug_abbrev  0x0000000000000960       0xf0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+ .debug_abbrev  0x0000000000000a50       0xff /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .debug_abbrev  0x0000000000000b4f      0x117 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .debug_abbrev  0x0000000000000c66      0x244 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .debug_abbrev  0x0000000000000eaa      0x2bb /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .debug_abbrev  0x0000000000001165      0x241 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+ .debug_abbrev  0x00000000000013a6      0x23f /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+ .debug_abbrev  0x00000000000015e5       0xa3 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+ .debug_abbrev  0x0000000000001688      0x137 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+ .debug_abbrev  0x00000000000017bf       0xc2 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+ .debug_abbrev  0x0000000000001881      0x283 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+ .debug_abbrev  0x0000000000001b04      0x23c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+ .debug_abbrev  0x0000000000001d40       0x77 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+ .debug_abbrev  0x0000000000001db7      0x219 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+ .debug_abbrev  0x0000000000001fd0      0x1fc /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+ .debug_abbrev  0x00000000000021cc       0x14 /home/abhishek/TizenRT/os/../build/output/libraries/libuarch.a(up_signal_handler.o)
+ .debug_abbrev  0x00000000000021e0      0x171 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .debug_abbrev  0x0000000000002351      0x257 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .debug_abbrev  0x00000000000025a8       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_addsubdf3.o)
+ .debug_abbrev  0x00000000000025bc       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldivdf3.o)
+ .debug_abbrev  0x00000000000025d0       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_cmpdf2.o)
+ .debug_abbrev  0x00000000000025e4       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_uldivmod.o)
+ .debug_abbrev  0x00000000000025f8      0x101 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o)
+ .debug_abbrev  0x00000000000026f9      0x163 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_abbrev  0x000000000000285c       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_abbrev  0x0000000000002870       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_fixunsdfsi.o)
+ .debug_abbrev  0x0000000000002884       0xe6 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+ .debug_abbrev  0x000000000000296a       0xc4 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+ .debug_abbrev  0x0000000000002a2e       0xe7 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+ .debug_abbrev  0x0000000000002b15       0xf7 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+ .debug_abbrev  0x0000000000002c0c      0x154 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+ .debug_abbrev  0x0000000000002d60       0xfe /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+ .debug_abbrev  0x0000000000002e5e      0x117 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+ .debug_abbrev  0x0000000000002f75       0xed /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+ .debug_abbrev  0x0000000000003062      0x217 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+ .debug_abbrev  0x0000000000003279      0x11b /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+ .debug_abbrev  0x0000000000003394      0x11b /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+ .debug_abbrev  0x00000000000034af       0xe5 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+ .debug_abbrev  0x0000000000003594       0xf5 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+ .debug_abbrev  0x0000000000003689       0xf5 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+ .debug_abbrev  0x000000000000377e      0x1a4 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+ .debug_abbrev  0x0000000000003922      0x13d /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .debug_abbrev  0x0000000000003a5f      0x129 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .debug_abbrev  0x0000000000003b88      0x237 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+ .debug_abbrev  0x0000000000003dbf      0x1bb /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .debug_abbrev  0x0000000000003f7a      0x18a /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+
+.debug_info     0x0000000000000000    0x13746
+ *(.debug_info)
+ .debug_info    0x0000000000000000      0x16a micomapp.o
+ .debug_info    0x000000000000016a      0x2a5 /home/abhishek/TizenRT/os/userspace/up_userspace.o
+ .debug_info    0x000000000000040f      0x134 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+ .debug_info    0x0000000000000543      0x145 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+ .debug_info    0x0000000000000688     0x164d /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+ .debug_info    0x0000000000001cd5     0x1674 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .debug_info    0x0000000000003349      0x132 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+ .debug_info    0x000000000000347b      0x16c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+ .debug_info    0x00000000000035e7      0x18f /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .debug_info    0x0000000000003776      0x172 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .debug_info    0x00000000000038e8     0x15ff /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .debug_info    0x0000000000004ee7      0x937 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .debug_info    0x000000000000581e     0x1594 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+ .debug_info    0x0000000000006db2     0x1521 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+ .debug_info    0x00000000000082d3      0x104 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+ .debug_info    0x00000000000083d7      0x31c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+ .debug_info    0x00000000000086f3       0xda /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+ .debug_info    0x00000000000087cd     0x1604 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+ .debug_info    0x0000000000009dd1     0x153c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+ .debug_info    0x000000000000b30d      0x11e /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+ .debug_info    0x000000000000b42b     0x152b /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+ .debug_info    0x000000000000c956     0x14c1 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+ .debug_info    0x000000000000de17       0x26 /home/abhishek/TizenRT/os/../build/output/libraries/libuarch.a(up_signal_handler.o)
+ .debug_info    0x000000000000de3d      0x31a /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .debug_info    0x000000000000e157      0xff4 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .debug_info    0x000000000000f14b       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_addsubdf3.o)
+ .debug_info    0x000000000000f171       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldivdf3.o)
+ .debug_info    0x000000000000f197       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_cmpdf2.o)
+ .debug_info    0x000000000000f1bd       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_uldivmod.o)
+ .debug_info    0x000000000000f1e3      0x366 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o)
+ .debug_info    0x000000000000f549      0x717 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_info    0x000000000000fc60       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_info    0x000000000000fc86       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_fixunsdfsi.o)
+ .debug_info    0x000000000000fcac      0x149 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+ .debug_info    0x000000000000fdf5       0xf5 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+ .debug_info    0x000000000000feea      0x1f6 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+ .debug_info    0x00000000000100e0      0x163 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+ .debug_info    0x0000000000010243      0x2ab /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+ .debug_info    0x00000000000104ee      0x252 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+ .debug_info    0x0000000000010740      0x1ea /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+ .debug_info    0x000000000001092a      0x157 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+ .debug_info    0x0000000000010a81     0x14e3 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+ .debug_info    0x0000000000011f64      0x1f1 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+ .debug_info    0x0000000000012155      0x1f1 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+ .debug_info    0x0000000000012346      0x131 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+ .debug_info    0x0000000000012477      0x193 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+ .debug_info    0x000000000001260a      0x220 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+ .debug_info    0x000000000001282a      0x2d2 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+ .debug_info    0x0000000000012afc      0x242 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .debug_info    0x0000000000012d3e      0x1a7 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .debug_info    0x0000000000012ee5      0x392 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+ .debug_info    0x0000000000013277      0x24d /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .debug_info    0x00000000000134c4      0x282 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+
+.debug_line     0x0000000000000000     0x5f1c
+ *(.debug_line)
+ .debug_line    0x0000000000000000      0x120 micomapp.o
+ .debug_line    0x0000000000000120      0x13f /home/abhishek/TizenRT/os/userspace/up_userspace.o
+ .debug_line    0x000000000000025f      0x140 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+ .debug_line    0x000000000000039f      0x10c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+ .debug_line    0x00000000000004ab      0x2a4 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+ .debug_line    0x000000000000074f      0x315 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .debug_line    0x0000000000000a64       0x88 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+ .debug_line    0x0000000000000aec      0x127 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+ .debug_line    0x0000000000000c13      0x16f /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .debug_line    0x0000000000000d82      0x140 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .debug_line    0x0000000000000ec2      0x341 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .debug_line    0x0000000000001203      0xaa0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .debug_line    0x0000000000001ca3      0x312 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+ .debug_line    0x0000000000001fb5      0x263 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+ .debug_line    0x0000000000002218      0x11b /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+ .debug_line    0x0000000000002333      0x33c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+ .debug_line    0x000000000000266f       0xc3 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+ .debug_line    0x0000000000002732      0x32c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+ .debug_line    0x0000000000002a5e      0x292 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+ .debug_line    0x0000000000002cf0       0x7c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+ .debug_line    0x0000000000002d6c      0x269 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+ .debug_line    0x0000000000002fd5      0x247 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+ .debug_line    0x000000000000321c       0x56 /home/abhishek/TizenRT/os/../build/output/libraries/libuarch.a(up_signal_handler.o)
+ .debug_line    0x0000000000003272      0x1a0 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .debug_line    0x0000000000003412      0x379 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .debug_line    0x000000000000378b      0x186 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_addsubdf3.o)
+ .debug_line    0x0000000000003911      0x19b /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldivdf3.o)
+ .debug_line    0x0000000000003aac       0xbd /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_cmpdf2.o)
+ .debug_line    0x0000000000003b69       0x60 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_uldivmod.o)
+ .debug_line    0x0000000000003bc9       0xad /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o)
+ .debug_line    0x0000000000003c76      0x5ce /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_line    0x0000000000004244       0x60 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_line    0x00000000000042a4       0x75 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_fixunsdfsi.o)
+ .debug_line    0x0000000000004319      0x126 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+ .debug_line    0x000000000000443f      0x113 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+ .debug_line    0x0000000000004552      0x158 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+ .debug_line    0x00000000000046aa      0x119 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+ .debug_line    0x00000000000047c3      0x186 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+ .debug_line    0x0000000000004949      0x162 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+ .debug_line    0x0000000000004aab      0x121 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+ .debug_line    0x0000000000004bcc      0x131 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+ .debug_line    0x0000000000004cfd      0x239 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+ .debug_line    0x0000000000004f36      0x11a /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+ .debug_line    0x0000000000005050      0x11a /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+ .debug_line    0x000000000000516a      0x119 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+ .debug_line    0x0000000000005283      0x121 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+ .debug_line    0x00000000000053a4      0x158 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+ .debug_line    0x00000000000054fc      0x1a0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+ .debug_line    0x000000000000569c      0x1c5 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .debug_line    0x0000000000005861      0x159 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .debug_line    0x00000000000059ba      0x1e6 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+ .debug_line    0x0000000000005ba0      0x18e /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .debug_line    0x0000000000005d2e      0x1ee /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_aranges  0x0000000000000000      0x6e0
+ *(.debug_aranges)
+ .debug_aranges
+                0x0000000000000000       0x20 micomapp.o
+ .debug_aranges
+                0x0000000000000020       0x18 /home/abhishek/TizenRT/os/userspace/up_userspace.o
+ .debug_aranges
+                0x0000000000000038       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+ .debug_aranges
+                0x0000000000000058       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+ .debug_aranges
+                0x0000000000000078       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+ .debug_aranges
+                0x0000000000000098       0x30 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .debug_aranges
+                0x00000000000000c8       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+ .debug_aranges
+                0x00000000000000e8       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+ .debug_aranges
+                0x0000000000000108       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .debug_aranges
+                0x0000000000000128       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .debug_aranges
+                0x0000000000000148       0x30 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .debug_aranges
+                0x0000000000000178       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .debug_aranges
+                0x0000000000000198       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+ .debug_aranges
+                0x00000000000001b8       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+ .debug_aranges
+                0x00000000000001d8       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+ .debug_aranges
+                0x00000000000001f8       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+ .debug_aranges
+                0x0000000000000218       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+ .debug_aranges
+                0x0000000000000238       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+ .debug_aranges
+                0x0000000000000258       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+ .debug_aranges
+                0x0000000000000278       0x18 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+ .debug_aranges
+                0x0000000000000290       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+ .debug_aranges
+                0x00000000000002b0       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+ .debug_aranges
+                0x00000000000002d0       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuarch.a(up_signal_handler.o)
+ .debug_aranges
+                0x00000000000002f0       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .debug_aranges
+                0x0000000000000310       0x30 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .debug_aranges
+                0x0000000000000340       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_addsubdf3.o)
+ .debug_aranges
+                0x0000000000000360       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldivdf3.o)
+ .debug_aranges
+                0x0000000000000380       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_cmpdf2.o)
+ .debug_aranges
+                0x00000000000003a0       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_uldivmod.o)
+ .debug_aranges
+                0x00000000000003c0       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o)
+ .debug_aranges
+                0x00000000000003e0       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_aranges
+                0x0000000000000400       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_aranges
+                0x0000000000000420       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_fixunsdfsi.o)
+ .debug_aranges
+                0x0000000000000440       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+ .debug_aranges
+                0x0000000000000460       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+ .debug_aranges
+                0x0000000000000480       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+ .debug_aranges
+                0x00000000000004a0       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+ .debug_aranges
+                0x00000000000004c0       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+ .debug_aranges
+                0x00000000000004e0       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+ .debug_aranges
+                0x0000000000000500       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+ .debug_aranges
+                0x0000000000000520       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+ .debug_aranges
+                0x0000000000000540       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+ .debug_aranges
+                0x0000000000000560       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+ .debug_aranges
+                0x0000000000000580       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+ .debug_aranges
+                0x00000000000005a0       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+ .debug_aranges
+                0x00000000000005c0       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+ .debug_aranges
+                0x00000000000005e0       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+ .debug_aranges
+                0x0000000000000600       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+ .debug_aranges
+                0x0000000000000620       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .debug_aranges
+                0x0000000000000648       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .debug_aranges
+                0x0000000000000670       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+ .debug_aranges
+                0x0000000000000698       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .debug_aranges
+                0x00000000000006b8       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+LOAD micomapp.o
+LOAD /home/abhishek/TizenRT/os/userspace/up_userspace.o
+START GROUP
+LOAD /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a
+LOAD /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a
+LOAD /home/abhishek/TizenRT/os/../build/output/libraries/libumm.a
+LOAD /home/abhishek/TizenRT/os/../build/output/libraries/libuarch.a
+LOAD /home/abhishek/TizenRT/os/../build/output/libraries/libuwque.a
+LOAD /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a
+LOAD /home/abhishek/TizenRT/os/../build/output/libraries/libcxx.a
+LOAD /home/abhishek/TizenRT/os/../build/output/libraries/libexternal.a
+LOAD /home/abhishek/TizenRT/os/../build/output/libraries/libapps.a
+LOAD /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a
+LOAD /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v8-m.main/nofp/libsupc++.a
+END GROUP
+OUTPUT(app1 elf32-littlearm)
+LOAD linker stubs
+
+.debug_loc      0x0000000000000000     0x3bdf
+ .debug_loc     0x0000000000000000       0x65 micomapp.o
+ .debug_loc     0x0000000000000065       0x16 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+ .debug_loc     0x000000000000007b       0x15 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+ .debug_loc     0x0000000000000090       0xdd /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+ .debug_loc     0x000000000000016d       0xe3 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .debug_loc     0x0000000000000250       0x25 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+ .debug_loc     0x0000000000000275       0x82 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+ .debug_loc     0x00000000000002f7       0x7b /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .debug_loc     0x0000000000000372       0x59 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .debug_loc     0x00000000000003cb       0xad /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .debug_loc     0x0000000000000478      0xdc3 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .debug_loc     0x000000000000123b       0xf5 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+ .debug_loc     0x0000000000001330       0x9d /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+ .debug_loc     0x00000000000013cd       0x69 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+ .debug_loc     0x0000000000001436      0x304 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+ .debug_loc     0x000000000000173a      0x10d /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+ .debug_loc     0x0000000000001847      0x2b0 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+ .debug_loc     0x0000000000001af7       0x3c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+ .debug_loc     0x0000000000001b33       0x66 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+ .debug_loc     0x0000000000001b99       0x5f /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+ .debug_loc     0x0000000000001bf8       0x22 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .debug_loc     0x0000000000001c1a      0x3a1 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .debug_loc     0x0000000000001fbb       0xad /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o)
+ .debug_loc     0x0000000000002068     0x1027 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_loc     0x000000000000308f       0x5a /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+ .debug_loc     0x00000000000030e9       0x16 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+ .debug_loc     0x00000000000030ff       0xe3 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+ .debug_loc     0x00000000000031e2       0x5b /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+ .debug_loc     0x000000000000323d       0x70 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+ .debug_loc     0x00000000000032ad      0x127 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+ .debug_loc     0x00000000000033d4       0x9f /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+ .debug_loc     0x0000000000003473       0x5b /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+ .debug_loc     0x00000000000034ce       0x17 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+ .debug_loc     0x00000000000034e5       0x5a /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+ .debug_loc     0x000000000000353f       0x5a /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+ .debug_loc     0x0000000000003599       0x5a /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+ .debug_loc     0x00000000000035f3       0x9f /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+ .debug_loc     0x0000000000003692       0xe3 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+ .debug_loc     0x0000000000003775       0xcc /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+ .debug_loc     0x0000000000003841       0xba /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .debug_loc     0x00000000000038fb       0x57 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .debug_loc     0x0000000000003952      0x11a /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+ .debug_loc     0x0000000000003a6c       0xac /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .debug_loc     0x0000000000003b18       0xc7 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+
+.debug_ranges   0x0000000000000000      0x5a8
+ .debug_ranges  0x0000000000000000       0x10 micomapp.o
+ .debug_ranges  0x0000000000000010       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+ .debug_ranges  0x0000000000000020       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+ .debug_ranges  0x0000000000000030       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+ .debug_ranges  0x0000000000000040       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .debug_ranges  0x0000000000000060       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+ .debug_ranges  0x0000000000000070       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+ .debug_ranges  0x0000000000000080       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .debug_ranges  0x0000000000000090       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .debug_ranges  0x00000000000000a0       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .debug_ranges  0x00000000000000c0      0x108 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .debug_ranges  0x00000000000001c8       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+ .debug_ranges  0x00000000000001d8       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+ .debug_ranges  0x00000000000001e8       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+ .debug_ranges  0x00000000000001f8       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+ .debug_ranges  0x0000000000000208       0x38 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+ .debug_ranges  0x0000000000000240       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+ .debug_ranges  0x0000000000000268       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+ .debug_ranges  0x0000000000000290       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+ .debug_ranges  0x00000000000002a0       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+ .debug_ranges  0x00000000000002b0       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .debug_ranges  0x00000000000002c0       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .debug_ranges  0x00000000000002e0       0xe8 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_ranges  0x00000000000003c8       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+ .debug_ranges  0x00000000000003d8       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+ .debug_ranges  0x00000000000003e8       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+ .debug_ranges  0x00000000000003f8       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+ .debug_ranges  0x0000000000000408       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+ .debug_ranges  0x0000000000000430       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+ .debug_ranges  0x0000000000000440       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+ .debug_ranges  0x0000000000000450       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+ .debug_ranges  0x0000000000000460       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+ .debug_ranges  0x0000000000000470       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+ .debug_ranges  0x0000000000000480       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+ .debug_ranges  0x0000000000000490       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+ .debug_ranges  0x00000000000004a0       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+ .debug_ranges  0x00000000000004b0       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+ .debug_ranges  0x00000000000004c0       0x10 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+ .debug_ranges  0x00000000000004d0       0x18 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .debug_ranges  0x00000000000004e8       0x18 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .debug_ranges  0x0000000000000500       0x18 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+ .debug_ranges  0x0000000000000518       0x78 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .debug_ranges  0x0000000000000590       0x18 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+
+.debug_str      0x0000000000000000     0xd571
+ .debug_str     0x0000000000000000      0x22c micomapp.o
+ .debug_str     0x000000000000022c      0x354 /home/abhishek/TizenRT/os/userspace/up_userspace.o
+ .debug_str     0x0000000000000580      0x209 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+ .debug_str     0x0000000000000789      0x208 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+ .debug_str     0x0000000000000991      0xb7e /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+ .debug_str     0x000000000000150f      0xb79 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .debug_str     0x0000000000002088      0x208 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+ .debug_str     0x0000000000002290      0x21f /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+ .debug_str     0x00000000000024af      0x210 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .debug_str     0x00000000000026bf      0x23a /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .debug_str     0x00000000000028f9      0xb21 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .debug_str     0x000000000000341a      0x39d /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .debug_str     0x00000000000037b7      0xb0b /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+ .debug_str     0x00000000000042c2      0xacb /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+ .debug_str     0x0000000000004d8d      0x1e3 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+ .debug_str     0x0000000000004f70      0x2e9 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+ .debug_str     0x0000000000005259      0x172 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+ .debug_str     0x00000000000053cb      0xb46 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+ .debug_str     0x0000000000005f11      0xafc /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+ .debug_str     0x0000000000006a0d      0x1f3 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_data.o)
+ .debug_str     0x0000000000006c00      0xae1 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+ .debug_str     0x00000000000076e1      0xac8 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+ .debug_str     0x00000000000081a9       0x4f /home/abhishek/TizenRT/os/../build/output/libraries/libuarch.a(up_signal_handler.o)
+ .debug_str     0x00000000000081f8      0x4b5 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .debug_str     0x00000000000086ad      0x85a /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .debug_str     0x0000000000008f07       0xac /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_addsubdf3.o)
+ .debug_str     0x0000000000008fb3       0xac /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldivdf3.o)
+ .debug_str     0x000000000000905f       0xac /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_cmpdf2.o)
+ .debug_str     0x000000000000910b       0xa7 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_uldivmod.o)
+ .debug_str     0x00000000000091b2      0x631 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o)
+ .debug_str     0x00000000000097e3      0x649 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_str     0x0000000000009e2c       0xab /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_str     0x0000000000009ed7       0xac /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_fixunsdfsi.o)
+ .debug_str     0x0000000000009f83      0x1f9 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+ .debug_str     0x000000000000a17c      0x1d3 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+ .debug_str     0x000000000000a34f      0x228 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+ .debug_str     0x000000000000a577      0x20e /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+ .debug_str     0x000000000000a785      0x269 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+ .debug_str     0x000000000000a9ee      0x247 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+ .debug_str     0x000000000000ac35      0x240 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+ .debug_str     0x000000000000ae75      0x218 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+ .debug_str     0x000000000000b08d      0xae9 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+ .debug_str     0x000000000000bb76      0x244 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+ .debug_str     0x000000000000bdba      0x244 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+ .debug_str     0x000000000000bffe      0x1de /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+ .debug_str     0x000000000000c1dc      0x1fa /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+ .debug_str     0x000000000000c3d6      0x244 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+ .debug_str     0x000000000000c61a      0x2c4 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+ .debug_str     0x000000000000c8de      0x297 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .debug_str     0x000000000000cb75      0x24d /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .debug_str     0x000000000000cdc2      0x2d8 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+ .debug_str     0x000000000000d09a      0x249 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .debug_str     0x000000000000d2e3      0x28e /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)
+
+.debug_frame    0x0000000000000000      0xa7c
+ .debug_frame   0x0000000000000000       0x30 micomapp.o
+ .debug_frame   0x0000000000000030       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_getpid.o)
+ .debug_frame   0x0000000000000050       0x44 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_printf.o)
+ .debug_frame   0x0000000000000094       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_vfprintf.o)
+ .debug_frame   0x00000000000000c8       0x4c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_stdoutstream.o)
+ .debug_frame   0x0000000000000114       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libnoflush.o)
+ .debug_frame   0x0000000000000134       0x30 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_sleep.o)
+ .debug_frame   0x0000000000000164       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(task_startup.o)
+ .debug_frame   0x000000000000018c       0x2c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(pthread_startup.o)
+ .debug_frame   0x00000000000001b8       0x64 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_filesem.o)
+ .debug_frame   0x000000000000021c       0x40 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libvsprintf.o)
+ .debug_frame   0x000000000000025c       0x30 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfflush.o)
+ .debug_frame   0x000000000000028c       0x30 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fputc.o)
+ .debug_frame   0x00000000000002bc       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_strnlen.o)
+ .debug_frame   0x00000000000002e4       0x3c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_dtoa_engine.o)
+ .debug_frame   0x0000000000000320       0x34 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_ultoa_invert.o)
+ .debug_frame   0x0000000000000354       0x30 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_libfwrite.o)
+ .debug_frame   0x0000000000000384       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rdflush.o)
+ .debug_frame   0x00000000000003ac       0x2c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_fseek.o)
+ .debug_frame   0x00000000000003d8       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_wrflush.o)
+ .debug_frame   0x00000000000003f8       0x30 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_notify.o)
+ .debug_frame   0x0000000000000428       0x70 /home/abhishek/TizenRT/os/../build/output/libraries/libframework.a(binary_manager_interface.o)
+ .debug_frame   0x0000000000000498       0xac /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_addsubdf3.o)
+ .debug_frame   0x0000000000000544       0x50 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_muldivdf3.o)
+ .debug_frame   0x0000000000000594       0xc4 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_cmpdf2.o)
+ .debug_frame   0x0000000000000658       0x2c /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_aeabi_uldivmod.o)
+ .debug_frame   0x0000000000000684       0x2c /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_fixunsdfdi.o)
+ .debug_frame   0x00000000000006b0       0x38 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_frame   0x00000000000006e8       0x24 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v8-m.main/nofp/libgcc.a(_arm_fixunsdfsi.o)
+ .debug_frame   0x000000000000070c       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_exit.o)
+ .debug_frame   0x000000000000072c       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_get_errno.o)
+ .debug_frame   0x000000000000074c       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_lseek.o)
+ .debug_frame   0x0000000000000774       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_close.o)
+ .debug_frame   0x0000000000000794       0x44 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_open.o)
+ .debug_frame   0x00000000000007d8       0x2c /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_mq_send.o)
+ .debug_frame   0x0000000000000804       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_nanosleep.o)
+ .debug_frame   0x0000000000000824       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_pthread_exit.o)
+ .debug_frame   0x0000000000000844       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sched_getstreams.o)
+ .debug_frame   0x0000000000000864       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_post.o)
+ .debug_frame   0x0000000000000884       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_sem_wait.o)
+ .debug_frame   0x00000000000008a4       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_set_errno.o)
+ .debug_frame   0x00000000000008c4       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_up_assert.o)
+ .debug_frame   0x00000000000008e4       0x28 /home/abhishek/TizenRT/os/../build/output/libraries/libproxies.a(PROXY_write.o)
+ .debug_frame   0x000000000000090c       0x3c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_snprintf.o)
+ .debug_frame   0x0000000000000948       0x3c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_memoutstream.o)
+ .debug_frame   0x0000000000000984       0x38 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_nulloutstream.o)
+ .debug_frame   0x00000000000009bc       0x5c /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_syslog.o)
+ .debug_frame   0x0000000000000a18       0x20 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_setlogmask.o)
+ .debug_frame   0x0000000000000a38       0x44 /home/abhishek/TizenRT/os/../build/output/libraries/libuc.a(lib_rawoutstream.o)

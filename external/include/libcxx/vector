@@ -312,7 +312,7 @@ protected:
 };
 
 template <bool __b>
-void
+inline void
 __vector_base_common<__b>::__throw_length_error() const
 {
     _VSTD::__throw_length_error("vector");

@@ -108,12 +108,12 @@ static inline void elf_readreltab(FAR struct elf_loadinfo_s *loadinfo, FAR const
 	loadinfo->reltab = (uintptr_t)kmm_malloc(relsec->sh_size);
 
 	if (!loadinfo->reltab) {
-		berr("ERROR: Failed to allocate space for relocation table. Size = %u\n", relsec->sh_size);
+		lldbg("ERROR: Failed to allocate space for relocation table. Size = %u\n", relsec->sh_size);
 		return;
 	}
 
 	if (elf_read(loadinfo, (FAR uint8_t *)loadinfo->reltab, relsec->sh_size, relsec->sh_offset) < 0) {
-		berr("ERROR: Failed to read relocation table into memory\n");
+		lldbg("ERROR: Failed to read relocation table into memory\n");
 	}
 }
 
@@ -133,7 +133,7 @@ static inline int elf_readrel(FAR struct elf_loadinfo_s *loadinfo, FAR const Elf
 	/* Verify that the symbol table index lies within symbol table */
 
 	if (index < 0 || index > (relsec->sh_size / sizeof(Elf32_Rel))) {
-		berr("Bad relocation symbol index: %d\n", index);
+		lldbg("Bad relocation symbol index: %d\n", index);
 		return -EINVAL;
 	}
 
@@ -186,7 +186,7 @@ static int elf_relocate(FAR struct elf_loadinfo_s *loadinfo, int relidx, FAR con
 		if (loadinfo->reltab) {
 			/* Verify that the relocation table index lies within relocation table */
 			if (i < 0 || i > (relsec->sh_size / sizeof(Elf32_Rel))) {
-				berr("Bad relocation symbol index: %d\n", i);
+				lldbg("Bad relocation symbol index: %d\n", i);
 				ret = -EINVAL;
 				goto ret_err;
 			}
@@ -194,7 +194,7 @@ static int elf_relocate(FAR struct elf_loadinfo_s *loadinfo, int relidx, FAR con
 		} else {
 			ret = elf_readrel(loadinfo, relsec, i, &rel);
 			if (ret < 0) {
-				berr("Section %d reloc %d: Failed to read relocation entry: %d\n", relidx, i, ret);
+				lldbg("Section %d reloc %d: Failed to read relocation entry: %d\n", relidx, i, ret);
 				goto ret_err;
 			}
 		}
@@ -209,7 +209,7 @@ static int elf_relocate(FAR struct elf_loadinfo_s *loadinfo, int relidx, FAR con
 		if (loadinfo->symtab) {
 			/* Verify that the symbol table index lies within symbol table */
 			if (symidx < 0 || symidx > (loadinfo->shdr[loadinfo->symtabidx].sh_size / sizeof(Elf32_Sym))) {
-				berr("Bad relocation symbol index: %d\n", symidx);
+				lldbg("Bad relocation symbol index: %d\n", symidx);
 				ret = -EINVAL;
 				goto ret_err;
 			}
@@ -217,7 +217,7 @@ static int elf_relocate(FAR struct elf_loadinfo_s *loadinfo, int relidx, FAR con
 		} else {
 			ret = elf_readsym(loadinfo, symidx, &sym);
 			if (ret < 0) {
-				berr("Section %d reloc %d: Failed to read symbol[%d]: %d\n", relidx, i, symidx, ret);
+				lldbg("Section %d reloc %d: Failed to read symbol[%d]: %d\n", relidx, i, symidx, ret);
 				goto ret_err;
 			}
 		}
@@ -236,10 +236,10 @@ static int elf_relocate(FAR struct elf_loadinfo_s *loadinfo, int relidx, FAR con
 			 */
 
 			if (ret == -ESRCH) {
-				berr("Section %d reloc %d: Undefined symbol[%d] has no name: %d\n", relidx, i, symidx, ret);
+				lldbg("Section %d reloc %d: Undefined symbol[%d] has no name: %d\n", relidx, i, symidx, ret);
 				psym = NULL;
 			} else {
-				berr("Section %d reloc %d: Failed to get value of symbol[%d]: %d\n", relidx, i, symidx, ret);
+				lldbg("Section %d reloc %d: Failed to get value of symbol[%d]: %d\n", relidx, i, symidx, ret);
 				goto ret_err;
 			}
 		}
@@ -247,7 +247,7 @@ static int elf_relocate(FAR struct elf_loadinfo_s *loadinfo, int relidx, FAR con
 		/* Calculate the relocation address. */
 
 		if (prel->r_offset > dstsec->sh_size - sizeof(uint32_t)) {
-			berr("Section %d reloc %d: Relocation address out of range, offset %d size %d\n", relidx, i, prel->r_offset, dstsec->sh_size);
+			lldbg("Section %d reloc %d: Relocation address out of range, offset %d size %d\n", relidx, i, prel->r_offset, dstsec->sh_size);
 			goto ret_err;
 		}
 
@@ -257,7 +257,7 @@ static int elf_relocate(FAR struct elf_loadinfo_s *loadinfo, int relidx, FAR con
 
 		ret = up_relocate(prel, psym, addr);
 		if (ret < 0) {
-			berr("ERROR: Section %d reloc %d: Relocation failed: %d\n", relidx, i, ret);
+			lldbg("ERROR: Section %d reloc %d: Relocation failed: %d\n", relidx, i, ret);
 			goto ret_err;
 		}
 	}
@@ -272,7 +272,7 @@ ret_err:
 
 static int elf_relocateadd(FAR struct elf_loadinfo_s *loadinfo, int relidx, FAR const struct symtab_s *exports, int nexports)
 {
-	berr("Not implemented\n");
+	lldbg("Not implemented\n");
 	return -ENOSYS;
 }
 
@@ -305,7 +305,7 @@ static int export_library_symtab(FAR struct elf_loadinfo_s *loadinfo)
 		} else {
 			ret = elf_readsym(loadinfo, i, &sym);
 			if (ret < 0) {
-				berr("Failed to read symbol[%d]: %d\n", i, ret);
+				lldbg("Failed to read symbol[%d]: %d\n", i, ret);
 				goto ret_err;
 			}
 		}
@@ -313,7 +313,7 @@ static int export_library_symtab(FAR struct elf_loadinfo_s *loadinfo)
 		if (ELF32_ST_BIND(psym->st_info) == STB_GLOBAL) {
 			ret = elf_symname(loadinfo, psym);
 			if (ret < 0) {
-				berr("SHN_UNDEF: Failed to get symbol name: %d\n", ret);
+				lldbg("SHN_UNDEF: Failed to get symbol name: %d\n", ret);
 				goto ret_err;
 			}
 
@@ -322,9 +322,9 @@ static int export_library_symtab(FAR struct elf_loadinfo_s *loadinfo)
 			ret = elf_symvalue(loadinfo, psym, 0, 0);
 			if (ret < 0) {
 				if (ret == -ESRCH) {
-					berr("Undefined symbol[%d] has no name: %d\n", i, ret);
+					lldbg("Undefined symbol[%d] has no name: %d\n", i, ret);
 				} else {
-					berr("Failed to get value of symbol[%d]: %d\n", i, ret);
+					lldbg("Failed to get value of symbol[%d]: %d\n", i, ret);
 				}
 				goto ret_err;
 			}

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python2
 ############################################################################
 #
 # Copyright 2021 Samsung Electronics All Rights Reserved.
@@ -138,7 +138,7 @@ def make_bootparam():
 
     # Add checksum for BP1
     mkchecksum_path = os.path.dirname(__file__) + '/mkchecksum.py'
-    os.system('python %s %s' % (mkchecksum_path, bootparam_file_path))
+    os.system('python2 %s %s' % (mkchecksum_path, bootparam_file_path))
 
     # Fill remaining space with '0xff' for BP2
     with open(bootparam_file_path, 'a') as fp:

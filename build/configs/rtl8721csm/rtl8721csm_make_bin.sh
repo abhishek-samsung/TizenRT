@@ -96,7 +96,7 @@ echo "========== Image manipulating start =========="
 $GNUUTL/prepend_header.sh $BINDIR/ram_2.bin  __ram_image2_text_start__  $BINDIR/target_img2.map
 $GNUUTL/prepend_header.sh $BINDIR/xip_image2.bin  __flash_text_start__  $BINDIR/target_img2.map
 $GNUUTL/prepend_header.sh $BINDIR/psram_2.bin  __psram_image2_text_start__  $BINDIR/target_img2.map
-python $GNUUTL/code_analyze.py
+python2 $GNUUTL/code_analyze.py
 
 cat $BINDIR/xip_image2_prepend.bin $BINDIR/ram_2_prepend.bin $BINDIR/psram_2_prepend.bin  > $BINDIR/km4_image2_all.bin
 
