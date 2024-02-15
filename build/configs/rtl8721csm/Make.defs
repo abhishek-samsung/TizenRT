@@ -170,7 +170,7 @@ else ifeq ($(CONFIG_CXX_VERSION_14),y)
 else
   CXXFLAGS += -std=c++11
 endif
-  CXXFLAGS += -pedantic -D_DEBUG -D_LIBCPP_BUILD_STATIC -ffunction-sections -fdata-sections -D__GLIBCXX__
+  CXXFLAGS += -pedantic -D_DEBUG -D_LIBCPP_BUILD_STATIC -ffunction-sections -fdata-sections -D__GLIBCXX__ -DCONFIG_WCHAR_BUILTIN
 endif
 
 ifeq ($(CONFIG_EXTERNAL_TFMICRO),y)
@@ -252,9 +252,9 @@ CXXELFFLAGS = $(CXXFLAGS) -mlong-calls # --target1-abs
 LDELFFLAGS = -r -e main
 
 ifeq ($(WINTOOL),y)
-	LDELFFLAGS += -T "${shell cygpath -w $(TOPDIR)/userspace/userspace_apps.ld}"
+	LDELFFLAGS += -T "${shell cygpath -w $(TOPDIR)/userspace/userspace_apps.ld}" --force-group-allocation
 else
-	LDELFFLAGS += -T $(TOPDIR)/userspace/userspace_apps.ld
+	LDELFFLAGS += -T $(TOPDIR)/userspace/userspace_apps.ld --force-group-allocation
 endif
 endif
 
