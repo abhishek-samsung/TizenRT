@@ -32,6 +32,44 @@
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
+
+#include <stdbool.h>
+#include <elf32.h>
+#include <tinyara/elf.h>
+
+#include <unwind.h>
+
+/****************************************************************************
+ * Private Data
+ ****************************************************************************/
+
+extern void *__exidx_start;
+extern void *__exidx_end;
+
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Name:  __gnu_Unwind_Find_exidx
+ *
+ * Description:
+ *    This function is called (if exists) by the gcc generated unwind
+ *    run-time in order to retrieve an alternative .ARM.exidx Exception
+ *    index section.
+ *    This is the case for an ELF module loaded by the elf binary loader.
+ *    It is needed to support exception handling for loadable ELF modules.
+ *
+ ****************************************************************************/
+
+volatile _Unwind_Ptr __gnu_Unwind_Find_exidx(_Unwind_Ptr return_address, int *nrecp)
+{
+      printf(" return address %x\n", return_address);
+      *nrecp = &__exidx_end - &__exidx_start;
+      return (_Unwind_Ptr)&__exidx_start;
+}
+
+
 static void display_test_scenario(void)
 {
 	printf("\nSelect Test Scenario.\n");
@@ -124,7 +162,9 @@ int wifiapp_main(int argc, char **argv)
 	binary_update_aging_test();
 #endif
 #endif
-
+	int b;
+	__gnu_Unwind_Find_exidx(0, &b);
+	app_cxxtest_main();
 	while (1) {
 		sleep(300);
 		printf("[%d] WIFI ALIVE\n", getpid());

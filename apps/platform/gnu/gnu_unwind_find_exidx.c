@@ -51,6 +51,7 @@ extern void *__exidx_end;
 
 volatile _Unwind_Ptr __gnu_Unwind_Find_exidx(_Unwind_Ptr return_address, int *nrecp)
 {
+      printf(" return address %x\n", return_address);
       *nrecp = &__exidx_end - &__exidx_start;
       return (_Unwind_Ptr)&__exidx_start;
 }

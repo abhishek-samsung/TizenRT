@@ -36,6 +36,7 @@ APPDEFINE = ${shell $(TOPDIR)/tools/define.sh "$(CC)" __APP_BUILD__}
 SRCS += $(USERSPACE).c
 
 OBJS = $(SRCS:.c=$(OBJEXT))
+CPPOBJS = $(patsubst %.cpp,%$(OBJEXT),$(filter %.cpp,$(CXXSRCS)))
 
 prebuild:
 	$(call DELFILE, $(USERSPACE)$(OBJEXT))
@@ -47,12 +48,19 @@ $(OBJS): %$(OBJEXT): %.c
 	@echo "CC: $<"
 	$(Q) $(CC) $(APPDEFINE) -c $(CELFFLAGS) $< -o $@
 
-$(BIN): $(OBJS)
+$(CPPOBJS): %$(OBJEXT): %.cpp
+	$(call COMPILEXX, $<, $@)
+
+$(BIN): $(OBJS) $(CPPOBJS)
 	@echo "LD: $<"
 ifeq ($(CONFIG_SUPPORT_COMMON_BINARY),y)
-	$(Q) $(LD) $(LDELFFLAGS) -o $@ $(ARCHCRT0OBJ) $^ --start-group $(LIBGCC) --end-group
-	$(Q) $(NM) -u $(BIN) | awk -F"U " '{print "--require-defined "$$2}' >> $(USER_BIN_DIR)/lib_symbols.txt
+	@echo "LINKLIBS: $(LINKLIBS)"
+	@echo "LDLIBS: $(LDLIBS)"
+	$(Q) $(LD) $(LDELFFLAGS) -o $@ $(ARCHCRT0OBJ) $^ --start-group $(LIBGCC) $(LIBSUPXX) --end-group
+	$(Q) $(NM) -u $(BIN) | awk -F"[Uw] " '{print "--require-defined "$$2}' >> $(USER_BIN_DIR)/lib_symbols.txt
 else
+	@echo "LINKLIBS: $(LINKLIBS)"
+	@echo "LDLIBS: $(LDLIBS)"
 	$(Q) $(LD) $(LDELFFLAGS) $(LDLIBPATH) -o $@ $(ARCHCRT0OBJ) $^ --start-group $(LIBSUPXX) $(LDLIBS) --end-group -Map $@.map
 endif
 
