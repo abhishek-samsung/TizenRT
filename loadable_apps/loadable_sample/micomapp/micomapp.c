@@ -63,7 +63,7 @@ int micomapp_main(int argc, char **argv)
 #endif /* CONFIG_EXAMPLES_MICOM_TIMER_TEST */
 
 	while (1) {
-		sleep(300);
+		sleep(30);
 		printf("[%d] MICOM ALIVE\n", getpid());
 	}
 

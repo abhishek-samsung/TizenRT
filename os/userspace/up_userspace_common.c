@@ -1,25 +1,8 @@
 /****************************************************************************
+ * os/userspace/up_userspace.c
  *
- * Copyright 2019 Samsung Electronics All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
- * either express or implied. See the License for the specific
- * language governing permissions and limitations under the License.
- *
- ****************************************************************************/
-/****************************************************************************
- * os/binfmt/binfmt_initialize.c
- *
- *   Copyright (C) 2018 Pinecone Inc. All rights reserved.
- *   Author: Xiang Xiao <xiaoxiang@pinecone.net>
+ *   Copyright (C) 2018 Gregory Nutt. All rights reserved.
+ *   Author: Gregory Nutt <gnutt@nuttx.org>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -55,58 +38,56 @@
  ****************************************************************************/
 
 #include <tinyara/config.h>
+#include <tinyara/userspace.h>
+#include <tinyara/init.h>
+#include <tinyara/arch.h>
 
-#include <tinyara/binfmt/binfmt.h>
-#include <tinyara/binfmt/builtin.h>
-#include <tinyara/binfmt/elf.h>
+extern void * _sbss;
+extern void * _ebss;
+extern void * _sdata;
+extern void * _edata;
+extern void * _sdata_app;
+extern void * _sapp_heap;
+extern void * _eapp_heap;
+extern void * _my_entry;
 
-#ifdef CONFIG_BINFMT_ENABLE
+#if defined(CONFIG_BUILD_PROTECTED) && !defined(__KERNEL__)
+
+/****************************************************************************
+ * Pre-processor Definitions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Public Data
+ ****************************************************************************/
+const struct userspace_s userspace __attribute__((section(".userspace"))) = {
+	/* Task/thread startup routines */
+	.task_startup = task_startup,
+#ifndef CONFIG_DISABLE_PTHREAD
+	.pthread_startup = pthread_startup,
+#endif
+	/* Signal handler trampoline */
+#ifndef CONFIG_DISABLE_SIGNALS
+	.signal_handler = up_signal_handler,
+#endif
+
+#ifdef CONFIG_XIP_ELF
+	/* better name for the config???? */
+#endif
+#if 1
+	.bss_start = &_sbss,
+	.bss_end = &_ebss,
+	.data_start_in_ram = &_sdata,
+	.data_end_in_ram = &_edata,
+	.data_start_in_flash = &_sdata_app,
+	.heap_start = &_sapp_heap,
+	.heap_end = &_eapp_heap,
+	.entry = 0x00000000,
+#endif
+};
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
-/****************************************************************************
- * Name: binfmt_initialize
- *
- * Description:
- *   initialize binfmt subsystem
- *
- ****************************************************************************/
-
-void binfmt_initialize(void)
-{
-	int ret;
-
-#ifdef CONFIG_FS_BINFS
-	ret = builtin_initialize();
-	if (ret < 0) {
-		berr("ERROR: builtin_initialize failed: %d\n", ret);
-	}
-#endif
-
-#ifdef CONFIG_ELF
-	ret = xip_initialize();
-	if (ret < 0) {
-		berr("ERROR: elf_initialize failed: %d\n", ret);
-	}
-#endif
-
-#ifdef CONFIG_BINFMT_PCODE
-	ret = pcode_initialize();
-	if (ret < 0) {
-		berr("ERROR: pcode_initialize failed: %d\n", ret);
-	}
-#endif
-
-#ifdef CONFIG_NXFLAT
-	ret = nxflat_initialize();
-	if (ret < 0) {
-		berr("ERROR: nxflat_initialize failed: %d\n", ret);
-	}
-#endif
-
-	UNUSED(ret);
-}
-
-#endif							/* CONFIG_BINFMT_ENABLE */
+#endif							/* CONFIG_BUILD_PROTECTED && !__KERNEL__ */

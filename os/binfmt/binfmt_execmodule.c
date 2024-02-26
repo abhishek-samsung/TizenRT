@@ -307,7 +307,7 @@ int exec_module(FAR struct binary_s *binp)
 
 	/* Store the address of the applications userspace object in the newtcb  */
 	/* The app's userspace object will be found at an offset of 4 bytes from the start of the binary */
-	newtcb->cmn.uspace = binp->sections[BIN_TEXT] + 4;
+	newtcb->cmn.uspace = binp->sections[BIN_TEXT];
 	newtcb->cmn.uheap = (uint32_t)binp->uheap;
 
 #ifdef CONFIG_BINARY_MANAGER
