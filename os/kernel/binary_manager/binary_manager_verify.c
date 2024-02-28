@@ -160,7 +160,7 @@ int binary_manager_read_header(int type, char *devpath, void *header_data, bool 
 			crc_hash = ((kernel_binary_header_t *)header_data)->crc_hash;
 		} else if (type == BINARY_USERAPP) {
 			crc_bufsize = ((user_binary_header_t *)header_data)->bin_ramsize;
-			bin_size = ((user_binary_header_t *)header_data)->bin_size;
+			bin_size = ((user_binary_header_t *)header_data)->bin_size + 3;
 			crc_hash = ((user_binary_header_t *)header_data)->crc_hash;
 		} else if (type == BINARY_COMMON) {
 			crc_bufsize = CMNLIB_CRC_BUFSIZE;

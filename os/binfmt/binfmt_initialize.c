@@ -86,7 +86,7 @@ void binfmt_initialize(void)
 #endif
 
 #ifdef CONFIG_ELF
-	ret = elf_initialize();
+	ret = xip_initialize();
 	if (ret < 0) {
 		berr("ERROR: elf_initialize failed: %d\n", ret);
 	}

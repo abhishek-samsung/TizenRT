@@ -60,7 +60,6 @@ include $(TOPDIR)/tools/Config.mk
 #
 #  V=1,2: Enable echo of commands
 #  V=2:   Enable bug/verbose options in tools and scripts
-V=1
 ifeq ($(V),1)
 export Q :=
 else
@@ -499,9 +498,12 @@ endif
 # Strip debug symbols, Compress and add binary header
 define PREPARE_APP
 	$(Q) echo "Preparing final $(OUTBIN_DIR)/$1 binary"
-	$(Q) cp $(OUTBIN_DIR)/$1 $(OUTBIN_DIR)/$1_dbg
+	$(Q) cp $(OUTBIN_DIR)/$1 $(OUTBIN_DIR)/$1_dbg_prestrip
 	$(Q) $(call STRIP_DBG,$1)
+	$(Q) cp $(OUTBIN_DIR)/$1 $(OUTBIN_DIR)/$1_dbg
 	$(Q) $(call COMPRESS_BIN,$1)
+	$(Q) arm-none-eabi-objcopy -O binary $(OUTBIN_DIR)/$1 $(OUTBIN_DIR)/$1.bin
+	$(Q) cp $(OUTBIN_DIR)/$1.bin $(OUTBIN_DIR)/$1
 	$(Q) $(TOPDIR)/tools/mkbinheader.py $(OUTBIN_DIR)/$1 $2 $3 $1 $4 $5 $6 $7 $8
 	$(Q) $(TOPDIR)/tools/mkchecksum.py $(OUTBIN_DIR)/$1
 	$(Q) cp $(OUTBIN_DIR)/$1 $(OUTBIN_DIR)/user

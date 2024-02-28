@@ -288,6 +288,8 @@ def make_user_binary_header():
         fp.write(struct.pack('I', binary_ram_size))
         fp.write(struct.pack('I', int(main_stack_size)))
         fp.write(struct.pack('I', int(kernel_ver)))
+        fp.write(struct.pack('H', header_size))
+        fp.write(struct.pack('B', bin_type))
         fp.write(data)
 
         fp.close()

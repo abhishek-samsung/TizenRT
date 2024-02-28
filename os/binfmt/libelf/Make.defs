@@ -71,6 +71,8 @@ BINFMT_CSRCS += libelf_cache.c
 endif
 # Hook the libelf subdirectory into the build
 
+BINFMT_CSRCS += xip.c
+
 VPATH += libelf
 SUBDIRS += libelf
 DEPPATH += --dep-path libelf

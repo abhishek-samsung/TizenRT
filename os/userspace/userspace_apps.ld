@@ -50,9 +50,18 @@
  *
  ****************************************************************************/
 
+MEMORY
+{
+    
+    uflash (rx)      : ORIGIN = 0x824D000 + 0x2D, LENGTH = 0x875F000 - 0x824D000 - 0x2D
+
+    usram (rwx)      : ORIGIN = 0x60900000, LENGTH = 1024K - 64K
+}
+
 SECTIONS
 {
-  .text 0x00000000 :
+
+  .text :
     {
       _stext_flash = . ;
       /* Place holder to keep the heap object at the top
@@ -60,7 +69,6 @@ SECTIONS
        * which can be used to place user heap object, which
        * eventually used by user space memory allocator
        */
-      LONG(0);
       KEEP(*(.userspace))
       *(.text)
       *(.text.*)
@@ -78,7 +86,18 @@ SECTIONS
       *(.init)             /* Old ABI */
       *(.fini)             /* Old ABI */
       _etext_flash = . ;
-    }
+    } > uflash
+
+   .ARM.extab : {
+        *(.ARM.extab*)
+    } > uflash
+
+    __exidx_start = ABSOLUTE(.);
+   .ARM.exidx : {
+        *(.ARM.exidx*)
+    } > uflash
+
+    __exidx_end = ABSOLUTE(.);
 
   .rodata :
     {
@@ -89,20 +108,7 @@ SECTIONS
       *(.gnu.linkonce.r*)
       _erodata = . ;
       _eronly = .;
-    }
-
-  .data 0x00000000 :
-    {
-      _sdata = . ;
-      LONG(0);
-      *(.curapp)
-      *(.appheaptable)
-      *(.data)
-      *(.data1)
-      *(.data.*)
-      *(.gnu.linkonce.d*)
-      _edata = . ;
-    }
+    } > uflash
 
   /* C++ support. For each global and static local C++ object,
    * GCC creates a small subroutine to construct the object. Pointers
@@ -118,7 +124,7 @@ SECTIONS
       *(.ctors)       /* Old ABI:  Unallocated */
       *(.init_array)  /* New ABI:  Allocated */
       _ectors = . ;
-    }
+    } > uflash
 
   .dtors :
     {
@@ -126,7 +132,22 @@ SECTIONS
       *(.dtors)       /* Old ABI:  Unallocated */
       *(.fini_array)  /* New ABI:  Allocated */
       _edtors = . ;
-    }
+    } > uflash
+
+   _sdata_app = ABSOLUTE(.);
+
+   .data :
+    {
+      _sdata = . ;
+      LONG(0);
+      *(.curapp)
+      *(.appheaptable)
+      *(.data)
+      *(.data1)
+      *(.data.*)
+      *(.gnu.linkonce.d*)
+      _edata = . ;
+    } > usram AT > uflash
 
   .bss :
     {
@@ -138,7 +159,8 @@ SECTIONS
       *(.gnu.linkonce.b*)
       *(COMMON)
       _ebss = . ;
-    }
+      _sapp_heap = ABSOLUTE(.);
+    } > usram
 
     /* Stabs debugging sections.    */
 
@@ -154,4 +176,8 @@ SECTIONS
     .debug_line 0 : { *(.debug_line) }
     .debug_pubnames 0 : { *(.debug_pubnames) }
     .debug_aranges 0 : { *(.debug_aranges) }
+
+    _eapp_heap = ABSOLUTE(ORIGIN(usram) + LENGTH(usram));
+    _sapp_ram = ABSOLUTE(ORIGIN(usram));
+    _eapp_ram = ABSOLUTE(ORIGIN(usram) + LENGTH(usram));
 }
