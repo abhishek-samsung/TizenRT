@@ -151,7 +151,7 @@ def make_kernel_binary_header():
 #
 # User binary header information on APP_BINARY_SEPARTION
 #
-# total header size is 41bytes.
+# total header size is 60bytes.
 # +-----------------------------------------------------------------
 # | Header size | Binary type | Binary priority | Loading priority |
 # |   (2bytes)  |   (1byte)   |     (1byte)     |      (1bytes)    |
@@ -160,10 +160,10 @@ def make_kernel_binary_header():
 # | Binary size |  Binary name | Binary version | Binary ram size | Binary stack size |
 # |  (4bytes)   |   (16bytes)  |    (4bytes)    |    (4bytes)     |     (4bytes)      |
 # -------------------------------------------------------------------------------------
-# -----------------+
-# | Kernel Version |
-# |  (4bytes)      |
-# -----------------+
+# ----------------------------------------------+
+# | Kernel Version | Padding (32byte alignment) |
+# |  (4bytes)      |       (19 bytes)           |
+# ----------------------------------------------+
 #
 # parameter information :
 #
@@ -202,7 +202,11 @@ def make_user_binary_header():
     SIZE_OF_MAINSTACKSIZE = 4
     SIZE_OF_KERNELVER = 4
 
-    header_size = SIZE_OF_HEADERSIZE + SIZE_OF_BINTYPE + SIZE_OF_MAINPRIORITY + SIZE_OF_LOADINGPRIORITY + SIZE_OF_BINSIZE + SIZE_OF_BINNAME + SIZE_OF_BINVER + SIZE_OF_BINRAMSIZE + SIZE_OF_MAINSTACKSIZE + SIZE_OF_KERNELVER
+    # to align the start of binary at a 32bit aligned address
+    # 60bytes header + 4bytes checksum that gets added later
+    SIZE_OF_PADDING = 19
+
+    header_size = SIZE_OF_HEADERSIZE + SIZE_OF_BINTYPE + SIZE_OF_MAINPRIORITY + SIZE_OF_LOADINGPRIORITY + SIZE_OF_BINSIZE + SIZE_OF_BINNAME + SIZE_OF_BINVER + SIZE_OF_BINRAMSIZE + SIZE_OF_MAINSTACKSIZE + SIZE_OF_KERNELVER + SIZE_OF_PADDING
 
     # Loading priority
     LOADING_LOW = 1
@@ -288,10 +292,9 @@ def make_user_binary_header():
         fp.write(struct.pack('I', binary_ram_size))
         fp.write(struct.pack('I', int(main_stack_size)))
         fp.write(struct.pack('I', int(kernel_ver)))
-        fp.write(struct.pack('H', header_size))
-        fp.write(struct.pack('B', bin_type))
+        # fill the padding with zeros....
+        fp.write(struct.pack('IIIIHB', 0, 0, 0, 0, 0, 0))
         fp.write(data)
-
         fp.close()
 
 

@@ -149,6 +149,7 @@ struct user_binary_header_s {
 	uint32_t bin_ramsize;
 	uint32_t bin_stacksize;
 	uint32_t kernel_ver;
+	char padding[19];
 } __attribute__((__packed__));
 typedef struct user_binary_header_s user_binary_header_t;
 
