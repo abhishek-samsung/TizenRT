@@ -27,7 +27,13 @@ static int xip_loadbinary(FAR struct binary_s *binp)
 {
 	/* simply setup the data, bss and heap */
 	struct userspace_s uspace;
-	memcpy(&uspace, 0x000000000824d040, sizeof(struct userspace_s));
+
+	if (binp->binary_idx == 1) {
+		memcpy(&uspace, 0x000000000824d040, sizeof(struct userspace_s));
+	} else if (binp->binary_idx == 2) {
+		memcpy(&uspace, 0x83DC040, sizeof(struct userspace_s));
+	}
+
 	printf("bss start address : %x\n", uspace.bss_start);
 	
 	/* zero out the bss */
@@ -43,14 +49,17 @@ static int xip_loadbinary(FAR struct binary_s *binp)
 	/* we atlest need heap details...... */
 
 	binp->sections[BIN_HEAP] = uspace.heap_start;
-	binp->sizes[BIN_HEAP] = 512*1024;
+	binp->sizes[BIN_HEAP] = 128*1024;
 
 	binp->sections[BIN_DATA] = uspace.data_start_in_ram;
 
 	binp->entrypt = uspace.entry;
 
-	binp->sections[BIN_TEXT] = 0x000000000824d040;
-
+	if (binp->binary_idx == 1) {
+		binp->sections[BIN_TEXT] = 0x000000000824d040;
+	} else if (binp->binary_idx == 2) {
+		binp->sections[BIN_TEXT] = 0x83DC040;
+	}
 	return OK;
 
 }
