@@ -55,8 +55,8 @@ MEMORY
     /* apps actual data should start after the crc and header, so adding 64bytes to the start 
      * also, if userbinary signing is done, then we need to add another 32bytes to this, so need to find some generic way
      */
-    uflash (rx)      : ORIGIN = 0x824D000 + 0x40, LENGTH = 0x875F000 - 0x824D000 - 0x40
-    usram (rwx)      : ORIGIN = 0x60900000, LENGTH = 1024K - 64K
+    uflash (rx)      : ORIGIN = 0x856B000 + 0x20, LENGTH = 0x875F000 - 0x856B000 - 0x20
+    usram (rwx)      : ORIGIN = 0x60940000, LENGTH = 1024K - 64K
 }
 
 SECTIONS

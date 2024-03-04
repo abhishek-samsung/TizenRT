@@ -56,7 +56,7 @@ MEMORY
      * also, if userbinary signing is done, then we need to add another 32bytes to this, so need to find some generic way
      */
     uflash (rx)      : ORIGIN = 0x824D000 + 0x40, LENGTH = 1596K - 0x40
-    usram (rwx)      : ORIGIN = 0x60900000, LENGTH = 512K
+    usram (rwx)      : ORIGIN = 0x60900000, LENGTH = 128K
 }
 
 SECTIONS
@@ -160,6 +160,7 @@ SECTIONS
       *(.gnu.linkonce.b*)
       *(COMMON)
       _ebss = . ;
+      . = ALIGN(32);
       _sapp_heap = ABSOLUTE(.);
     } > usram
 

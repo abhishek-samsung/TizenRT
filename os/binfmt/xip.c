@@ -49,7 +49,7 @@ static int xip_loadbinary(FAR struct binary_s *binp)
 	/* we atlest need heap details...... */
 
 	binp->sections[BIN_HEAP] = uspace.heap_start;
-	binp->sizes[BIN_HEAP] = 128*1024;
+	binp->sizes[BIN_HEAP] = 96*1024;
 
 	binp->sections[BIN_DATA] = uspace.data_start_in_ram;
 

@@ -55,8 +55,8 @@ MEMORY
     /* apps actual data should start after the crc and header, so adding 64bytes to the start 
      * also, if userbinary signing is done, then we need to add another 32bytes to this, so need to find some generic way
      */
-    uflash (rx)      : ORIGIN = 0x83DC000 + 0x40, LENGTH = 0x875F000 - 0x83DC000 - 0x40
-    usram (rwx)      : ORIGIN = 0x60980000, LENGTH = 512K - 64K
+    uflash (rx)      : ORIGIN = 0x83DC000 + 0x40, LENGTH = 1596K - 0x40
+    usram (rwx)      : ORIGIN = 0x60920000, LENGTH = 128K
 }
 
 SECTIONS
@@ -160,6 +160,7 @@ SECTIONS
       *(.gnu.linkonce.b*)
       *(COMMON)
       _ebss = . ;
+      . = ALIGN(32);
       _sapp_heap = ABSOLUTE(.);
     } > usram
 
