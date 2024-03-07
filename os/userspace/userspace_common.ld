@@ -55,7 +55,7 @@ MEMORY
     /* apps actual data should start after the crc and header, so adding 64bytes to the start 
      * also, if userbinary signing is done, then we need to add another 32bytes to this, so need to find some generic way
      */
-    uflash (rx)      : ORIGIN = 0x856B000 + 0x20, LENGTH = 0x875F000 - 0x856B000 - 0x20
+    uflash (rx)      : ORIGIN = 0x856B000 + 0x10, LENGTH = 0x875F000 - 0x856B000 - 0x10
     usram (rwx)      : ORIGIN = 0x60940000, LENGTH = 1024K - 64K
 }
 
@@ -181,4 +181,5 @@ SECTIONS
     _eapp_heap = ABSOLUTE(ORIGIN(usram) + LENGTH(usram));
     _sapp_ram = ABSOLUTE(ORIGIN(usram));
     _eapp_ram = ABSOLUTE(ORIGIN(usram) + LENGTH(usram));
+    _my_entry = 0;
 }

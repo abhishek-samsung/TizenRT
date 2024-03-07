@@ -347,6 +347,7 @@ def make_common_binary_header():
         fp.write(struct.pack('H', header_size))
         fp.write(struct.pack('I', int(bin_ver)))
         fp.write(struct.pack('I', file_size))
+        fp.write(struct.pack('H', header_size))
         fp.write(data)
 
 ############################################################################

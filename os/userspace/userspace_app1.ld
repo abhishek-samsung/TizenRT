@@ -182,4 +182,5 @@ SECTIONS
     _eapp_heap = ABSOLUTE(ORIGIN(usram) + LENGTH(usram));
     _sapp_ram = ABSOLUTE(ORIGIN(usram));
     _eapp_ram = ABSOLUTE(ORIGIN(usram) + LENGTH(usram));
+    _my_entry = main;
 }

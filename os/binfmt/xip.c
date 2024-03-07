@@ -32,6 +32,8 @@ static int xip_loadbinary(FAR struct binary_s *binp)
 		memcpy(&uspace, 0x000000000824d040, sizeof(struct userspace_s));
 	} else if (binp->binary_idx == 2) {
 		memcpy(&uspace, 0x83DC040, sizeof(struct userspace_s));
+	} else {
+		memcpy(&uspace, 0x856B010, sizeof(struct userspace_s));
 	}
 
 	printf("bss start address : %x\n", uspace.bss_start);

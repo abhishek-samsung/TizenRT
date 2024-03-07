@@ -65,6 +65,8 @@ int binary_manager_get_index_with_name(char *bin_name)
 		if (!strncmp(BIN_NAME(bin_idx), bin_name, strlen(bin_name) + 1)) {
 			bmvdbg("FIND binary %s idx = %d\n", bin_name, bin_idx);
 			return bin_idx;
+		} else {
+			lldbg("not found binary %s idx = %d, original name = %s\n", bin_name, bin_idx, BIN_NAME(bin_idx));
 		}
 	}
 
