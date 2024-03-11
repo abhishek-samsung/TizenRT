@@ -367,6 +367,7 @@ bad_array_length::~bad_array_length() _NOEXCEPT
 
 #ifndef LIBSTDCXX
 
+#if 0 // definition already present in libxx_stdthrow.cxx
 void
 __throw_bad_alloc()
 {
@@ -376,6 +377,7 @@ __throw_bad_alloc()
     _VSTD::abort();
 #endif
 }
+#endif
 
 #endif // !LIBSTDCXX
 
