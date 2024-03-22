@@ -275,14 +275,14 @@ int  flash_write_word(flash_t *obj, u32 address, u32 data)
   * @param  len: Length of the data to read.
   * @param  data: Address to save the readback data.
   * @return Read result.
-  * @retval 1: Success.
-  * @retval Others: Error.
+  * @retval len: Total length of bytes read.
   * @note It is ok to read under auto mode due to flash cache.
   */
 int  flash_stream_read(flash_t *obj, u32 address, u32 len, u8 *data)
 {
 	/* To avoid gcc warnings */
 	(void) obj;
+	/* REVISIT: Read should not need to do write lock/unlock theoretically */
 	FLASH_Write_Lock();
 	assert_param(data != NULL);
 
@@ -356,7 +356,7 @@ int  flash_stream_read(flash_t *obj, u32 address, u32 len, u8 *data)
 #endif
 #endif
 	FLASH_Write_Unlock();
-	return 1;
+	return len;
 }
 
 /**
@@ -366,8 +366,7 @@ int  flash_stream_read(flash_t *obj, u32 address, u32 len, u8 *data)
   * @param  len: Length of the data to write.
   * @param  data: Pointer to a byte array that is to be written.
   * @return Write result.
-  * @retval 1: Success.
-  * @retval Others: Error.
+  * @retval size: Total length of bytes written.
   */
 int  flash_stream_write(flash_t *obj, u32 address, u32 len, u8 *data)
 {
@@ -400,7 +399,7 @@ int  flash_stream_write(flash_t *obj, u32 address, u32 len, u8 *data)
 	DCache_Invalidate(SPI_FLASH_BASE + address, len);
 	FLASH_Write_Unlock();
 
-	return 1;
+	return size;
 }
 
 /**
