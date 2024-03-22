@@ -56,6 +56,7 @@
 
 #include <tinyara/config.h>
 #include <stdio.h>
+#include <fcntl.h>
 
 /****************************************************************************
  * hello_main
@@ -67,6 +68,14 @@ int main(int argc, FAR char *argv[])
 int hello_main(int argc, char *argv[])
 #endif
 {
-	printf("Hello, World!!\n");
+	//lldbg("hello world\n");
+	//sleep(1);	
+	int fd = open("/dev/mtdblock7", O_WRONLY);
+	if (fd < 0) lldbg("open failed aaa\n");
+	else lldbg("open passed\n");
+	char p = '5';
+	int ret = write(fd, &p, sizeof(p));
+	//lldbg("\nfw%d\n", 1);
+	close(fd);
 	return 0;
 }

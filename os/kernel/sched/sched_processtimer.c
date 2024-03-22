@@ -246,8 +246,12 @@ static inline void sched_process_scheduler(void)
  *
  ************************************************************************/
 
+int count = 0;
+
 void sched_process_timer(void)
 {
+	count++;
+	if (count % 1000 == 0) lldbg("\nti%d\n", count++);
 #ifdef CONFIG_WATCHDOG_FOR_IRQ
 	up_wdog_keepalive();
 #endif
