@@ -385,6 +385,8 @@ static inline irqstate_t irqsave(void)
       :
       : "memory"
     );
+  __asm__ __volatile__("DSB");
+  __asm__ __volatile__("ISB"); 
 
   return cpsr;
 }
@@ -421,6 +423,8 @@ static inline void irqrestore(irqstate_t flags)
       : "r" (flags)
       : "memory"
     );
+  __asm__ __volatile__("DSB");
+  __asm__ __volatile__("ISB"); 
 }
 
 #endif /* __ASSEMBLY__ */
