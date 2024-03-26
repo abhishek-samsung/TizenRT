@@ -105,6 +105,10 @@ typedef int wctrans_t;
  * Reference: Opengroup.org
  */
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 int iswalnum(wint_t);
 int iswalpha(wint_t);
 int iswblank(wint_t);
@@ -123,5 +127,9 @@ wint_t towlower(wint_t);
 wint_t towupper(wint_t);
 wctrans_t wctrans(FAR const char *);
 wctype_t wctype(FAR const char *);
+
+#if defined(__cplusplus)
+} /* extern "C" */
+#endif
 
 #endif							/* INCLUDE_WTYPE_H */

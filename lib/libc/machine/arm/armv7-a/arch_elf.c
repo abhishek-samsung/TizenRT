@@ -350,7 +350,15 @@ int up_relocate(const Elf32_Rel *rel, const Elf32_Sym *sym, uintptr_t addr)
 			binfo("insn [%04x %04x]\n",
 					(int)upper_insn, (int)lower_insn);
 		}
-		break;
+	break;
+	case R_ARM_TARGET2:		/* TARGET2 is a platform-specific relocation: gcc-arm-none-eabi
+								 * performs a self relocation */
+	{
+		binfo("Performing TARGET2 link at addr=%08lx [%08lx] to sym=%p st_value=%08lx\n", (long)addr, (long)(*(uint32_t *)addr), sym, (long)sym->st_value);
+
+		*(uint32_t *)addr += sym->st_value - addr;
+	}
+	break;
 
 	case R_ARM_THM_CALL:
 	case R_ARM_THM_JUMP24:

@@ -57,15 +57,9 @@ include ${TOPDIR}/arch/$(CONFIG_ARCH)/src/$(ARCH_FAMILY)/Toolchain.defs
 LDSCRIPT = rlx8730e_img2.ld
 
 ifeq ($(CONFIG_LIBCXX_HAVE_LIBSUPCXX),y)
-ifeq ($(CONFIG_LIBCXX_EXCEPTION),y)
 LIBSUPXX = ${shell $(CC) $(CXXFLAGS) --print-file-name=libsupc++.a}
 EXTRA_LIBPATHS += -L "${shell dirname "$(LIBSUPXX)"}"
 EXTRA_LIBS += -lsupc++
-else
-LIBSUPXX = ${shell $(CC) $(CXXFLAGS) --print-file-name=libsupc++_nano.a}
-EXTRA_LIBPATHS += -L "${shell dirname "$(LIBSUPXX)"}"
-EXTRA_LIBS += -lsupc++_nano
-endif
 endif
 
 ifeq ($(WINTOOL),y)

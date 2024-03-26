@@ -68,9 +68,7 @@ CXXSRCS += locale.cxx
 
 # Exception handling logic
 
-ifeq ($(CONFIG_LIBCXX_EXCEPTION),y)
 CXXSRCS += exception.cxx stdexcept.cxx
-endif
 
 # libsupc++ replacement
 
