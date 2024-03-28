@@ -73,7 +73,7 @@
 #include <tinyara/logm.h>
 #include <tinyara/security_level.h>
 #endif
-
+#include <stdint.h>
 #include <syslog.h>
 
 /****************************************************************************
