@@ -224,10 +224,10 @@ static struct amebasmart_spidev_s g_spi0dev = {
 	.spi_object = {0},
 
 	.spi_idx = MBED_SPI0,
-	.spi_mosi = PB_29,
-	.spi_miso = PB_30,
-	.spi_sclk = PB_31,
-	.spi_cs = PC_0,
+	.spi_mosi = PB_4,
+	.spi_miso = PB_3,
+	.spi_sclk = PB_6,
+	.spi_cs = PB_5,
 	.nbits = 8,
 	.mode = SPIDEV_MODE0,
 	.role = AMEBASMART_SPI_MASTER,
@@ -706,25 +706,17 @@ static inline void amebasmart_spi_master_set_delays(FAR struct amebasmart_spidev
 static int amebasmart_spi_lock(FAR struct spi_dev_s *dev, bool lock)
 {
 	FAR struct amebasmart_spidev_s *priv = (FAR struct amebasmart_spidev_s *)dev;
-	int ret;
 
 	if (lock) {
 		/* Take the semaphore (perhaps waiting) */
-
-		do {
-			ret = sem_wait(&priv->exclsem);
-
-			/* The only case that an error should occur here is if the wait was
-			 * awakened by a signal.
-			 */
-			DEBUGASSERT(errno != EINTR);
-		} while (ret < OK);
+		while (sem_wait(&priv->exclsem) != 0) {
+			DEBUGASSERT(errno == EINTR);
+                }
 	} else {
 		(void)sem_post(&priv->exclsem);
-		ret = OK;
 	}
 
-	return ret;
+	return OK;
 }
 
 /************************************************************************************
