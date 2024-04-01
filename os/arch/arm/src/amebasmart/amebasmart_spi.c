@@ -1020,8 +1020,8 @@ static uint16_t amebasmart_spi_send(FAR struct spi_dev_s *dev, uint16_t wd)
  *
  ************************************************************************************/
 
-static uint8_t rxbuff[4096] __attribute__((aligned(32)));
-static uint8_t txbuff[4096] __attribute__((aligned(32)));
+static uint8_t rxbuff[4096] __attribute__((aligned(64)));
+static uint8_t txbuff[4096] __attribute__((aligned(64)));
 
 static void amebasmart_spi_exchange(FAR struct spi_dev_s *dev,
 				FAR const void *txbuffer, FAR void *rxbuffer,
@@ -1119,21 +1119,24 @@ static void amebasmart_spi_exchange(FAR struct spi_dev_s *dev,
 		if (nwords > 4096) PANIC();
 		memcpy(txbuff, txbuffer, nwords);
 		spi_master_write_read_stream_dma(&priv->spi_object, (char *)txbuff, (char *)rxbuff, (uint32_t)nwords * mode_16bit);
-		memcpy(rxbuffer, rxbuff, nwords);
 		spi_dmarxwait(priv);
 		spi_dmatxwait(priv);
+		memcpy(rxbuffer, rxbuff, nwords);
 	} else if (txbuffer) {
 		if (nwords > 4096) PANIC();
                 memcpy(txbuff, txbuffer, nwords);
-		spi_master_write_stream_dma(&priv->spi_object, (char *) txbuff, (uint32_t)nwords * mode_16bit);
+		//spi_master_write_stream_dma(&priv->spi_object, (char *) txbuff, (uint32_t)nwords * mode_16bit);
+		spi_master_write_read_stream_dma(&priv->spi_object, (char *)txbuff, (char *)rxbuff, (uint32_t)nwords * mode_16bit);
+		spi_dmarxwait(priv);
 		spi_dmatxwait(priv);
 	} else if (rxbuffer) {
 		if (nwords > 4096) PANIC();
-		//for (int i = 0; i < nwords; i++) txbuff[i] = 0xff;
-		//spi_master_write_read_stream_dma(&priv->spi_object, (char *)txbuff, (char *)rxbuff, (uint32_t)nwords * mode_16bit);
-		spi_master_read_stream_dma(&priv->spi_object, (char *) rxbuff, (uint32_t)nwords * mode_16bit);
-		memcpy(rxbuffer, rxbuff, nwords);	
+		for (int i = 0; i < nwords; i++) txbuff[i] = 0xff;
+		spi_master_write_read_stream_dma(&priv->spi_object, (char *)txbuff, (char *)rxbuff, (uint32_t)nwords * mode_16bit);
+		//spi_master_read_stream_dma(&priv->spi_object, (char *) rxbuff, (uint32_t)nwords * mode_16bit);
 		spi_dmarxwait(priv);
+		spi_dmatxwait(priv);
+		memcpy(rxbuffer, rxbuff, nwords);
 	}
 #endif							/* CONFIG_AMEBASMART_SPI_DMA */
 }
