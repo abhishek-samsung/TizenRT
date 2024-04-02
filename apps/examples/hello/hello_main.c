@@ -92,6 +92,17 @@ int hello_main(int argc, char *argv[])
 
 	for (int i = 0; i < 2; i++)
 	printf("read test result sent : %x rec : %x\n", data[i], recv[i]);
-	
+
+		/*use write read instead of exchange*/
+	uint8_t read_addr = data[0]; /* with read flag */
+	uint8_t device_id = 0xFF;
+
+	SPI_SELECT(spi, 0, true);
+	SPI_SNDBLOCK(spi, &read_addr, 1);
+	SPI_RECVBLOCK(spi, &device_id, 1);
+	SPI_SELECT(spi, 0, false);
+
+	printf("device id read with SNDBLOCK & RECVBLOCK : %x\n", device_id);
+
 	return 0;
 }
