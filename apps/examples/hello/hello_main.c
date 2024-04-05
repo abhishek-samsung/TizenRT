@@ -97,9 +97,13 @@ int hello_main(int argc, char *argv[])
 	uint8_t read_addr = data[0]; /* with read flag */
 	uint8_t device_id[2];
 
+	device_id[0] = 0x00;
+	device_id[1] = 0x00;
+
 	SPI_SELECT(spi, 0, true);
 	SPI_SNDBLOCK(spi, &read_addr, 1);
-	SPI_RECVBLOCK(spi, &device_id, 2);
+	SPI_RECVBLOCK(spi, &device_id, 1);
+	sleep(1);
 	SPI_SELECT(spi, 0, false);
 
 	printf("device id read with SNDBLOCK & RECVBLOCK : %x %x\n", device_id[0], device_id[1]);
