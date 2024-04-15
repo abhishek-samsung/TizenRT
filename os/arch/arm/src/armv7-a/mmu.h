@@ -593,7 +593,7 @@
  * REVISIT:  Here we expect all threads to be running at PL1
  */
 
-#define MMU_ROMFLAGS         (PMD_TYPE_SECT | PMD_SECT_AP_R1 | PMD_CACHEABLE | \
+#define MMU_ROMFLAGS         (PMD_TYPE_SECT | PMD_SECT_AP_R01 | PMD_CACHEABLE | \
                               PMD_SECT_DOM(0))
 
 #ifdef CONFIG_SMP

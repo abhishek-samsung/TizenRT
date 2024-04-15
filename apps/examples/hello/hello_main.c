@@ -61,12 +61,20 @@
  * hello_main
  ****************************************************************************/
 
+__attribute__ ((noinline)) void print_pc_value() {
+	printf("current pc value is %p\n", __builtin_return_address(0));
+}
+
+int bss_data_test;
+int data_test = 5;
+
 #ifdef CONFIG_BUILD_KERNEL
 int main(int argc, FAR char *argv[])
 #else
 int hello_main(int argc, char *argv[])
 #endif
 {
-	printf("Hello, World!!\n");
+	printf("Hello, World!! bss test : %d, data test : %d\n", bss_data_test, data_test);
+	print_pc_value();
 	return 0;
 }

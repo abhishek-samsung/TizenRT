@@ -68,6 +68,7 @@ endef
 $(foreach BDIR, $(CONFIGURED), $(eval $(call DIR_template,$(BDIR),context)))
 $(foreach BDIR, $(CONFIGURED), $(eval $(call DIR_template,$(BDIR),all)))
 $(foreach BDIR, $(BUILDIRS), $(eval $(call DIR_template,$(BDIR),preconfig)))
+$(foreach BDIR, $(CONFIGURED), $(eval $(call DIR_template,$(BDIR),final)))
 $(foreach CDIR, $(BUILDIRS), $(eval $(call DIR_template,$(CDIR),clean)))
 $(foreach CDIR, $(BUILDIRS), $(eval $(call DIR_template,$(CDIR),distclean)))
 
@@ -91,6 +92,8 @@ context: $(foreach BDIR, $(CONFIGURED), $(BDIR)_context)
 
 preconfig: $(foreach BDIR, $(BUILDIRS), $(BDIR)_preconfig)
 	$(Q) $(LOADABLEDIR)/mkkconfig.sh
+
+final: $(foreach BDIR, $(CONFIGURED), $(BDIR)_final)
 
 clean: $(foreach CDIR, $(BUILDIRS), $(CDIR)_clean)
 

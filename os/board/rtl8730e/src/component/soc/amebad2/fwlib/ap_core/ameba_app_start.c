@@ -69,11 +69,17 @@ extern unsigned int __PsramStackLimit;
 #  define ALL_PGTABLE_SIZE PGTABLE_SIZE
 #endif
 
+#ifdef CONFIG_APP_BINARY_SEPARATION
+#define APP1_RAM_SIZE   (1024 * 1024 - ALL_PGTABLE_SIZE) /* align it to last 1mb of ram, easy to access and code ... */
+#else
+#define APP1_RAM_SIZE   0
+#endif
+
 // const uintptr_t g_idle_topstack = IDLE_STACK;
 
 void os_heap_init(void){
 	kregionx_start[0] = (void *)PSRAM_HEAP_BASE;
-	kregionx_size[0] = (size_t)(PSRAM_HEAP_LIMIT - PSRAM_HEAP_BASE - ALL_PGTABLE_SIZE);
+	kregionx_size[0] = (size_t)(PSRAM_HEAP_LIMIT - PSRAM_HEAP_BASE - ALL_PGTABLE_SIZE - APP1_RAM_SIZE);
 #if CONFIG_KMM_REGIONS >= 2
 #if CONFIG_KMM_REGIONS == 3
 	kregionx_start[1] = (void *)PSRAM_HEAP_BASE;

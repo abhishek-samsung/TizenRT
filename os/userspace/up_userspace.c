@@ -42,6 +42,16 @@
 #include <tinyara/init.h>
 #include <tinyara/arch.h>
 
+extern void * _sbss;
+extern void * _ebss;
+extern void * _sdata;
+extern void * _edata;
+extern void * _sdata_app;
+extern void * _sapp_heap;
+extern void * _eapp_heap;
+extern void * _my_entry;
+extern int main(int argc, char **argv);
+
 #if defined(CONFIG_BUILD_PROTECTED) && !defined(__KERNEL__)
 
 /****************************************************************************
@@ -62,6 +72,19 @@ const struct userspace_s userspace __attribute__((section(".userspace"))) = {
 	.signal_handler = up_signal_handler,
 #endif
 
+#ifdef CONFIG_XIP_ELF
+	/* better name for the config???? */
+#endif
+#if 1
+	.bss_start = &_sbss,
+	.bss_end = &_ebss,
+	.data_start_in_ram = &_sdata,
+	.data_end_in_ram = &_edata,
+	.data_start_in_flash = &_sdata_app,
+	.heap_start = &_sapp_heap,
+	.heap_end = &_eapp_heap,
+	.entry = main,
+#endif
 };
 
 /****************************************************************************

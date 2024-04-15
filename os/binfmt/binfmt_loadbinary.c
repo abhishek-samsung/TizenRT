@@ -170,13 +170,13 @@ int load_binary(int binary_idx, FAR const char *filename, load_attr_t *load_attr
 		}
 
 #ifdef CONFIG_OPTIMIZE_APP_RELOAD_TIME
-		if (!bin->data_backup) {
-			errcode = -EINVAL;
-			berr("ERROR: data section backup address not initialized\n");
-			goto errout_with_bin;
-		}
+//		if (!bin->data_backup) {
+//			errcode = -EINVAL;
+//			berr("ERROR: data section backup address not initialized\n");
+//			goto errout_with_bin;
+//		}
 
-		memcpy((void *)bin->data_backup, (const void *)bin->sections[BIN_DATA], bin->sizes[BIN_DATA]);
+//		memcpy((void *)bin->data_backup, (const void *)bin->sections[BIN_DATA], bin->sizes[BIN_DATA]);
 	}
 #endif
 
