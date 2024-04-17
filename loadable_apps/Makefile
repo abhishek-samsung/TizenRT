@@ -67,6 +67,11 @@ $(1)_$(2):
 endef
 $(foreach BDIR, $(CONFIGURED), $(eval $(call DIR_template,$(BDIR),context)))
 $(foreach BDIR, $(CONFIGURED), $(eval $(call DIR_template,$(BDIR),all)))
+
+ifeq ($(CONFIG_XIP_ELF),y)
+$(foreach BDIR, $(CONFIGURED), $(eval $(call DIR_template,$(BDIR),xipelf)))
+endif # CONFIG_XIP_ELF
+
 $(foreach BDIR, $(BUILDIRS), $(eval $(call DIR_template,$(BDIR),preconfig)))
 $(foreach CDIR, $(BUILDIRS), $(eval $(call DIR_template,$(CDIR),clean)))
 $(foreach CDIR, $(BUILDIRS), $(eval $(call DIR_template,$(CDIR),distclean)))
@@ -88,6 +93,10 @@ endif # CONFIG_APP_BINARY_SEPARATION
 build: $(foreach BDIR, $(CONFIGURED), $(BDIR)_all)
 
 context: $(foreach BDIR, $(CONFIGURED), $(BDIR)_context)
+
+ifeq ($(CONFIG_XIP_ELF),y)
+xipelf: $(foreach BDIR, $(CONFIGURED), $(BDIR)_xipelf)
+endif # CONFIG_XIP_ELF
 
 preconfig: $(foreach BDIR, $(BUILDIRS), $(BDIR)_preconfig)
 	$(Q) $(LOADABLEDIR)/mkkconfig.sh
