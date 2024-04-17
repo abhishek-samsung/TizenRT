@@ -57,7 +57,7 @@ else
 endif
 
 ifeq ($(CONFIG_XIP_ELF),y)
-final: $(OBJS)
+xipelf: $(OBJS)
 	$(Q) $(LD) -T $(TOPDIR)/userspace/userspace_$(BIN).ld -e main -o $(BIN).final $(ARCHCRT0OBJ) $^ --start-group $(LIBGCC) --end-group -R $(USER_BIN_DIR)/common.final -Map $(BIN)_final.map
 	$(Q) install $(BIN).final $(USER_BIN_DIR)/$(BIN).final
 endif

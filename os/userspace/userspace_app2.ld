@@ -70,6 +70,7 @@ SECTIONS
        * which can be used to place user heap object, which
        * eventually used by user space memory allocator
        */
+      LONG(0);
       KEEP(*(.userspace))
       *(.text)
       *(.text.*)

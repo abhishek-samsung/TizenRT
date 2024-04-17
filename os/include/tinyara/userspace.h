@@ -90,6 +90,16 @@ struct userspace_s {
 #ifndef CONFIG_DISABLE_SIGNALS
 	void (*signal_handler)(_sa_sigaction_t sighand, int signo, FAR siginfo_t *info, FAR void *ucontext);
 #endif
+
+		/* data, bss and heap info used for loading them into ram */
+	void * bss_start;
+	void * bss_end;
+	void * data_start_in_ram;
+	void * data_end_in_ram;
+	void * data_start_in_flash;
+	void * heap_start;
+	void * heap_end;
+	void (*entry)(int argc, char **argv);
 };
 
 /****************************************************************************

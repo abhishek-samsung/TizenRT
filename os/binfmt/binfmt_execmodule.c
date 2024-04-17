@@ -178,6 +178,7 @@ int exec_module(FAR struct binary_s *binp)
 
 #ifdef CONFIG_DEBUG
 	if (!binp || !binp->entrypt || binp->stacksize <= 0) {
+		lldbg("%p, %p, %d\n", binp, binp->entrypt, binp->stacksize);
 		return -EINVAL;
 	}
 #endif

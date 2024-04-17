@@ -13,8 +13,9 @@
 #include <tinyara/arch.h>
 #include <tinyara/binfmt/binfmt.h>
 #include <tinyara/binary_manager.h>
-
 #include <tinyara/userspace.h>
+
+#include <binary_manager/binary_manager.h>
 
 static int xipelf_loadbinary(FAR struct binary_s *binp);
 
@@ -24,7 +25,7 @@ static struct binfmt_s g_xipelfbinfmt = {
 	NULL,				/* unload */
 };
 
-static int xip_loadbinary(FAR struct binary_s *binp)
+static int xipelf_loadbinary(FAR struct binary_s *binp)
 {
 	/* simply setup the data, bss and heap */
 	struct userspace_s uspace;
@@ -84,5 +85,95 @@ int xipelf_initialize(void)
 
 void xipelf_uninitialize(void)
 {
-        (void)unregister_binfmt(&g_xipbinfmt);
+        (void)unregister_binfmt(&g_xipelfbinfmt);
 }
+
+#ifdef CONFIG_APP_BINARY_SEPARATION
+struct bin_addr_info_s {
+        uint32_t text_addr;
+        uint32_t text_size;
+#ifdef CONFIG_SAVE_BIN_SECTION_ADDR
+#if defined(CONFIG_OPTIMIZE_APP_RELOAD_TIME) || defined(CONFIG_MEM_LEAK_CHECKER)
+        uint32_t rodata_addr;
+        uint32_t data_addr;
+        uint32_t bss_addr;
+#endif
+#ifdef CONFIG_MEM_LEAK_CHECKER
+        uint32_t rodata_size;
+        uint32_t data_size;
+        uint32_t bss_size;
+#endif
+#endif
+};
+typedef struct bin_addr_info_s bin_addr_info_t;
+#endif
+
+
+#ifdef CONFIG_APP_BINARY_SEPARATION
+/* The list for a common binary and user binaries(CONFIG_NUM_APPS) */
+static bin_addr_info_t g_bin_addr_list[CONFIG_NUM_APPS + 1];
+#endif
+
+bin_addr_info_t *get_bin_addr_list()
+{
+        return g_bin_addr_list;
+}
+
+void elf_delete_bin_section_addr(uint8_t bin_idx)
+{
+        /* Clear binary section address information */
+
+        memset(&g_bin_addr_list[bin_idx], 0, sizeof(bin_addr_info_t));
+}
+
+void elf_show_all_bin_section_addr(void)
+{
+        int bin_idx;
+        lldbg_noarg("===========================================================\n");
+        lldbg_noarg("Loading location information\n");
+        lldbg_noarg("===========================================================\n");
+        for (bin_idx = 0; bin_idx <= CONFIG_NUM_APPS; bin_idx++) {
+                if (g_bin_addr_list[bin_idx].text_addr != 0) {
+                        lldbg("[%s] Text Addr : %p, Text Size : %u\n", BIN_NAME(bin_idx), g_bin_addr_list[bin_idx].text_addr, g_bin_addr_list[bin_idx].text_size);
+                }
+        }
+}
+
+void elf_save_bin_section_addr(struct binary_s *bin)
+{
+        if (bin != NULL) {
+                uint8_t bin_idx = bin->binary_idx;
+
+                /* Save binary section address information */
+
+                g_bin_addr_list[bin_idx].text_addr = bin->sections[BIN_TEXT];
+                g_bin_addr_list[bin_idx].text_size = bin->sizes[BIN_TEXT];
+#ifdef CONFIG_SAVE_BIN_SECTION_ADDR
+                binfo("[%s] text_addr : %x\n", bin->bin_name, g_bin_addr_list[bin_idx].text_addr);
+#if defined(CONFIG_OPTIMIZE_APP_RELOAD_TIME) || defined(CONFIG_MEM_LEAK_CHECKER)
+                g_bin_addr_list[bin_idx].rodata_addr = bin->sections[BIN_RO];
+                g_bin_addr_list[bin_idx].data_addr = bin->sections[BIN_DATA];
+                g_bin_addr_list[bin_idx].bss_addr = bin->sections[BIN_BSS];
+#ifdef CONFIG_MEM_LEAK_CHECKER
+                g_bin_addr_list[bin_idx].rodata_size = bin->sizes[BIN_RO];
+                g_bin_addr_list[bin_idx].data_size = bin->sizes[BIN_DATA];
+                g_bin_addr_list[bin_idx].bss_size = bin->sizes[BIN_BSS];
+#endif
+                binfo("   rodata_addr : %x\n", g_bin_addr_list[bin_idx].rodata_addr);
+                binfo("   data_addr   : %x\n", g_bin_addr_list[bin_idx].data_addr);
+                binfo("   bss_addr    : %x\n", g_bin_addr_list[bin_idx].bss_addr);
+#endif
+#endif
+        } else {
+                berr("ERROR : Failed to save bin section addresses\n");
+        }
+}
+
+void *elf_find_text_section_addr(int bin_idx)
+{
+        if (bin_idx >= 0 && bin_idx <= CONFIG_NUM_APPS) {
+                return (void *)g_bin_addr_list[bin_idx].text_addr;
+        }
+        return NULL;
+}
+

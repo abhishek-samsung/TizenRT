@@ -229,7 +229,7 @@ void elf_save_bin_section_addr(struct binary_s *bin)
 		g_bin_addr_list[bin_idx].text_size = bin->sizes[BIN_TEXT];
 #ifdef CONFIG_SAVE_BIN_SECTION_ADDR
 		binfo("[%s] text_addr : %x\n", bin->bin_name, g_bin_addr_list[bin_idx].text_addr);
-#ifdef CONFIG_OPTIMIZE_APP_RELOAD_TIME
+#if defined(CONFIG_OPTIMIZE_APP_RELOAD_TIME) || defined(CONFIG_MEM_LEAK_CHECKER)
 		g_bin_addr_list[bin_idx].rodata_addr = bin->sections[BIN_RO];
 		g_bin_addr_list[bin_idx].data_addr = bin->sections[BIN_DATA];
 		g_bin_addr_list[bin_idx].bss_addr = bin->sections[BIN_BSS];
