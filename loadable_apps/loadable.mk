@@ -50,7 +50,7 @@ $(OBJS): %$(OBJEXT): %.c
 $(BIN): $(OBJS)
 	@echo "LD: $<"
 ifeq ($(CONFIG_SUPPORT_COMMON_BINARY),y)
-	$(Q) $(LD) $(LDELFFLAGS) -o $@ $(ARCHCRT0OBJ) $^ --start-group $(LIBGCC) --end-group
+	$(Q) $(LD) $(LDELFFLAGS) -o $@ $(ARCHCRT0OBJ) $^ --start-group $(LIBGCC) $(LIBSUPXX) --end-group
 	$(Q) $(NM) -u $(BIN) | awk -F"U " '{print "--require-defined "$$2}' >> $(USER_BIN_DIR)/lib_symbols.txt
 else
 	$(Q) $(LD) $(LDELFFLAGS) $(LDLIBPATH) -o $@ $(ARCHCRT0OBJ) $^ --start-group $(LDLIBS) $(LIBSUPXX) --end-group
@@ -58,7 +58,7 @@ endif
 
 ifeq ($(CONFIG_XIP_ELF),y)
 xipelf: $(OBJS)
-	$(Q) $(LD) -T $(TOPDIR)/userspace/userspace_$(BIN).ld -e main -o $(BIN).final $(ARCHCRT0OBJ) $^ --start-group $(LIBGCC) --end-group -R $(USER_BIN_DIR)/common.final -Map $(BIN)_final.map
+	$(Q) $(LD) -T $(TOPDIR)/userspace/userspace_$(BIN).ld -e main -o $(BIN).final $(ARCHCRT0OBJ) $^ --start-group $(LIBGCC) $(LIBSUPXX) --end-group -R $(USER_BIN_DIR)/common.final -Map $(BIN)_final.map
 	$(Q) install $(BIN).final $(USER_BIN_DIR)/$(BIN).final
 endif
 

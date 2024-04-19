@@ -94,12 +94,14 @@ SECTIONS
         *(.ARM.extab*)
     } > uflash
 
-    __exidx_start = ABSOLUTE(.);
+    __fexidx_start = ABSOLUTE(.);
    .ARM.exidx : {
-        *(.ARM.exidx*)
+        __exidx_start = .;
+	*(.ARM.exidx*)
+	__exidx_end = .;
     } > uflash
 
-    __exidx_end = ABSOLUTE(.);
+    __fexidx_end = ABSOLUTE(.);
 
   .rodata :
     {
