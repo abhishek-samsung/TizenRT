@@ -60,7 +60,7 @@ include $(TOPDIR)/tools/Config.mk
 #
 #  V=1,2: Enable echo of commands
 #  V=2:   Enable bug/verbose options in tools and scripts
-V=1
+
 ifeq ($(V),1)
 export Q :=
 else
@@ -448,15 +448,16 @@ pass1deps: pass1dep $(USERLIBS)
 
 pass1: pass1deps
 ifeq ($(CONFIG_BUILD_2PASS),y)
+ifeq ($(CONFIG_ELF),y)
 	$(Q) $(MAKE) -C $(LOADABLE_APPDIR) TOPDIR="$(TOPDIR)" LOADABLEDIR="${LOADABLE_APPDIR}" LIBRARIES_DIR="$(LIBRARIES_DIR)" USERLIBS="$(USERLIBS)" all KERNEL=n
+endif
 ifeq ($(CONFIG_SUPPORT_COMMON_BINARY),y)
 ifeq ($(CONFIG_ELF),y)
 	$(Q) $(LD) -r -o $(OUTBIN_DIR)/$(CONFIG_COMMON_BINARY_NAME) -T $(TOPDIR)/userspace/userspace_apps.ld -L $(LIBRARIES_DIR) --start-group $(USERLIBS) $(LIBGCC) $(LIBSUPXX) --end-group $$(cat $(OUTBIN_DIR)/lib_symbols.txt)
 else
 	$(Q) $(CC) -c $(CFLAGS) $(TOPDIR)/userspace/up_userspace_common.c -o  $(TOPDIR)/userspace/up_userspace_common.o
-	$(Q) $(LD) -o $(OUTBIN_DIR)/$(CONFIG_COMMON_BINARY_NAME).final -T $(TOPDIR)/userspace/userspace_common.ld $(TOPDIR)/userspace/up_userspace_common.o -L $(LIBRARIES_DIR) --start-group $(USERLIBS) $(LIBGCC) $(LIBSUPXX) --end-group $$(cat $(OUTBIN_DIR)/lib_symbols.txt)
-	#rebuild app binaries now using the common binary generated
-	$(Q) $(MAKE) -C $(LOADABLE_APPDIR) TOPDIR="$(TOPDIR)" LOADABLEDIR="${LOADABLE_APPDIR}" LIBRARIES_DIR="$(LIBRARIES_DIR)" USERLIBS="$(USERLIBS)" xipelf KERNEL=n
+	$(Q) $(LD) -o $(OUTBIN_DIR)/$(CONFIG_COMMON_BINARY_NAME) -T $(TOPDIR)/userspace/userspace_common.ld $(TOPDIR)/userspace/up_userspace_common.o -L $(LIBRARIES_DIR) --whole-archive $(USERLIBS) --no-whole-archive --start-group $(LIBGCC) $(LIBSUPXX) --end-group
+	$(Q) $(MAKE) -C $(LOADABLE_APPDIR) TOPDIR="$(TOPDIR)" LOADABLEDIR="${LOADABLE_APPDIR}" LIBRARIES_DIR="$(LIBRARIES_DIR)" USERLIBS="$(USERLIBS)" all KERNEL=n
 endif
 endif
 endif
@@ -519,9 +520,9 @@ endif
 ifeq ($(CONFIG_XIP_ELF),y)
 define PREPARE_APP
         $(Q) echo "Preparing final $(OUTBIN_DIR)/$1 binary"
-        $(Q) cp $(OUTBIN_DIR)/$1.final $(OUTBIN_DIR)/$1_dbg
-        $(Q) $(call STRIP_DBG,$1.final)
-        $(Q) arm-none-eabi-objcopy -O binary $(OUTBIN_DIR)/$1.final $(OUTBIN_DIR)/$1.bin
+        $(Q) cp $(OUTBIN_DIR)/$1 $(OUTBIN_DIR)/$1_dbg
+        $(Q) $(call STRIP_DBG,$1)
+        $(Q) arm-none-eabi-objcopy -O binary $(OUTBIN_DIR)/$1 $(OUTBIN_DIR)/$1.bin
         $(Q) cp $(OUTBIN_DIR)/$1.bin $(OUTBIN_DIR)/$1
         $(Q) $(TOPDIR)/tools/mkbinheader.py $(OUTBIN_DIR)/$1 $2 $3 $1 $4 $5 $6 $7 $8
         $(Q) $(TOPDIR)/tools/mkchecksum.py $(OUTBIN_DIR)/$1

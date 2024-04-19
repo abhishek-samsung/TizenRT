@@ -47,6 +47,7 @@ $(OBJS): %$(OBJEXT): %.c
 	@echo "CC: $<"
 	$(Q) $(CC) $(APPDEFINE) -c $(CELFFLAGS) $< -o $@
 
+ifeq ($(CONFIG_ELF),y)
 $(BIN): $(OBJS)
 	@echo "LD: $<"
 ifeq ($(CONFIG_SUPPORT_COMMON_BINARY),y)
@@ -55,11 +56,11 @@ ifeq ($(CONFIG_SUPPORT_COMMON_BINARY),y)
 else
 	$(Q) $(LD) $(LDELFFLAGS) $(LDLIBPATH) -o $@ $(ARCHCRT0OBJ) $^ --start-group $(LDLIBS) $(LIBSUPXX) --end-group
 endif
+endif
 
 ifeq ($(CONFIG_XIP_ELF),y)
-xipelf: $(OBJS)
-	$(Q) $(LD) -T $(TOPDIR)/userspace/userspace_$(BIN).ld -e main -o $(BIN).final $(ARCHCRT0OBJ) $^ --start-group $(LIBGCC) $(LIBSUPXX) --end-group -R $(USER_BIN_DIR)/common.final -Map $(BIN)_final.map
-	$(Q) install $(BIN).final $(USER_BIN_DIR)/$(BIN).final
+$(BIN): $(OBJS)
+	$(Q) $(LD) -T $(TOPDIR)/userspace/userspace_$(BIN).ld -e main -o $@ $(ARCHCRT0OBJ) $^ --start-group $(LIBGCC) $(LIBSUPXX) --end-group -R $(USER_BIN_DIR)/common -Map $(BIN)_final.map
 endif
 
 clean:

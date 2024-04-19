@@ -172,6 +172,17 @@ extern "C"
 		printf("helloxx_main: Saying hello from the statically constructed instance\n");
 		g_HelloWorld.HelloWorld();
 #endif
+		
+#if defined(CONFIG_LIBCXX_EXCEPTION)
+		try
+		{
+		        throw 5;
+		}
+		catch (int &e)
+		{
+		        printf("exception caught : %d\n", e);
+		}
+#endif
 
 		delete pHelloWorld;
 		return 0;
