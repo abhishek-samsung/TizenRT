@@ -50,6 +50,8 @@ extern void * _sdata_app;
 extern void * _sapp_heap;
 extern void * _eapp_heap;
 extern void * _my_entry;
+extern void * _sctors;
+extern void * _ectors;
 
 #if defined(CONFIG_BUILD_PROTECTED) && !defined(__KERNEL__)
 
@@ -82,6 +84,8 @@ const struct userspace_s userspace __attribute__((section(".userspace"))) = {
 	.data_start_in_flash = &_sdata_app,
 	.heap_start = &_sapp_heap,
 	.heap_end = &_eapp_heap,
+	.sctors = &_sctors,
+	.ectors = &_ectors,
 	.entry = 0x00000000,
 #endif
 };
