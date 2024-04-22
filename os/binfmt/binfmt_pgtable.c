@@ -87,6 +87,8 @@ void binfmt_setup_app_pgtable(struct binary_s *binp)
 
 	// Get the start and end address of the memory region.
 	// Map the region to the page tables.
+#ifdef CONFIG_ELF
+
 #ifdef CONFIG_OPTIMIZE_APP_RELOAD_TIME
 	/* Configure text section as RO and executable region */
 	mmu_map_app_region(binp->binary_idx, l1tbl, binp->sections[BIN_TEXT], binp->sizes[BIN_TEXT], true, true);
@@ -98,6 +100,20 @@ void binfmt_setup_app_pgtable(struct binary_s *binp)
 	/* Complete RAM partition will be configured as RW region */
 	mmu_map_app_region(binp->binary_idx, l1tbl, binp->ramstart, binp->ramsize, false, true);
 #endif
+
+#else // ELF
+
+	/* CONFIG_XIP_ELF case */
+	/* need to map 1 entrie ram region for data, bss and heap, and 1 entrie flash region for ro and exec */
+	/* how to get the start and end addresses??? I think we need to set text start and text end also from uspace........ */
+	/* currently everything is in multiples of 1kb, should make it a 4kb multiple...... */
+	//mmu_map_app_region(binp->binary_idx, l1tbl, 0x60900000, 1024*1024, false, true);
+
+	mmu_map_app_region(binp->binary_idx, l1tbl, binp->flash_region_start, binp->flash_region_end - binp->flash_region_start, true, true);
+	lldbg("flash start %x, flash end %x, binary %d\n", binp->flash_region_start, binp->flash_region_end, binp->binary_idx);
+	mmu_map_app_region(binp->binary_idx, l1tbl, binp->ram_region_start, binp->ram_region_end - binp->ram_region_start, false, true);
+	lldbg("ram start %x, ram end %x, binary %d\n", binp->ram_region_start, binp->ram_region_end, binp->binary_idx);
+#endif // ELF
 
 }
 

@@ -243,6 +243,12 @@ config COMMON_BINARY_NAME
 	---help---
 		Filename of the common binary file.
 
+config COMMON_BINARY_START_ADDR
+	hex "Common binary start address"
+	default 0x8000000
+	---help---
+		Start address of common binary in flash
+
 endif # SUPPORT_COMMON_BINARY
 
 if ARCH_USE_MMU
