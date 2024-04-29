@@ -15,6 +15,8 @@
 #include <tinyara/binary_manager.h>
 #include <tinyara/userspace.h>
 
+#include <fcntl.h>
+
 #include <binary_manager/binary_manager.h>
 
 static int xipelf_loadbinary(FAR struct binary_s *binp);
@@ -29,23 +31,64 @@ static int xipelf_loadbinary(FAR struct binary_s *binp)
 {
 	/* simply setup the data, bss and heap */
 	struct userspace_s uspace;
+	off_t offset = 4;
+	off_t rpos;
+	ssize_t nbytes;
+	off_t uspace_offset;
+	int ret;
 
 	if (binp->binary_idx == 0) {
-		memcpy(&uspace, CONFIG_COMMON_BINARY_START_ADDR + sizeof(common_binary_header_t) + 4, sizeof(struct userspace_s));
-		binp->sections[BIN_TEXT] = CONFIG_COMMON_BINARY_START_ADDR + sizeof(common_binary_header_t);
-		binp->flash_region_start = CONFIG_COMMON_BINARY_START_ADDR;
-	} else if (binp->binary_idx == 1) {
-		memcpy(&uspace, CONFIG_APP1_START_ADDR + sizeof(user_binary_header_t) + 4, sizeof(struct userspace_s));
-		binp->sections[BIN_TEXT] = CONFIG_APP1_START_ADDR + sizeof(user_binary_header_t);
-		binp->flash_region_start = CONFIG_APP1_START_ADDR;
-	} else if (binp->binary_idx == 2) {
-		memcpy(&uspace, CONFIG_APP2_START_ADDR + sizeof(user_binary_header_t) + 4, sizeof(struct userspace_s));
-		binp->sections[BIN_TEXT] = CONFIG_APP2_START_ADDR + sizeof(user_binary_header_t);
-		binp->flash_region_start = CONFIG_APP2_START_ADDR;
+		offset += sizeof(common_binary_header_t);
 	} else {
-		return ERROR;
+		offset += sizeof(user_binary_header_t);
 	}
 
+	uspace_offset = offset;
+
+	int filfd = open(binp->filename, O_RDONLY);
+        if (filfd < 0) {
+                ret = filfd;
+                berr("Failed to open binary %s: %d\n", binp->filename, ret);
+                return ret;
+        }
+
+	char * buffer = &uspace;
+
+	size_t readsize = sizeof(struct userspace_s);
+
+	while (readsize > 0) {
+		
+		/* Seek to the next read position */
+
+		rpos = lseek(filfd, offset, SEEK_SET);
+		if (rpos != offset) {
+			int errval = get_errno();
+			berr("Failed to seek to position %lu: %d\n", (unsigned long)offset, errval);
+			return -errval;
+		}
+
+		/* Read the file data at offset into the user buffer */
+		nbytes = read(filfd, buffer, readsize);
+
+		if (nbytes < 0) {
+			/* EINTR just means that we received a signal */
+
+			if (nbytes != -EINTR) {
+				berr("Read from offset %lu failed: %d\n", (unsigned long)offset, (int)nbytes);
+				return nbytes;
+			}
+		} else if (nbytes == 0) {
+			berr("Unexpected end of file\n");
+			return -ENODATA;
+		} else {
+			readsize -= nbytes;
+			buffer += nbytes;
+			offset += nbytes;
+		}
+	}
+
+	binp->sections[BIN_TEXT] = uspace.text_start;
+	binp->flash_region_start = uspace.text_start - uspace_offset + 4;
 	binp->flash_region_end = uspace.flash_end;
 	binp->ram_region_start = uspace.ram_start;
 	binp->ram_region_end = uspace.ram_end;

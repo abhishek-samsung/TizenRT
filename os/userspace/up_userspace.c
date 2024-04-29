@@ -43,6 +43,7 @@
 #include <tinyara/arch.h>
 
 #if CONFIG_XIP_ELF
+extern void * _stext_flash;
 extern void * _sbss;
 extern void * _ebss;
 extern void * _sdata;
@@ -81,6 +82,7 @@ const struct userspace_s userspace __attribute__((section(".userspace"))) = {
 #endif
 
 #if CONFIG_XIP_ELF
+	.text_start = &_stext_flash,
 	.bss_start = &_sbss,
 	.bss_end = &_ebss,
 	.data_start_in_ram = &_sdata,

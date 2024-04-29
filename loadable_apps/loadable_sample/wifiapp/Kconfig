@@ -53,10 +53,4 @@ config APP2_MAIN_PRIORITY
 	---help---
 		Main Task Priority of App2 Binary
 
-config APP2_START_ADDR
-	hex "Start address of App2 binary"
-	default 0x08000000
-	---help---
-		App2 start address in flash
-
 endif

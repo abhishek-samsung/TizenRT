@@ -19,7 +19,7 @@
 MEMORY
 {
     uflash (rx)      : ORIGIN = 0x8545000 + 0x30, LENGTH = 0x869F000 - 0x8545030
-    usram (rwx)      : ORIGIN = 0x60800000, LENGTH = 1024K
+    usram (rwx)      : ORIGIN = 0x60840000, LENGTH = 768K
 }
 
 SECTIONS

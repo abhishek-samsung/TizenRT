@@ -93,6 +93,7 @@ struct userspace_s {
 
 #ifdef CONFIG_XIP_ELF
 	/* data, bss and heap info used for loading them into ram */
+	void * text_start;
 	void * bss_start;
 	void * bss_end;
 	void * data_start_in_ram;
