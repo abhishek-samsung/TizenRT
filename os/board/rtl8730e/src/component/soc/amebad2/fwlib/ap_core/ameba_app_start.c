@@ -71,7 +71,7 @@ extern unsigned int __PsramStackLimit;
 
 #ifdef CONFIG_APP_BINARY_SEPARATION
 /* assign 3MB for each of the common, app1, app2. Incase if change is required, we also need to change the linker scripts for common and app */
-#define APP1_RAM_SIZE   (3 * 1024 * 1024 - ALL_PGTABLE_SIZE) /* align it to last 1mb of ram, easy to access and code ... */
+#define APP1_RAM_SIZE   (4 * 1024 * 1024 - ALL_PGTABLE_SIZE) /* align it to last 1mb of ram, easy to access and code ... */
 #else
 #define APP1_RAM_SIZE   0
 #endif

@@ -17,6 +17,8 @@
 
 #include <fcntl.h>
 
+#include <tinyara/mm/mm.h>
+
 #include <binary_manager/binary_manager.h>
 
 static int xipelf_loadbinary(FAR struct binary_s *binp);
@@ -108,7 +110,7 @@ static int xipelf_loadbinary(FAR struct binary_s *binp)
 
 	/* Allocate Heap... */
 	binp->sections[BIN_HEAP] = uspace.heap_start;
-	binp->sizes[BIN_HEAP] = uspace.heap_end - uspace.heap_start;
+	binp->sizes[BIN_HEAP] = uspace.heap_end - uspace.heap_start - sizeof(struct mm_heap_s);
 
 	binp->sections[BIN_DATA] = uspace.data_start_in_ram;
 

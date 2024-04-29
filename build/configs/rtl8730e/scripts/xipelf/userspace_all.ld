@@ -1,31 +1,3 @@
-/****************************************************************************
- *
- * Copyright 2024 Samsung Electronics All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
- * either express or implied. See the License for the specific
- * language governing permissions and limitations under the License.
- *
- ****************************************************************************/
-
-MEMORY
-{
-    /* apps actual data should start after the crc and header, so adding 48bytes to the start 
-     * also, if userbinary signing is done, then we need to add another 32bytes to this, so need to find some generic way
-       Split this into memory_app1.ld and auto-generate this based on config?
-     */
-    uflash (rx)      : ORIGIN = 0x844B000 + 0x30, LENGTH = 0x8545000 - 0x844B030
-    usram (rwx)      : ORIGIN = 0x60700000, LENGTH = 1024K
-}
-
 SECTIONS
 {
 
@@ -153,5 +125,4 @@ SECTIONS
     _sapp_ram = ABSOLUTE(ORIGIN(usram));
     _eapp_ram = ABSOLUTE(ORIGIN(usram) + LENGTH(usram));
     _eapp_flash = ABSOLUTE(ORIGIN(uflash) + LENGTH(uflash));
-    _my_entry = main;
 }
