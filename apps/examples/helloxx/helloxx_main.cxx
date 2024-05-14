@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- * Copyright 2016 Samsung Electronics All Rights Reserved.
+ * Copyright 2023 Samsung Electronics All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,40 +15,6 @@
  * language governing permissions and limitations under the License.
  *
  ****************************************************************************/
-//***************************************************************************
-// examples/helloxx/helloxx_main.cxx
-//
-//   Copyright (C) 2009, 2011-2013 Gregory Nutt. All rights reserved.
-//   Author: Gregory Nutt <gnutt@nuttx.org>
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions
-// are met:
-//
-// 1. Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-// 2. Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in
-//    the documentation and/or other materials provided with the
-//    distribution.
-// 3. Neither the name NuttX nor the names of its contributors may be
-//    used to endorse or promote products derived from this software
-//    without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
-// OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
-// AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
-//
-//***************************************************************************
 
 //***************************************************************************
 // Included Files
@@ -61,119 +27,99 @@
 
 #include <tinyara/init.h>
 
-//***************************************************************************
-// Definitions
-//***************************************************************************
-// Debug ********************************************************************
-// Non-standard debug that may be enabled just for testing the constructors
+#include <media/MediaPlayer.h>
+#include <media/MediaPlayerObserverInterface.h>
+#include <media/FileInputDataSource.h>
+#include <media/BufferOutputDataSource.h>
 
-#ifndef CONFIG_DEBUG
-#  undef CONFIG_DEBUG_CXX
-#endif
+#include <iostream>
+#include <memory>
 
-#ifdef CONFIG_DEBUG_CXX
-#  define cxxdbg              dbg
-#  define cxxlldbg            lldbg
-#  ifdef CONFIG_DEBUG_VERBOSE
-#    define cxxvdbg           vdbg
-#    define cxxllvdbg         llvdbg
-#  else
-#    define cxxvdbg(...)
-#    define cxxllvdbg(...)
-#  endif
-#else
-#  define cxxdbg(...)
-#  define cxxlldbg(...)
-#  define cxxvdbg(...)
-#  define cxxllvdbg(...)
-#endif
+using namespace std;
+using namespace media;
+using namespace media::stream;
 
-//***************************************************************************
-// Private Classes
-//***************************************************************************
+sem_t tts_sem;
+sem_t finished_sem;
 
-class CHelloWorld
-{
-public:
-	CHelloWorld(void) : mSecret(42)
-	{
-		cxxdbg("Constructor: mSecret=%d\n", mSecret);
+media::MediaPlayer mp;
+
+static const char *filePath = "";
+
+class _Observer : public media::MediaPlayerObserverInterface, public std::enable_shared_from_this<_Observer> {
+	void onPlaybackStarted(media::MediaPlayer &mediaPlayer) override {
+		printf("##################################\n");
+		printf("####    onPlaybackStarted     ####\n");
+		printf("##################################\n");
 	}
-
-	~CHelloWorld(void)
-	{
-		cxxdbg("Destructor\n");
+	void onPlaybackFinished(media::MediaPlayer &mediaPlayer) override {
+		printf("##################################\n");
+		printf("####    onPlaybackFinished    ####\n");
+		printf("##################################\n");
+		sem_post(&tts_sem);
 	}
-
-	bool HelloWorld(void)
-	{
-		cxxdbg("HelloWorld: mSecret=%d\n", mSecret);
-
-		if (mSecret != 42)
-		{
-			printf("CHelloWorld::HelloWorld: CONSTRUCTION FAILED!\n");
-			return false;
-		}
-		else
-		{
-			printf("CHelloWorld::HelloWorld: Hello, World!!\n");
-			return true;
-		}
+	void onPlaybackError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override {
+		printf("##################################\n");
+		printf("####      onPlaybackError     ####\n");
+		printf("##################################\n");
 	}
+	void onStartError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override {
 
-private:
-	int mSecret;
+	}
+	void onStopError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override {
+
+	}
+	void onPauseError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override {
+
+	}
+	void onPlaybackPaused(media::MediaPlayer &mediaPlayer) override {
+
+	}
 };
 
-//***************************************************************************
-// Private Data
-//***************************************************************************
+static void take_sem(sem_t *sem)
+{
+	int ret;
 
-// Define a statically constructed CHellowWorld instance if C++ static
-// initializers are supported by the platform
+	do {
+		ret = sem_wait(sem);
+		DEBUGASSERT(ret == 0 || errno == EINTR);
+	} while (ret < 0);
+}
 
-#if defined(CONFIG_HAVE_CXXINITIALIZE) || defined(CONFIG_BINFMT_CONSTRUCTORS)
-static CHelloWorld g_HelloWorld;
-#endif
-
-//***************************************************************************
-// Public Functions
-//***************************************************************************
-
-/****************************************************************************
- * Name: helloxx_main
- ****************************************************************************/
+int volume = 6;
 
 extern "C"
 {
 	int helloxx_main(int argc, char *argv[])
 	{
-		// Print the cpp version used
-		printf("c++ version used : %d\n", __cplusplus);
+		sem_init(&tts_sem, 0, 0);
+		sem_init(&finished_sem, 0, 0);
 
-		// Exercise an explictly instantiated C++ object
+		filePath = "/mnt/file.raw";
 
-		CHelloWorld *pHelloWorld = new CHelloWorld;
-		printf("helloxx_main: Saying hello from the dynamically constructed instance\n");
-		pHelloWorld->HelloWorld();
+		mp.create();
+		auto source = std::move(unique_ptr<media::stream::FileInputDataSource>(new media::stream::FileInputDataSource(filePath)));
+		source->setSampleRate(24000);
+		source->setChannels(1);
+		source->setPcmFormat(media::AUDIO_FORMAT_TYPE_S16_LE);
+		mp.setObserver(std::make_shared<_Observer>());
+		mp.setDataSource(std::move(source));
+		mp.prepare();
+		mp.setVolume(volume);
+		volume = volume + 2;
+		if (volume > 10) volume = 4;
+		mp.start();
 
-		// Exercise an C++ object instantiated on the stack
+		take_sem(&tts_sem);
 
-#ifndef CONFIG_EXAMPLES_HELLOXX_NOSTACKCONST
-		CHelloWorld HelloWorld;
+		printf("##################################\n");
+		printf("####   Playback done!!        ####\n");
+		printf("##################################\n");
 
-		printf("helloxx_main: Saying hello from the instance constructed on the stack\n");
-		HelloWorld.HelloWorld();
-#endif
+		mp.unprepare();
+		mp.destroy();
 
-		// Exercise an statically constructed C++ object
-
-#if defined(CONFIG_HAVE_CXXINITIALIZE) || defined(CONFIG_BINFMT_CONSTRUCTORS)
-		printf("helloxx_main: Saying hello from the statically constructed instance\n");
-		g_HelloWorld.HelloWorld();
-#endif
-
-		delete pHelloWorld;
 		return 0;
 	}
 }
