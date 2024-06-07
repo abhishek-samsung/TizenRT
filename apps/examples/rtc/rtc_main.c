@@ -105,6 +105,11 @@ static void *rtc_test(void *arg)
 	memset(&prev_tm, 0, sizeof(struct tm));
 	memset(&next_tm, 0, sizeof(struct tm));
 
+	/* populate prev_time to epoch (01-01-1970) in order reset RTC as it provides number of seconds passed starting from epoch */
+	prev_time.tm_year = 70;	// 1970 - 1900
+	prev_time.tm_mday = 1;	//1~31
+	prev_time.tm_mon = 0;	//0~11
+
 	fd = open("/dev/rtc0", O_RDWR);
 	if (fd < 0) {
 		printf("ERROR : Fail to open rtc.\n");
