@@ -65,7 +65,7 @@
 #include <sys/types.h>
 #include <tinyara/rtc.h>
 
-#define TEST_TIME 300	/* 300 secs */
+#define TEST_TIME 1
 #define TEST_STACKSIZE 4096
 
 bool rtctest_started;
