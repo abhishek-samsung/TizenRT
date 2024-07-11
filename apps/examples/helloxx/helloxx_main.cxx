@@ -96,13 +96,13 @@ extern "C"
 		sem_init(&tts_sem, 0, 0);
 		sem_init(&finished_sem, 0, 0);
 
-		filePath = "/mnt/file.raw";
+		filePath = "/mnt/output.wav";
 
 		mp.create();
 		auto source = std::move(unique_ptr<media::stream::FileInputDataSource>(new media::stream::FileInputDataSource(filePath)));
-		source->setSampleRate(24000);
-		source->setChannels(1);
-		source->setPcmFormat(media::AUDIO_FORMAT_TYPE_S16_LE);
+		//source->setSampleRate(24000);
+		//source->setChannels(1);
+		//source->setPcmFormat(media::AUDIO_FORMAT_TYPE_S16_LE);
 		mp.setObserver(std::make_shared<_Observer>());
 		mp.setDataSource(std::move(source));
 		mp.prepare();
