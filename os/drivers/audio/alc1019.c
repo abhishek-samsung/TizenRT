@@ -250,6 +250,7 @@ static void alc1019_set_i2s_samplerate(FAR struct alc1019_dev_s *priv)
         if (priv->inout) {
                 I2S_RXSAMPLERATE(priv->i2s, priv->samprate);
         } else {
+		lldbg("set sample rate called\n");
                 I2S_TXSAMPLERATE(priv->i2s, priv->samprate);
         }
 }
@@ -310,7 +311,7 @@ static int alc1019_getcaps(FAR struct audio_lowerhalf_s *dev, int type, FAR stru
 		switch (caps->ac_subtype) {
 		case AUDIO_TYPE_QUERY:
 			/* Report the Sample rates we support */
-			caps->ac_controls.b[0] = AUDIO_SAMP_RATE_TYPE_48K;
+			caps->ac_controls.b[0] = AUDIO_SAMP_RATE_TYPE_16K | AUDIO_SAMP_RATE_TYPE_48K | AUDIO_SAMP_RATE_TYPE_96K;
 			break;
 
 		case AUDIO_FMT_MP3:
@@ -437,7 +438,7 @@ static int alc1019_configure(FAR struct audio_lowerhalf_s *dev, FAR const struct
 			break;
 		}
 
-		if (caps->ac_controls.b[2] != ALC1019_BPSAMP) {
+		if (caps->ac_controls.b[2] != 16 && caps->ac_controls.b[2] != 24 && caps->ac_controls.b[2] != 32) { /* 16, 24, 32 are the supported data widths*/
 			auddbg("ERROR: Unsupported bits per sample: %d\n", caps->ac_controls.b[2]);
 			break;
 		}
@@ -452,11 +453,21 @@ static int alc1019_configure(FAR struct audio_lowerhalf_s *dev, FAR const struct
 		audvdbg("    Sample rate:        0x%x\n", priv->samprate);
 		audvdbg("    Sample width:       0x%x\n", priv->bpsamp);
 
+		lldbg("    Number of channels: 0x%x\n", priv->nchannels);
+                lldbg("    Sample rate:        0x%x\n", priv->samprate);
+                lldbg("    Sample width:       0x%x\n", priv->bpsamp);
+
 		/* Reconfigure the FLL to support the resulting number or channels,
 		 * bits per sample, and bitrate.
 		 */
 		ret = OK;
 		priv->inout = false;
+
+		lldbg("setting new configs for alc1019\n");
+		
+		alc1019_set_i2s_samplerate(priv);
+		alc1019_set_i2s_datawidth(priv);
+
 		break;
 
 	case AUDIO_TYPE_PROCESSING:
