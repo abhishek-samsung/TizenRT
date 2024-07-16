@@ -594,6 +594,10 @@ static uint32_t i2s_txdatawidth(struct i2s_dev_s *dev, int bits)
 	/* Support 16, 24, 32 bits */
 	DEBUGASSERT(priv && (bits == I2S_BITS_PER_SAMPLE_16BIT || bits == I2S_BITS_PER_SAMPLE_32BIT || bits == I2S_BITS_PER_SAMPLE_24BIT));
 
+	/* Unregister Port direction */
+	i2s_deinit(priv->i2s_object);
+
+	/* bits_per_sample = wordlength*/
 	priv->bits_per_sample = bits;
 
 	/* amebasmart 16, 24, 32, bits setting */
@@ -603,6 +607,9 @@ static uint32_t i2s_txdatawidth(struct i2s_dev_s *dev, int bits)
 		priv->i2s_object->word_length = WL_24b;
 	else if (bits == I2S_BITS_PER_SAMPLE_32BIT)
 		priv->i2s_object->word_length = WL_32b;
+
+	/* Reinit I2s object */
+	i2s_init(priv->i2s_object, priv->config->i2s_sclk_pin, priv->config->i2s_ws_pin, priv->config->i2s_sd_tx_pin, priv->config->i2s_sd_rx_pin, priv->config->i2s_mclk_pin);
 
 	return priv->bits_per_sample * priv->sample_rate;
 #endif
@@ -1613,10 +1620,14 @@ static uint32_t i2s_samplerate(struct i2s_dev_s *dev, uint32_t rate)
 	struct amebasmart_i2s_s *priv = (struct amebasmart_i2s_s *)dev;
 	DEBUGASSERT(priv && rate > 0);
 
+	/* Unregister Port direction */
+	i2s_deinit(priv->i2s_object);
+
 	priv->i2s_object->sampling_rate = rate;
 	priv->sample_rate = rate;
 
-	i2s_set_param(priv->i2s_object, priv->i2s_object->channel_num, priv->i2s_object->sampling_rate, priv->i2s_object->word_length);
+	/* Reinit I2s object */
+	i2s_init(priv->i2s_object, priv->config->i2s_sclk_pin, priv->config->i2s_ws_pin, priv->config->i2s_sd_tx_pin, priv->config->i2s_sd_rx_pin, priv->config->i2s_mclk_pin);
 
 	return priv->i2s_object->sampling_rate;
 }

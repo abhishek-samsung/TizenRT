@@ -401,7 +401,7 @@ void i2s_set_param(i2s_t *obj, int channel_num, int rate, int word_len)
 
 	Init_Params.chn_len = SP_CL_32;
 	Init_Params.chn_cnt = obj->channel_num;
-	Init_Params.sr = obj->sampling_rate;;
+	Init_Params.sr = obj->sampling_rate;
 	Init_Params.codec_multiplier_with_rate = 256;
 	Init_Params.sport_mclk_fixed_max = (uint32_t) NULL;
 	Audio_Clock_Choose(PLL_CLK, &Init_Params, &Clock_Params);
@@ -440,6 +440,8 @@ void i2s_set_param(i2s_t *obj, int channel_num, int rate, int word_len)
 	SP_InitStruct.SP_SetMultiIO = obj->mode;
 	SP_InitStruct.SP_SR = obj->sampling_rate;
 	SP_InitStruct.SP_SelClk = clock_mode;
+	SP_InitStruct.SP_SelWordLen = obj->word_length;
+
 	AUDIO_SP_Init(obj->i2s_idx, obj->direction, &SP_InitStruct);
 	AUDIO_SP_SetMasterSlave(obj->i2s_idx, obj->role);
 
@@ -499,6 +501,7 @@ void i2s_init(i2s_t *obj, PinName sck, PinName ws, PinName sd_tx, PinName sd_rx,
   */
 void i2s_deinit(i2s_t *obj)
 {
+	/* Disabling general clock interferes with other peripheral
 	switch (obj->clock) {
 	case PLL_CLOCK_24P576M:
 		PLL_I2S_24P576M(DISABLE);
@@ -507,7 +510,7 @@ void i2s_deinit(i2s_t *obj)
 	case PLL_CLOCK_98P304M:
 		PLL_I2S_98P304M(DISABLE);
 		break;
-	}
+	}*/
 
 	if (obj->i2s_idx == I2S2) {
 		RCC_PeriphClockCmd(APBPeriph_SPORT2, APBPeriph_SPORT2_CLOCK, DISABLE);
