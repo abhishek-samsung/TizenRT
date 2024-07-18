@@ -13,8 +13,9 @@ typedef enum {
 	PMU_SPI_DEVICE          = 5,
 	PMU_I2C_DEVICE          = 6,
 	PMU_I2S_DEVICE          = 7,
-	PMU_GPIO_DEVICE         = 8,
-	PMU_MIPI_DEVICE         = 9,
+	PMU_I2S_SPEAKER		= 8,
+	PMU_GPIO_DEVICE         = 9,
+	PMU_MIPI_DEVICE         = 10,
 	PMU_MAX,
 } PMU_DEVICE;
 

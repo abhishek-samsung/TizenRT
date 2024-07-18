@@ -37,6 +37,8 @@
 #include "PinNames.h"
 #include "gpio_api.h"
 
+#include "ameba_soc.h"
+
 extern FAR struct i2s_dev_s *amebasmart_i2s_initialize(uint16_t port, bool is_reinit);
 
 /****************************************************************************
@@ -111,6 +113,34 @@ static void alc1019_control_powerdown(bool enter_powerdown)
 {
 	/* currently does nothing */
 }
+
+#ifdef CONFIG_PM
+static uint32_t alc1019_suspend(uint32_t expected_idle_time, void *param)
+{
+	(void)expected_idle_time;
+	(void)param;
+
+	gpio_t gpio_i2sbclk;
+
+	if (ALC1019_I2S_PORT == 2) {
+		gpio_init(&gpio_i2sbclk, PB_21);
+	} else {
+		gpio_init(&gpio_i2sbclk, PA_14);
+	}
+
+	gpio_dir(&gpio_i2sbclk, PIN_INPUT);
+
+	return 1;
+}
+
+static uint32_t alc1019_resume(uint32_t expected_idle_time, void *param)
+{
+        (void)expected_idle_time;
+        (void)param;
+        return 1;
+}
+#endif
+
 
 /****************************************************************************
  * Public Functions
@@ -215,6 +245,11 @@ int rtl8730e_alc1019_initialize(int minor)
 
 		initialized = true;
 	}
+
+#ifdef CONFIG_PM
+	pmu_register_sleep_callback(PMU_I2S_SPEAKER, (PSM_HOOK_FUN)alc1019_suspend, NULL, (PSM_HOOK_FUN)alc1019_resume, NULL);
+#endif
+
 
 	return OK;
 
