@@ -63,7 +63,7 @@ THREADEXEC = TASH_EXECMD_ASYNC
 # Hello, World! C++ Example
 ASRCS		=
 CSRCS		=
-CXXSRCS		=
+CXXSRCS		= BufferInputDataSource.cxx
 MAINSRC		= helloxx_main.cxx
 
 AOBJS		= $(ASRCS:.S=$(OBJEXT))

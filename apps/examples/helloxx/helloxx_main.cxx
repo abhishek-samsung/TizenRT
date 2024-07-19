@@ -32,6 +32,8 @@
 #include <media/FileInputDataSource.h>
 #include <media/BufferOutputDataSource.h>
 
+#include "BufferInputDataSource.h"
+
 #include <iostream>
 #include <memory>
 
@@ -101,9 +103,11 @@ extern "C"
 		filePath = "/mnt/48x16.pcm";
 
 		mp.create();
-		auto source = std::move(unique_ptr<media::stream::FileInputDataSource>(new media::stream::FileInputDataSource(filePath)));
+		//auto source = std::move(unique_ptr<media::stream::FileInputDataSource>(new media::stream::FileInputDataSource(filePath)));
+		auto source = std::move(unique_ptr<BufferInputDataSource>(new BufferInputDataSource()));
 		source->setSampleRate(48000);
-		source->setChannels(1);
+		//source->setChannels(1);
+		source->setChannels(2);
 		source->setPcmFormat(media::AUDIO_FORMAT_TYPE_S16_LE);
 		mp.setObserver(std::make_shared<_Observer>());
 		mp.setDataSource(std::move(source));
