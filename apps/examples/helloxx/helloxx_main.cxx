@@ -95,8 +95,6 @@ extern "C"
 {
 	int play_audio(int argc, char *argv[])
 	{
-		while (true) {
-		sleep(1);
 		sem_init(&tts_sem, 0, 0);
 		sem_init(&finished_sem, 0, 0);
 
@@ -116,6 +114,18 @@ extern "C"
 		
 		mp.start();
 
+		volatile int test = 0;
+
+		while (true) {
+			sleep(2);
+			printf("value of test : %d\n", test);
+			for (int i = 0; i < 2147483640; i++) {
+				test++;
+			}
+			printf("value of test : %d\n", test);
+			test = 0;
+		}
+
 		take_sem(&tts_sem);
 
 		printf("##################################\n");
@@ -125,7 +135,6 @@ extern "C"
 		mp.unprepare();
 		mp.destroy();
 	
-		}
 		return 0;
 	}
 
