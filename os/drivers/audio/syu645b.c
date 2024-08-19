@@ -310,7 +310,7 @@ static int syu645b_getcaps(FAR struct audio_lowerhalf_s *dev, int type, FAR stru
 		switch (caps->ac_subtype) {
 		case AUDIO_TYPE_QUERY:
 			/* Report the Sample rates we support */
-			caps->ac_controls.b[0] = AUDIO_SAMP_RATE_TYPE_48K;
+			caps->ac_controls.b[0] = AUDIO_SAMP_RATE_TYPE_32K | AUDIO_SAMP_RATE_TYPE_44K | AUDIO_SAMP_RATE_TYPE_48K;
 			break;
 
 		case AUDIO_FMT_MP3:
@@ -445,6 +445,19 @@ static int syu645b_configure(FAR struct audio_lowerhalf_s *dev, FAR const struct
 		/* Reconfigure the FLL to support the resulting number or channels,
 		 * bits per sample, and bitrate.
 		 */
+
+		/* change i2s driver sample rate */
+		syu645b_set_i2s_samplerate(priv);
+
+		/* change syu645b device sample rate */
+		if (priv->samprate == AUDIO_SAMP_RATE_48K) {
+			syu645b_exec_i2c_script(priv, codec_set_samprate_48k, sizeof(codec_set_samprate_48k) / sizeof(t_codec_init_script_entry));
+		} else if (priv->samprate == AUDIO_SAMP_RATE_48K) {
+			syu645b_exec_i2c_script(priv, codec_set_samprate_44k, sizeof(codec_set_samprate_44k) / sizeof(t_codec_init_script_entry));
+		} else {
+			syu645b_exec_i2c_script(priv, codec_set_samprate_32k, sizeof(codec_set_samprate_32k) / sizeof(t_codec_init_script_entry));
+		}
+
 		ret = OK;
 		priv->inout = false;
 		break;
