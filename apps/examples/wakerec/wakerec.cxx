@@ -41,6 +41,8 @@
 #include <iostream>
 #include <memory>
 
+#include <tinyara/pm/pm.h>
+
 using namespace std;
 using namespace media;
 using namespace media::stream;
@@ -85,6 +87,9 @@ class _Observer : public media::MediaPlayerObserverInterface, public std::enable
 		printf("###################################\n");
 
 		sd->startKeywordDetect();
+
+		/* Now that we finished playback, we can go to sleep */
+		pm_resume(PM_IDLE_DOMAIN);
 	}
 	void onPlaybackError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override
 	{
@@ -175,6 +180,8 @@ public:
 	{
 		printf("#### onSpeechDetectionListener\n");
 		if (event == SPEECH_DETECT_KD) {
+			/* take wakelock as soon as possible, and we hold it until we play recorded data */
+			pm_suspend(PM_IDLE_DOMAIN);
 			printf("Event SPEECH_DETECT_KD\n");
 			printf("#### [SD] keyword detected.\n");
 			sd->stopKeywordDetect();
@@ -236,7 +243,7 @@ void playRecordVoice(void)
 	mp.setObserver(std::make_shared<_Observer>());
 	mp.setDataSource(std::move(source));
 	mp.prepare();
-	mp.setVolume(5);
+	mp.setVolume(9);
 	mp.start();
 }
 
@@ -257,6 +264,9 @@ int wakerec_main(int argc, char *argv[])
 	printf("###################################\n");
 
 	sd->startKeywordDetect();
+	
+	/* similar to wake lock, we release wake lock as we started our thread */
+	pm_resume(PM_IDLE_DOMAIN);
 
 	while (1) {
 		sleep(67);

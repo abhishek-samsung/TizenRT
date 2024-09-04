@@ -117,6 +117,16 @@ static void rtl8730e_ndp120_irq_attach(ndp120_handler_t handler, FAR char *arg)
 	gpio_irq_enable(&g_ndp120info.data_ready);
 }
 
+static void rtl8730e_ndp120_pm(bool sleep)
+{
+	/* h/w specific things to be done if required */
+	if (sleep) {
+		lldbg("board entering sleep\n");
+	} else {
+		lldbg("board wakeup\n");
+	}
+}
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -163,7 +173,7 @@ int rtl8730e_ndp120_initialize(int minor)
 
 		g_ndp120info.lower.attach = rtl8730e_ndp120_irq_attach;
 		g_ndp120info.lower.irq_enable = rtl8730e_ndp120_enable_irq;
-
+		g_ndp120info.lower.set_pm_state = rtl8730e_ndp120_pm;
 		/* currently spi 0 is only attached to AI SoC, so no
 		 * need to change the spi config as we are dealing with
 		 * only 1 slave, if we add more slaves, parameters below

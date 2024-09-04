@@ -80,6 +80,9 @@ struct ndp120_lower_s {
 
 	/* eanble/disable ndp120 interrupts hadling on rlt8730e */
 	CODE void (*irq_enable)(bool enable);
+
+	/* PM related h/w operations */
+	CODE void (*set_pm_state)(bool sleep);
 };
 
 /****************************************************************************

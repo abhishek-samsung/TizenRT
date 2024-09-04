@@ -763,6 +763,7 @@ int amebasmart_up_usbinitialize(struct amebasmart_usbdev_s *priv)
  open the fd*/
 static int register_usb(void)
 {
+	return OK;
 	while(!cdc_acm_ready_flag){
 		usleep(1000);
 	}
