@@ -84,7 +84,7 @@ class _Observer : public media::MediaPlayerObserverInterface, public std::enable
 		printf("#### Wait for wakeup triggered ####\n");
 		printf("###################################\n");
 
-		sd->startKeywordDetect();
+//		sd->startKeywordDetect();
 	}
 	void onPlaybackError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override
 	{
@@ -228,9 +228,10 @@ void startRecord(void)
 
 void playRecordVoice(void)
 {
+	filePath = "/mnt/kernel/audio/test.pcm";
 	mp.create();
 	auto source = std::move(unique_ptr<media::stream::FileInputDataSource>(new media::stream::FileInputDataSource(filePath)));
-	source->setSampleRate(16000);
+	source->setSampleRate(24000);
 	source->setChannels(1);
 	source->setPcmFormat(media::AUDIO_FORMAT_TYPE_S16_LE);
 	mp.setObserver(std::make_shared<_Observer>());
@@ -243,6 +244,7 @@ void playRecordVoice(void)
 extern "C" {
 int wakerec_main(int argc, char *argv[])
 {
+#if 0
 	printf("wakerec_main Entry\n");
 	sd = media::voice::SpeechDetector::instance();
 	if (!sd->initKeywordDetect(16000, 1)) {
@@ -261,7 +263,9 @@ int wakerec_main(int argc, char *argv[])
 	while (1) {
 		sleep(67);
 	}
-
+#endif
+	playRecordVoice();
+	sleep(1);
 	return 0;
 }
 }
