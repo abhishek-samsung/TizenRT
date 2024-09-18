@@ -78,7 +78,7 @@ int hello_main(int argc, char *argv[])
 	SPI_SETBITS(spi, 8);
 
 	// get device ID to verify the flash
-	uint8_t cmd_data[3];
+	uint8_t cmd_data[6];
 	uint8_t dev_id[2];
 
 	cmd_data[0] = 0x9F;
@@ -149,7 +149,8 @@ int hello_main(int argc, char *argv[])
 	
 	printf("First Byte in block 0 : %02x\n", page_data[0]);
 	printf("Bad block mark for block 0 : %x\n", page_data[2048]);
-
+	
+	printf("current contents :\n");
 	for (int i = 0; i < 2176; i++) {
   		if (i % 32 == 0) printf("\n");
  		printf("%02X", page_data[i]);
@@ -194,15 +195,52 @@ int hello_main(int argc, char *argv[])
 	// updated value for write protection
 	printf("Value of write protection register (%02x) : %02x\n", cmd_data[1], dev_id[0]);
 
+	// erase block before writing
+	// write enable
+        cmd_data[0] = 0x06;
+        SPI_SELECT(spi, 0, true);
+        SPI_SNDBLOCK(spi, cmd_data, 1);
+        SPI_SELECT(spi, 0, false);
+	
+	// erase block 0
+        cmd_data[0] = 0xD8;
+        cmd_data[1] = 0x00;
+        cmd_data[2] = 0x00;
+	cmd_data[3] = 0x00;
 
+	SPI_SELECT(spi, 0, true);
+        SPI_SNDBLOCK(spi, cmd_data, 4);
+        SPI_SELECT(spi, 0, false);
+	
+	// wait till done
+        // wait for op to be done
+        while (true) {
+                cmd_data[0] = 0x0F;
+                cmd_data[1] = 0xC0;
+
+                SPI_SELECT(spi, 0, true);
+                SPI_SNDBLOCK(spi, cmd_data, 2);
+                SPI_RECVBLOCK(spi, dev_id, 1);
+                SPI_SELECT(spi, 0, false);
+                printf("Feature : %02x, value : %02x\n", cmd_data[1], dev_id[0]);
+
+                if (dev_id[0] & 1) {
+                        usleep(1000);
+                        continue;
+                } else {
+                        break;
+                }
+        }
+#if 0	
 	// Now try to write to the page
 	// program load
 	cmd_data[0] = 0x02;
 	// we are writing from the start
 	cmd_data[1] = 0x00;
+	cmd_data[2] = 0x00;
 
 	SPI_SELECT(spi, 0, true);
-        SPI_SNDBLOCK(spi, cmd_data, 2);
+        SPI_SNDBLOCK(spi, cmd_data, 3);
         SPI_SNDBLOCK(spi, page_data, 2048);
 	SPI_SELECT(spi, 0, false);
 
@@ -238,6 +276,6 @@ int hello_main(int argc, char *argv[])
                         break;
                 }
         }
-
+#endif
 	return 0;
 }
