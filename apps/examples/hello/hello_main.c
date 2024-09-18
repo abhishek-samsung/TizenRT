@@ -57,11 +57,14 @@
 #include <tinyara/config.h>
 #include <stdio.h>
 #include <tinyara/spi/spi.h>
+#include <tinyara/fs/mtd.h>
+#include <debug.h>
 
 /****************************************************************************
  * hello_main
  ****************************************************************************/
-uint8_t page_data[2176];
+uint8_t page_data1[2176];
+uint8_t page_data2[2176];
 
 #ifdef CONFIG_BUILD_KERNEL
 int main(int argc, FAR char *argv[])
@@ -73,6 +76,33 @@ int hello_main(int argc, char *argv[])
 	
 	struct spi_dev_s *spi = up_spiinitialize(1);
 
+	FAR struct mtd_dev_s *dev_mtd = NULL;
+
+	dev_mtd = xt26g02d_initialize(spi);
+	
+	lldbg("calling %p\n", dev_mtd->erase);
+	dev_mtd->erase(dev_mtd, 0, 1);
+
+	uint8_t buffer = 0xDD;
+
+	for (int i = 0; i < 2048; i++) {
+		page_data1[i] = buffer;
+	}
+		
+	lldbg("calling %p\n", dev_mtd->bwrite);
+	dev_mtd->bwrite(dev_mtd, 0, 1, page_data1);
+
+	lldbg("calling %p\n", dev_mtd->bread);
+	dev_mtd->bread(dev_mtd, 0, 1, page_data2);
+
+	printf("value of buffer read : %d\n", buffer);
+
+	for (int i = 0; i < 2048; i++) {
+		if (i % 32 == 0) printf("\n");
+		printf("%02X", page_data2[i]);
+	}
+
+#if 0
 	SPI_SETMODE(spi, SPIDEV_MODE0);
 	SPI_SETFREQUENCY(spi, 1000000);
 	SPI_SETBITS(spi, 8);
@@ -231,7 +261,6 @@ int hello_main(int argc, char *argv[])
                         break;
                 }
         }
-#if 0	
 	// Now try to write to the page
 	// program load
 	cmd_data[0] = 0x02;
