@@ -73,13 +73,18 @@ int hello_main(int argc, char *argv[])
 #endif
 {
 	printf("Hello, World!!\n");
-	
+#if 0	
 	struct spi_dev_s *spi = up_spiinitialize(1);
 
 	FAR struct mtd_dev_s *dev_mtd = NULL;
 
 	dev_mtd = xt26g02d_initialize(spi);
-	
+
+	sleep(20);
+
+	dhara_initialize(99, dev_mtd);
+#endif
+#if 0	
 	lldbg("calling %p\n", dev_mtd->erase);
 	dev_mtd->erase(dev_mtd, 0, 1);
 
@@ -101,7 +106,7 @@ int hello_main(int argc, char *argv[])
 		if (i % 32 == 0) printf("\n");
 		printf("%02X", page_data2[i]);
 	}
-
+#endif
 #if 0
 	SPI_SETMODE(spi, SPIDEV_MODE0);
 	SPI_SETFREQUENCY(spi, 1000000);
