@@ -1,4 +1,5 @@
 #include <tinyara/mtd/nand_raw.h>
+#include <tinyara/mtd/nand_scheme.h>
 #include <debug.h>
 #if 0
 
@@ -59,7 +60,8 @@ struct nand_model_s
 
 int xt26g02d_eraseblock(FAR struct nand_raw_s *raw, off_t block) {
 	lldbg("erase block called %u\n", block);
-	        // erase block before writing
+	return OK;
+	// erase block before writing
         // write enable
         
 	SPI_SETMODE(raw->spi, SPIDEV_MODE0);
@@ -110,7 +112,9 @@ int xt26g02d_eraseblock(FAR struct nand_raw_s *raw, off_t block) {
 int xt26g02d_rawread(FAR struct nand_raw_s *raw, off_t block,
                       unsigned int page, FAR void *data, FAR void *spare) {
 	lldbg("page read called %u block, %u page\n", block, page);
-	        uint8_t address24[3];
+	if (spare) *(uint8_t *)spare = 0xff;
+	return 0;
+	uint8_t address24[3];
 	for (int i = 0; i < 3; i++) address24[i] = 0;
 	SPI_SETMODE(raw->spi, SPIDEV_MODE0);
         SPI_SETFREQUENCY(raw->spi, 1000000);
@@ -161,6 +165,8 @@ int xt26g02d_rawwrite(FAR struct nand_raw_s *raw, off_t block,
                        unsigned int page, FAR const void *data,
                        FAR const void *spare) {
 	lldbg("page write called %u block, %u page\n", block, page);
+	return 0;
+
 	SPI_SETMODE(raw->spi, SPIDEV_MODE0);
         SPI_SETFREQUENCY(raw->spi, 1000000);
         SPI_SETBITS(raw->spi, 8);
@@ -237,5 +243,6 @@ FAR struct mtd_dev_s *xt26g02d_initialize(FAR struct spi_dev_s *spi)
 	raw->model.sparesize = 128;
 	raw->model.devsize = 256;
 	raw->model.blocksize = 128;
+	raw->model.scheme = &g_nand_sparescheme2048;
 	return nand_initialize(raw);
 }

@@ -123,7 +123,7 @@ CSRCS_DRIVER += mtd/mtd_jedec.c
 endif
 
 ifeq ($(CONFIG_MTD_NAND), y)
-CSRCS_DRIVER += mtd/mtd_nand.c mtd/xt26g02d.c
+CSRCS_DRIVER += mtd/mtd_nand.c mtd/mtd_nandscheme.c mtd/xt26g02d.c
 endif
 endif
 
