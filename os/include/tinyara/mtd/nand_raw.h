@@ -63,6 +63,7 @@
 #include <stdbool.h>
 
 #include <tinyara/mtd/nand_model.h>
+#include <tinyara/spi/spi.h>
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -281,6 +282,8 @@ struct nand_raw_s
   uint8_t spare[CONFIG_MTD_NAND_MAXPAGESPARESIZE];
   uint8_t ecc[CONFIG_MTD_NAND_MAXSPAREECCBYTES];
 #endif
+
+  struct spi_dev_s *spi;
 };
 
 /****************************************************************************
