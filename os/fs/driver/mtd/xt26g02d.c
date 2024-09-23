@@ -32,7 +32,6 @@ int xt26g02d_eraseblock(FAR struct nand_raw_s *raw, off_t block) {
         uint8_t * addr = &address;
 	// erase block before writing
         // write enable
-        
 	SPI_SETMODE(raw->spi, SPIDEV_MODE0);
         SPI_SETFREQUENCY(raw->spi, 40000000);
         SPI_SETBITS(raw->spi, 8);
@@ -51,7 +50,7 @@ int xt26g02d_eraseblock(FAR struct nand_raw_s *raw, off_t block) {
         cmd_data[1] = addr[2];
         cmd_data[2] = addr[1];
         cmd_data[3] = addr[0];
-
+	//lldbg("erase block : %d, address : %02x %02x %02x\n", block, cmd_data[1], cmd_data[2], cmd_data[3]);
         SPI_SELECT(raw->spi, 0, true);
         SPI_SNDBLOCK(raw->spi, cmd_data, 4);
         SPI_SELECT(raw->spi, 0, false);
@@ -97,6 +96,7 @@ int xt26g02d_rawread(FAR struct nand_raw_s *raw, off_t block,
 	address24[0] = addr[2];
         address24[1] = addr[1];
         address24[2] = addr[0];
+	//lldbg("read block : %d, page : %d, address : %02x %02x %02x\n", block, page, address24[0], address24[1], address24[2]);
         SPI_SELECT(raw->spi, 0, true);
         SPI_SNDBLOCK(raw->spi, cmd_data, 1);
         SPI_SNDBLOCK(raw->spi, address24, 3);
@@ -133,7 +133,9 @@ int xt26g02d_rawread(FAR struct nand_raw_s *raw, off_t block,
 		uint8_t * p = &addr;
 		address24[0] = p[1];
 		address24[1] = p[0];
+		address24[2] = 0;
 	}
+	//lldbg("read from cache block : %d, page : %d, address : %02x %02x %02x\n", block, page, address24[0], address24[1], address24[2]);
 	SPI_SNDBLOCK(raw->spi, address24, 3);
 	if (data)
 	SPI_RECVBLOCK(raw->spi, data, 2048);
@@ -152,9 +154,12 @@ int xt26g02d_rawwrite(FAR struct nand_raw_s *raw, off_t block,
 	SPI_SETMODE(raw->spi, SPIDEV_MODE0);
         SPI_SETFREQUENCY(raw->spi, 40000000);
         SPI_SETBITS(raw->spi, 8);
-	        uint8_t address24[3];
-		for (int i = 0; i < 3; i++) address24[i] = 0;
-        // get device ID to verify the flash
+	uint8_t address24[3];
+        // complete page address
+        address24[0] = addr[2];
+        address24[1] = addr[1];
+        address24[2] = addr[0];
+	// get device ID to verify the flash
         uint8_t cmd_data[6];
         uint8_t dev_id[2];
 	
@@ -182,6 +187,8 @@ int xt26g02d_rawwrite(FAR struct nand_raw_s *raw, off_t block,
                 cmd_data[1] = p[1];
                 cmd_data[2] = p[0];
 	}
+	
+	//lldbg("write1 block : %d, page : %d, address : %02x %02x\n", block, page, cmd_data[1], cmd_data[2]);
 
         SPI_SELECT(raw->spi, 0, true);
         SPI_SNDBLOCK(raw->spi, cmd_data, 3);
@@ -201,6 +208,7 @@ int xt26g02d_rawwrite(FAR struct nand_raw_s *raw, off_t block,
         cmd_data[0] = 0x10;
         SPI_SELECT(raw->spi, 0, true);
         SPI_SNDBLOCK(raw->spi, cmd_data, 1);
+	
         SPI_SNDBLOCK(raw->spi, address24, 3);
         SPI_SELECT(raw->spi, 0, false);
 	

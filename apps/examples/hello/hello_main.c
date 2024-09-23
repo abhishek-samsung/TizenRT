@@ -60,9 +60,170 @@
 #include <tinyara/fs/mtd.h>
 #include <debug.h>
 
+#include <time.h>
+#include <tinyara/fs/ioctl.h>
+#include <fcntl.h>
+
+#include <sys/time.h>
+#include <errno.h>
+
 /****************************************************************************
  * hello_main
  ****************************************************************************/
+
+#define BUF_SIZE   65536
+#define SIZE_1MB   1048576
+
+#define printf lldbg
+
+static long sys_start_time = 0;
+static long sys_end_time = 0;
+static long systick_time_ms = 0;
+static char blockname[32];
+
+static void fill_buffer(FAR uint32_t *buff)
+{
+	off_t offset = 0;
+	for (int i = 0; i < BUF_SIZE / sizeof(uint32_t); i++) {
+		buff[i] = offset;
+		offset += 4;
+	}
+}
+
+static inline long get_time(void)
+{
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
+static int bch_write(void)
+{
+	FAR uint32_t *buffer;
+	int fd;
+	ssize_t nbytes;
+	off_t offset;
+	int ret = ERROR;
+	int g_partno = 0;
+
+	/* Allocate a buffer */
+	buffer = (FAR uint32_t *)malloc(BUF_SIZE);
+
+	if (!buffer) {
+		printf("ERROR: failed to allocate a sector buffer\n");
+		return ret;
+	}
+
+	fd = open("/dev/mtdblock99", O_WRONLY);
+	if (fd < 0) {
+		printf("ERROR: open /dev/mtd%d failed: %d\n", g_partno, errno);
+		goto out_free_buffer;
+	}
+	/* Now write the offset into every block */
+	printf("Writing to media: buff Size %d, times %d\n", BUF_SIZE, (SIZE_1MB/BUF_SIZE));
+
+	offset = 0;
+	/* Fill the block with the offset */
+	fill_buffer(buffer);
+
+	sys_start_time = get_time();
+	printf("BCH Write start\n");
+
+	/* And write it using the character driver */
+	for (int i = 0; i < (SIZE_1MB/BUF_SIZE); i++) {
+		nbytes = write(fd, buffer, (size_t)(BUF_SIZE));
+		if (nbytes < 0) {
+			printf("ERROR: write to /dev/mtd%d failed: %d\n", g_partno, errno);
+			goto out_close_fd;
+		}
+	}
+	printf("BCH Write End\n");
+	sys_end_time = get_time();
+	printf("\nSystick time taken for Flash bch Write %ld(ms)\n", (sys_end_time - sys_start_time));
+	ret = OK;
+
+out_close_fd:
+	close(fd);
+out_free_buffer:
+	free(buffer);
+	return ret;
+}
+
+static int bch_read(void)
+{
+	FAR uint32_t *buffer;
+	FAR uint32_t *rd_buffer;
+	int fd;
+	ssize_t nbytes;
+	off_t offset;
+	int g_partno = 0;
+	int ret = ERROR;
+
+	/* Allocate a buffer */
+	buffer = (FAR uint32_t *)malloc(BUF_SIZE);
+
+	if (!buffer) {
+		printf("ERROR: failed to allocate a sector buffer\n");
+		return ret;
+	}
+	rd_buffer = (FAR uint32_t *)malloc(BUF_SIZE);
+	if (!buffer) {
+		printf("ERROR: failed to allocate a sector buffer\n");
+		free(buffer);
+		return ret;
+	}
+
+	/* Open the master MTD FLASH character driver for writing */
+
+	fd = open("/dev/mtdblock99", O_RDONLY);
+	if (fd < 0) {
+		printf("ERROR: open /dev/mtd%d failed: %d\n", g_partno, errno);
+		goto out_free_buffer;
+	}
+
+	/* Now Read the offset into every block */
+	printf("Reading from media: buff Size %d, times %d\n", BUF_SIZE, (SIZE_1MB/BUF_SIZE));
+
+	offset = 0;
+	systick_time_ms = 0;
+	/* Fill the block with the offset */
+
+	fill_buffer(buffer);
+
+	/* And write it using the character driver */
+	printf("BCH Read start\n");
+	for (int j = 0; j < (SIZE_1MB/BUF_SIZE); j++) {
+		sys_start_time = get_time();
+		nbytes = read(fd, rd_buffer, (size_t)(BUF_SIZE));
+		if (nbytes < 0) {
+			printf("ERROR: Read to /dev/mtd%d failed: %d\n", g_partno, errno);
+			close(fd);
+			goto out_close_fd;
+		}
+		printf("%02x (read), %02x (orig)\n", rd_buffer[0], buffer[0]);
+		printf("%02x (read), %02x (orig)\n", rd_buffer[1], buffer[1]);
+		sys_end_time = get_time();
+		systick_time_ms += sys_end_time - sys_start_time;
+		if (memcmp(rd_buffer, buffer, nbytes)) {
+			printf("ERROR: Read value comparison failed to /dev/mtd%d failed: %d\n", g_partno, errno);
+			//close(fd);
+			//goto out_close_fd;
+		}
+	}
+	printf("BCH Read End\n");
+	printf("\nSystick time taken for Flash bch Read %ld(ms)\n", systick_time_ms);
+	ret = OK;
+
+out_close_fd:
+	close(fd);
+out_free_buffer:
+	free(buffer);
+	free(rd_buffer);
+	return ret;
+}
+
 uint8_t page_data1[2176];
 uint8_t page_data2[2176];
 
@@ -73,243 +234,28 @@ int hello_main(int argc, char *argv[])
 #endif
 {
 	printf("Hello, World!!\n");
-#if 0	
+#if 1	
 	struct spi_dev_s *spi = up_spiinitialize(1);
 
 	FAR struct mtd_dev_s *dev_mtd = NULL;
 
 	dev_mtd = xt26g02d_initialize(spi);
 
-	sleep(20);
-
 	dhara_initialize(99, dev_mtd);
 #endif
-#if 0	
-	lldbg("calling %p\n", dev_mtd->erase);
-	dev_mtd->erase(dev_mtd, 0, 1);
+	int ret = bch_write();
 
-	uint8_t buffer = 0xDD;
-
-	for (int i = 0; i < 2048; i++) {
-		page_data1[i] = buffer;
-	}
-		
-	lldbg("calling %p\n", dev_mtd->bwrite);
-	dev_mtd->bwrite(dev_mtd, 0, 1, page_data1);
-
-	lldbg("calling %p\n", dev_mtd->bread);
-	dev_mtd->bread(dev_mtd, 0, 1, page_data2);
-
-	printf("value of buffer read : %d\n", buffer);
-
-	for (int i = 0; i < 2048; i++) {
-		if (i % 32 == 0) printf("\n");
-		printf("%02X", page_data2[i]);
-	}
-#endif
-#if 0
-	SPI_SETMODE(spi, SPIDEV_MODE0);
-	SPI_SETFREQUENCY(spi, 1000000);
-	SPI_SETBITS(spi, 8);
-
-	// get device ID to verify the flash
-	uint8_t cmd_data[6];
-	uint8_t dev_id[2];
-
-	cmd_data[0] = 0x9F;
-	cmd_data[1] = 0x00;
-
-	SPI_SELECT(spi, 0, true);
-	SPI_SNDBLOCK(spi, cmd_data, 2);
-	SPI_RECVBLOCK(spi, dev_id, 2);
-	SPI_SELECT(spi, 0, false);
-	
-	printf("MfID : %02x, DID : %02x\n", dev_id[0], dev_id[1]);
-
-	// get default value of features
-	
-	cmd_data[0] = 0x0F;
-	cmd_data[1] = 0x90;
-
-	for (int i = 0; i < 4; i++) {
-		cmd_data[1] += 1 << 4;
-		SPI_SELECT(spi, 0, true);
-		SPI_SNDBLOCK(spi, cmd_data, 2);
-		SPI_RECVBLOCK(spi, dev_id, 1);
-		SPI_SELECT(spi, 0, false);
-		printf("Feature : %02x, value : %02x\n", cmd_data[1], dev_id[0]);
-	}
-
-	// read contents of block 0 page 0
-	uint8_t address24[3];
-	
-	for (int i = 0; i < 3; i++) address24[i] = 0;
-	
-	// read page to cache
-	cmd_data[0] = 0x13;
-	SPI_SELECT(spi, 0, true);
-        SPI_SNDBLOCK(spi, cmd_data, 1);
-        SPI_SNDBLOCK(spi, address24, 3);
-	SPI_SELECT(spi, 0, false);
-
-	// wait for op to be done
-	while (true) {
-		cmd_data[0] = 0x0F;
-		cmd_data[1] = 0xC0;
-
-		SPI_SELECT(spi, 0, true);
-                SPI_SNDBLOCK(spi, cmd_data, 2);
-                SPI_RECVBLOCK(spi, dev_id, 1);
-                SPI_SELECT(spi, 0, false);
-                printf("Feature : %02x, value : %02x\n", cmd_data[1], dev_id[0]);
-		
-		if (dev_id[0] & 1) {
-			usleep(1000);
-			continue;
-		} else {
-			break;
-		}
-	}
-
-	// read page from cache
-        cmd_data[0] = 0x03;
-        SPI_SELECT(spi, 0, true);
-        SPI_SNDBLOCK(spi, cmd_data, 1);
-        SPI_SNDBLOCK(spi, address24, 3);
-	// 1 dummy byte exchange
-	SPI_RECVBLOCK(spi, dev_id, 1);
-	// start reading actual data
-	SPI_RECVBLOCK(spi, page_data, 2176);
-	SPI_SELECT(spi, 0, false);
-	
-	printf("First Byte in block 0 : %02x\n", page_data[0]);
-	printf("Bad block mark for block 0 : %x\n", page_data[2048]);
-	
-	printf("current contents :\n");
-	for (int i = 0; i < 2176; i++) {
-  		if (i % 32 == 0) printf("\n");
- 		printf("%02X", page_data[i]);
-  	}
-
-	if (page_data[0] != 0xFF) {
-		for (int i = 0; i < 2176; i++) {
-			if (i % 32 == 0) printf("\n");
-			printf("%02X", page_data[i]);
-		}
-		printf("page already has data, return from here\n");
+	if (ret != OK) {
+		printf("bch write failed\n");
 		return 0;
 	}
+	
+	ret = bch_read();
 
-	if (page_data[2048] == 0) {
-		// found bad block
-		printf("Bad block found, return from here\n");
+	if (ret != OK) {
+		printf("bch read failed\n");
 		return 0;
 	}
-
-	for (int i = 0; i < 2048; i++) page_data[i] = 0xAA;
-
-	// Now, we try to write to the first page
-	// first set BP0, BP1, BP2 to zeros
 	
-	cmd_data[0] = 0x1F;
-	cmd_data[1] = 0xA0;
-	cmd_data[2] = 0x00;
-
-	SPI_SELECT(spi, 0, true);
-        SPI_SNDBLOCK(spi, cmd_data, 3);
-        SPI_SELECT(spi, 0, false);
-
-	cmd_data[0] = 0x0F;
-        cmd_data[1] = 0xA0;
-
-	SPI_SELECT(spi, 0, true);
-        SPI_SNDBLOCK(spi, cmd_data, 2);
-        SPI_RECVBLOCK(spi, dev_id, 1);
-	SPI_SELECT(spi, 0, false);
-
-	// updated value for write protection
-	printf("Value of write protection register (%02x) : %02x\n", cmd_data[1], dev_id[0]);
-
-	// erase block before writing
-	// write enable
-        cmd_data[0] = 0x06;
-        SPI_SELECT(spi, 0, true);
-        SPI_SNDBLOCK(spi, cmd_data, 1);
-        SPI_SELECT(spi, 0, false);
-	
-	// erase block 0
-        cmd_data[0] = 0xD8;
-        cmd_data[1] = 0x00;
-        cmd_data[2] = 0x00;
-	cmd_data[3] = 0x00;
-
-	SPI_SELECT(spi, 0, true);
-        SPI_SNDBLOCK(spi, cmd_data, 4);
-        SPI_SELECT(spi, 0, false);
-	
-	// wait till done
-        // wait for op to be done
-        while (true) {
-                cmd_data[0] = 0x0F;
-                cmd_data[1] = 0xC0;
-
-                SPI_SELECT(spi, 0, true);
-                SPI_SNDBLOCK(spi, cmd_data, 2);
-                SPI_RECVBLOCK(spi, dev_id, 1);
-                SPI_SELECT(spi, 0, false);
-                printf("Feature : %02x, value : %02x\n", cmd_data[1], dev_id[0]);
-
-                if (dev_id[0] & 1) {
-                        usleep(1000);
-                        continue;
-                } else {
-                        break;
-                }
-        }
-	// Now try to write to the page
-	// program load
-	cmd_data[0] = 0x02;
-	// we are writing from the start
-	cmd_data[1] = 0x00;
-	cmd_data[2] = 0x00;
-
-	SPI_SELECT(spi, 0, true);
-        SPI_SNDBLOCK(spi, cmd_data, 3);
-        SPI_SNDBLOCK(spi, page_data, 2048);
-	SPI_SELECT(spi, 0, false);
-
-	// write enable
-	cmd_data[0] = 0x06;
-	SPI_SELECT(spi, 0, true);
-        SPI_SNDBLOCK(spi, cmd_data, 1);
-        SPI_SELECT(spi, 0, false);
-	
-	// start programming
-        cmd_data[0] = 0x10;
-        SPI_SELECT(spi, 0, true);
-        SPI_SNDBLOCK(spi, cmd_data, 1);
-        SPI_SNDBLOCK(spi, address24, 3);
-        SPI_SELECT(spi, 0, false);
-
-	// wait till done
-	// wait for op to be done
-        while (true) {
-                cmd_data[0] = 0x0F;
-                cmd_data[1] = 0xC0;
-
-                SPI_SELECT(spi, 0, true);
-                SPI_SNDBLOCK(spi, cmd_data, 2);
-                SPI_RECVBLOCK(spi, dev_id, 1);
-                SPI_SELECT(spi, 0, false);
-                printf("Feature : %02x, value : %02x\n", cmd_data[1], dev_id[0]);
-
-                if (dev_id[0] & 1) {
-                        usleep(1000);
-                        continue;
-                } else {
-                        break;
-                }
-        }
-#endif
 	return 0;
 }
