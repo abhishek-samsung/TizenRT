@@ -149,8 +149,6 @@
 #define AUDIOIOC_UNREGISTERPROCESS  _AUDIOIOC(22)
 #define AUDIOIOC_STARTPROCESS       _AUDIOIOC(23)
 #define AUDIOIOC_STOPPROCESS        _AUDIOIOC(24)
-#define AUDIOIOC_GETKDBUFSIZE       _AUDIOIOC(25)
-#define AUDIOIOC_GETKDDATA          _AUDIOIOC(26)
 
 /* Audio Device Types *******************************************************/
 /* The audio interface support different types of audio devices for
