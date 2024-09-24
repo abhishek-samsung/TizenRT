@@ -973,7 +973,7 @@ int ndp120_init(struct ndp120_dev_s *dev)
 
 	/*const unsigned int DMIC_768KHZ_PDM_IN_SHIFT = 13;*/  /* currently unused */
 	const unsigned int DMIC_768KHZ_PDM_IN_SHIFT_FF = 8;
-	const unsigned int DMIC_1536KHZ_PDM_IN_SHIFT_FF = 3;
+	const unsigned int DMIC_1536KHZ_PDM_IN_SHIFT_FF = 8;
 
 	/* save handle so we can use it from debug routine later, e.g. from other util/shell */
 	_ndp_debug_handle = dev;
@@ -1243,8 +1243,6 @@ int ndp120_start_sample_ready(struct ndp120_dev_s *dev)
 
 	dev->recording = true;
 
-       s =  ndp120_set_sample_ready_int(dev, 1);
-
 	if (include_keyword) {
 		unsigned int extract_bytes = dev->keyword_bytes;
 		s = syntiant_ndp_extract_data(dev->ndp, SYNTIANT_NDP_EXTRACT_TYPE_INPUT,
@@ -1258,6 +1256,19 @@ int ndp120_start_sample_ready(struct ndp120_dev_s *dev)
 
 		include_keyword = false;
 	}
+
+	// call configure audio again
+	const unsigned int AUDIO_TANK_MS =
+                AUDIO_BEFORE_MATCH_MS  /* max word length + ~500 MS preroll */
+                + 300  /* posterior latency of <= 24 MS/frame * 12 frames == 288 MS */
+                + 100; /* generous allowance for RTL8730E match-to-extract time */
+
+        const unsigned int DMIC_1536KHZ_PDM_IN_SHIFT_FF = 8;
+
+	s = configure_audio(dev, DMIC_1536KHZ_PDM_IN_SHIFT_FF, AUDIO_TANK_MS);
+
+
+	s =  ndp120_set_sample_ready_int(dev, 1);
 
        return s;
 }
