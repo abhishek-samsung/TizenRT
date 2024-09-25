@@ -118,6 +118,10 @@ ifeq ($(CONFIG_MTD_W25),y)
 CSRCS_DRIVER += mtd/w25.c
 endif
 
+ifeq ($(CONFIG_MTD_XT26),y)
+CSRCS_DRIVER += mtd/xt26g02d.c
+endif
+
 ifeq ($(CONFIG_MTD_JEDEC),y)
 CSRCS_DRIVER += mtd/mtd_jedec.c
 endif
