@@ -78,7 +78,7 @@
 #define AUDIO_BEFORE_MATCH_MS	(1500)
 
 /* when defined, the let the NDP use an external PDM clock */
-#define USE_EXTERNAL_PDM_CLOCK
+//#define USE_EXTERNAL_PDM_CLOCK
 #define EXTERNAL_PDM_CLOCK_PDM_RATE 1536000
 
 /****************************************************************************
@@ -1089,7 +1089,7 @@ int ndp120_irq_handler_work(struct ndp120_dev_s *dev)
 			switch(network_id) {
 				case 0:
 					serialno++;
-					auddbg("[#%d Hi-Bixby] matched: %s\n", serialno, dev->labels_per_network[network_id][winner]);
+					lldbg("[#%d Hi-Bixby] matched: %s\n", serialno, dev->labels_per_network[network_id][winner]);
 					break;
 				case 1:
 					auddbg("[#%d Voice Commands] matched: %s\n", serialno, dev->labels_per_network[network_id][winner]);
@@ -1241,6 +1241,7 @@ int ndp120_set_match_per_frame(struct ndp120_dev_s *dev, int on)
 
 int ndp120_start_sample_ready(struct ndp120_dev_s *dev)
 {
+	lldbg("entry\n");
 	int s;
 
 	dev->recording = true;
