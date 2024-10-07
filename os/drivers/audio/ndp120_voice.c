@@ -247,7 +247,7 @@ static int ndp120_getcaps(FAR struct audio_lowerhalf_s *dev, int type, FAR struc
 			caps->ac_controls.b[0] =
 #ifdef CONFIG_AUDIO_SPEECH_DETECT_FEATURES
 #ifdef CONFIG_AUDIO_KEYWORD_DETECT
-				AUDIO_SD_KEYWORD_DETECT |
+				AUDIO_SD_KEYWORD_DETECT | AUDIO_SD_AEC |
 #endif
 #endif
 				AUDIO_SD_UNDEF;
@@ -533,6 +533,7 @@ static int ndp120_ioctl(FAR struct audio_lowerhalf_s *dev, int cmd, unsigned lon
 	/* Deal with ioctls passed from the upper-half driver */
 
 	int ret = 0;
+	auddbg("ioctl  cmd : %d\n", cmd);
 	switch (cmd) {
 	case AUDIOIOC_PREPARE: {
 		/* nothing to prepare... */
@@ -590,6 +591,8 @@ static int ndp120_ioctl(FAR struct audio_lowerhalf_s *dev, int cmd, unsigned lon
 				priv->kd_enabled = true;
 			}
 		} break;
+		case AUDIO_SD_AEC:
+			ndp120_aec_enable(priv);
 #endif
 		default: {
 			/* DO Nothing for now */
@@ -717,33 +720,22 @@ static struct pm_callback_s g_pmndpcb =
  *
  ****************************************************************************/
 
-static void ndp_pm_notify(struct pm_callback_s *cb, enum pm_state_e pmstate)
+static void ndp_pm_notify(struct pm_callback_s *cb, enum pm_state_e state)
 {
 	/* Currently PM follows the state changes as follows,
 	 * On boot, we are in PM_NORMAL. After that we only use PM_STANDBY and PM_SLEEP
 	 * on boot : PM_NORMAL -> PM_STANDBY -> PM_SLEEP, from there on
 	 * PM_SLEEP -> PM_STANBY -> PM_SLEEP -> PM_STANBY........
 	 */
-	switch (pmstate) {
-	case(PM_NORMAL): {
-		lldbg("PM_NORMAL\n");
-	}
-	break;
-	case(PM_IDLE): {
-		lldbg("PM_IDLE\n");
-	}
-	break;
-	case(PM_STANDBY): {
-		lldbg("PM_STANDBY\n");
-	}
-	break;
+	switch (state) {
 	case(PM_SLEEP): {
-		lldbg("PM_SLEEP\n");
+		lldbg("entering SLEEP\n");
+		ndp120_aec_disable(g_ndp120);
 	}
 	break;
 	default: {
-		lldbg("Default\n");
 		/* Nothing to do */
+		lldbg("default case\n");
 	}
 	break;
 	}
@@ -763,7 +755,7 @@ static void ndp_pm_notify(struct pm_callback_s *cb, enum pm_state_e pmstate)
 
 static int ndp_pm_prepare(struct pm_callback_s *cb, enum pm_state_e pmstate)
 {
-	lldbg("Entry\n");
+	lldbg("entry\n");
 	return OK;
 }
 #endif
