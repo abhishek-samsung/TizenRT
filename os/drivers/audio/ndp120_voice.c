@@ -305,7 +305,7 @@ static int ndp120_configure(FAR struct audio_lowerhalf_s *dev,
 				ret = -EDOM;
 			}
 #else /* CONFIG_AUDIO_EXCLUDE_GAIN */
-			ret = -EACCESS;
+			ret = -EACCES;
 #endif
 		} break;
 		case AUDIO_FU_MUTE: {
@@ -318,7 +318,7 @@ static int ndp120_configure(FAR struct audio_lowerhalf_s *dev,
 			/* No api to control gain as of now */
 			ndp120_givesem(&priv->devsem);
 #else
-			ret = -EACCESS;
+			ret = -EACCES;
 #endif
 		} break;
 		default:
@@ -743,7 +743,9 @@ FAR struct audio_lowerhalf_s *ndp120_lowerhalf_initialize(FAR struct spi_dev_s *
 
 	priv->dev.ops = &g_audioops;
 	priv->spi = spi;
+#ifndef CONFIG_AUDIO_EXCLUDE_GAIN
 	priv->mic_gain = NDP120_MIC_GAIN_DEFAULT;
+#endif
 	sq_init(&priv->pendq);
 	sem_init(&priv->devsem, 0, 1);
 
