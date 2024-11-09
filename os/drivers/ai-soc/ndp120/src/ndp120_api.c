@@ -1303,7 +1303,7 @@ int ndp120_irq_handler_work(struct ndp120_dev_s *dev)
 
 errout_with_irq:
 	/* re-enable interrupts as we have finished the interrupt related work */
-	dev->lower->irq_enable(true);
+	//dev->lower->irq_enable(true);
 	return ret;
 }
 

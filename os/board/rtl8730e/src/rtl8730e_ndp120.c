@@ -92,7 +92,7 @@ static void rtl8730e_ndp120_irq_handler(uint32_t id, gpio_irq_event event)
 	 * until we finish this particular interrupt related work
 	 * in the HPWORK thread
 	 */
-	gpio_irq_disable(&g_ndp120info.data_ready);
+	//gpio_irq_disable(&g_ndp120info.data_ready);
 
 	if (g_ndp120info.handler != NULL) {
 		g_ndp120info.handler(id);
