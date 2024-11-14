@@ -116,6 +116,21 @@ static struct work_s ndp120_work;
 /* only used for debugging purposes */
 static struct ndp120_dev_s *_ndp_debug_handle = NULL;
 
+static inline void ndp120_takesem(sem_t *sem)
+{
+        int ret;
+
+        do {
+                ret = sem_wait(sem);
+                DEBUGASSERT(ret == 0 || errno == EINTR);
+        } while (ret < 0);
+}
+
+static inline int ndp120_givesem(sem_t *sem)
+{
+        return sem_post(sem);
+}
+
 static int check_status(char *message, int s)
 {
 	if (s) {
@@ -993,10 +1008,16 @@ out:
 }
 #endif
 
+int ndp120_irq_handler_work(int argc, char *argv[]);
+
+struct ndp120_dev_s * g_ndpdev;
+
 int ndp120_init(struct ndp120_dev_s *dev)
 {
 	/* File names */
 	int s;
+
+	g_ndpdev = dev;
 
 	const char *mcu_package = "/mnt/kernel/audio/mcu_fw";
 	const char *dsp_package = "/mnt/kernel/audio/dsp_fw";
@@ -1114,6 +1135,17 @@ int ndp120_init(struct ndp120_dev_s *dev)
 		}
 	}
 #endif
+
+	/* NDP120 task that handles interrupts from NDP and also data extraction */
+	char * ndp_arg[2];
+	ndp_arg[0] = (char *)dev;
+	ndp_arg[1] = NULL;
+	int pid = task_create("NDP events", 190, 4096, ndp120_irq_handler_work, ndp_arg);
+	if (pid < 0) {
+		auddbg("Failed to launch NDP events thread : %d\n", pid);
+		s = pid;
+	}
+
 errout_ndp120_init:
 	return s;
 }
@@ -1200,12 +1232,20 @@ static void ndp120_signal_mb(struct ndp120_dev_s *dev)
 	}
 }
 
-int ndp120_irq_handler_work(struct ndp120_dev_s *dev)
+int ndp120_irq_handler_work(int argc, char *argv[])
 {
+
+	struct ndp120_dev_s *dev = g_ndpdev; 
+	
 
 	/* Note that currently this is only used to detect keyword match,
 	 * but later will be expanded to AI related notifications */
 	struct syntiant_ndp_device_s *ndp = dev->ndp;
+
+	while (true) {
+
+	sem_wait(&dev->interrupt_sem);
+
 	uint32_t notifications = 0; /*initialize this as this is checked if io wait fails and might return wrong results if it holds garbage value*/
 	uint32_t summary;
 	unsigned int winner;
@@ -1225,8 +1265,17 @@ int ndp120_irq_handler_work(struct ndp120_dev_s *dev)
 	}
 
 	if (notifications & SYNTIANT_NDP_NOTIFICATION_EXTRACT_READY) {
-		/* signal that we have data to extract */
-		ndp120_signal_sample(dev);
+		/* extract data here */
+		ndp120_takesem(&dev->pendq_sem);
+		struct ap_buffer_s *apb = (struct amebad_buffer_s *)sq_remfirst(&dev->pendq);
+		ndp120_givesem(&dev->pendq_sem);
+
+		if (apb == NULL) {
+			/* what to do in overrun case??? extract multiple during else case?? */
+		} else {
+			int extract_ret = ndp120_extract_audio(dev, apb);
+			dev->dev.upper(dev->dev.priv, AUDIO_CALLBACK_DEQUEUE, apb, extract_ret);
+		}
 	}
 
 	if (notifications & (SYNTIANT_NDP_NOTIFICATION_MAILBOX_IN | SYNTIANT_NDP_NOTIFICATION_MAILBOX_OUT)) {
@@ -1241,8 +1290,6 @@ int ndp120_irq_handler_work(struct ndp120_dev_s *dev)
 		}
 
 		if (!(summary & NDP120_SPI_MATCH_MATCH_MASK)) {
-			/* no actual match, so this is a match-per-frame interrupt, also commonly used as sample ready indication */
-			ndp120_signal_sample(dev);
 			goto errout_with_irq;
 		}
 		network_id = ndp->d.ndp120.last_network_id;
@@ -1307,13 +1354,15 @@ int ndp120_irq_handler_work(struct ndp120_dev_s *dev)
 errout_with_irq:
 	/* re-enable interrupts as we have finished the interrupt related work */
 	dev->lower->irq_enable(true);
-	return ret;
+
+	}
+	
+	return OK;
 }
 
 int ndp120_irq_handler(struct ndp120_dev_s *dev)
 {
-	/* add work to the work queue, dont enable interrupts until we handled this one compeltely */
-	return work_queue(HPWORK, &ndp120_work, ndp120_irq_handler_work, (void *)dev, 0);
+	sem_post(&dev->interrupt_sem);
 }
 
 int ndp120_set_sample_ready_int(struct ndp120_dev_s *dev, int on)
@@ -1348,30 +1397,9 @@ int ndp120_extract_audio(struct ndp120_dev_s *dev, struct ap_buffer_s *apb)
 		return SYNTIANT_NDP_ERROR_NONE;
 	}
 
-	/* wait for sample interrupt */
-
-	int err = pthread_mutex_lock(&dev->ndp_mutex_notification_sample);
-	if (err) {
-		auddbg("NDP sample mutex lock err: %d\n", err);
-		return SYNTIANT_NDP_ERROR_FAIL;
-	}
-	err = pthread_cond_wait(&dev->ndp_cond_notification_sample,
-							&dev->ndp_mutex_notification_sample);
-	if (err) {
-		auddbg("NDP sample wait err: %d\n", err);
-		return SYNTIANT_NDP_ERROR_FAIL;
-	}
-	err = pthread_mutex_unlock(&dev->ndp_mutex_notification_sample);
-	if (err) {
-		auddbg("NDP sample mutex unlock err: %d\n", err);
-		return SYNTIANT_NDP_ERROR_FAIL;
-	}
-
-	do {
 		s = syntiant_ndp_extract_data(dev->ndp,
 			SYNTIANT_NDP_EXTRACT_TYPE_INPUT,
 			SYNTIANT_NDP_EXTRACT_FROM_UNREAD, apb->samp, &sample_size);
-	} while (s == SYNTIANT_NDP_ERROR_DATA_REREAD);
 
 	apb->nbytes = dev->sample_size;
 

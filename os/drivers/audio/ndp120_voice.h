@@ -85,6 +85,8 @@ struct ndp120_dev_s {
 
 	pthread_mutex_t ndp_mutex_notification_sample;
 	pthread_cond_t ndp_cond_notification_sample;
+	sem_t interrupt_sem;
+	sem_t pendq_sem;
 };
 
 #endif				/* __DRIVERS_AUDIO_NDP120_H */

@@ -402,17 +402,6 @@ static int ndp120_start(FAR struct audio_lowerhalf_s *dev)
 	ndp120_start_sample_ready(priv);
 	priv->running = true;
 
-	/* Enqueue buffers (enqueueed before the start of alc) to lower layer */
-	sq_entry_t *tmp = NULL;
-	sq_queue_t *q = &priv->pendq;
-	for (tmp = sq_peek(q); tmp; tmp = sq_next(tmp)) {
-		ndp120_enqueuebuffer(dev, (struct ap_buffer_s *)tmp);
-	}
-	/* Remove audio buffers from pending queue here */
-	while ((tmp = sq_remfirst(&priv->pendq)) != NULL) {
-		apb_free((struct ap_buffer_s *)tmp);
-	}
-	
 	ndp120_givesem(&priv->devsem);
 	return 0;
 }
@@ -436,6 +425,19 @@ static int ndp120_stop(FAR struct audio_lowerhalf_s *dev)
 
 	priv->running = false;
 	
+	sq_entry_t *tmp = NULL;
+        
+
+	ndp120_takesem(&priv->pendq_sem);
+        /* Remove audio buffers from pending queue here */
+        while ((tmp = sq_remfirst(&priv->pendq)) != NULL) {
+                //apb_free((struct ap_buffer_s *)tmp);
+        }
+	
+	/* Do we need to notify to the upper layer?? */	
+
+	ndp120_givesem(&priv->pendq_sem);
+
 	ndp120_givesem(&priv->devsem);
 	return 0;
 }
@@ -483,29 +485,18 @@ static int ndp120_enqueuebuffer(FAR struct audio_lowerhalf_s *dev, FAR struct ap
 	DEBUGASSERT(priv && priv->dev.upper && apb);
 
 	audvdbg("ndp120_enqueuebuffer: apbadr = 0x%x\n", apb);
-
-	/* TODO pendq should be handled by ndp120_api.c later. worker & interrupt logic need to be implemented there */
-	if (!priv->running) {
-		/* Add the new buffer to the tail of pending audio buffers */
-		ndp120_takesem(&priv->devsem);
-		sq_addlast((sq_entry_t *)&apb->dq_entry, &priv->pendq);
-		audvdbg("enqueue added buf 0x%x\n", apb);
-		ndp120_givesem(&priv->devsem);
-		return 0;
-	}
-
-	sq_entry_t *tmp;
-
-	int ret = ndp120_extract_audio(priv, apb);
 	
-	for (tmp = (sq_entry_t *)sq_peek(&priv->pendq); tmp; tmp = sq_next(tmp)) {
-		if (tmp == (sq_entry_t *)apb) {
-			sq_rem(tmp, &priv->pendq);
-			audvdbg("found the apb to remove 0x%x\n", tmp);
-			break;
-		}
-	}
-	priv->dev.upper(priv->dev.priv, AUDIO_CALLBACK_DEQUEUE, apb, ret);
+	/* Add the new buffer to the tail of pending audio buffers */
+	ndp120_takesem(&priv->devsem);
+
+	ndp120_takesem(&priv->pendq_sem);
+
+	sq_addlast((sq_entry_t *)&apb->dq_entry, &priv->pendq);
+	audvdbg("enqueue added buf 0x%x\n", apb);
+	
+	ndp120_givesem(&priv->pendq_sem);
+
+	ndp120_givesem(&priv->devsem);
 	
 	return 0;
 }
@@ -828,6 +819,8 @@ FAR struct audio_lowerhalf_s *ndp120_lowerhalf_initialize(FAR struct spi_dev_s *
 	priv->mic_gain = NDP120_MIC_GAIN_DEFAULT;
 	sq_init(&priv->pendq);
 	sem_init(&priv->devsem, 0, 1);
+	sem_init(&priv->interrupt_sem, 0, 0);
+	sem_init(&priv->pendq_sem, 0, 1);
 
 	priv->lower = lower;
 	priv->recording = false;
