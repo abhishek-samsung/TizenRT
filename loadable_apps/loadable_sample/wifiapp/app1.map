@@ -1,0 +1,198 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+uflash           0x000000000e6aa030 0x00000000000aafd0 xr
+usram            0x0000000060200000 0x0000000000500000 xrw
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+                0x000000000e6aa030                . = ORIGIN (uflash)
+                0x000000000e6aa030                _text_start_flash = ABSOLUTE (.)
+
+.text           0x0000000060200000       0xe0 load address 0x000000000e6aa030
+                0x0000000060200000                _stext_flash = .
+                0x0000000060200000        0x4 LONG 0x0
+ *(.userspace)
+ .userspace     0x0000000060200004       0x48 /root/tizenrt/os/userspace/up_userspace.o
+                0x0000000060200004                userspace
+                0x0000000060200060                . = ALIGN (0x20)
+ *fill*         0x000000006020004c       0x14 
+ *(.text)
+ .text          0x0000000060200060        0x0 wifiapp.o
+ .text          0x0000000060200060        0x0 /root/tizenrt/os/userspace/up_userspace.o
+ *(.text.*)
+ .text.get_pc   0x0000000060200060        0x8 wifiapp.o
+                0x0000000060200060                get_pc
+ .text.startup.main
+                0x0000000060200068       0x30 wifiapp.o
+                0x0000000060200068                main
+ *(.gnu.warning)
+ *(.stub)
+ *(.glue_7)
+ .glue_7        0x0000000060200098        0x0 linker stubs
+ *(.glue_7t)
+ .glue_7t       0x0000000060200098        0x0 linker stubs
+ *(.jcr)
+ *(.gnu.linkonce.t.*)
+ *(.init)
+ *(.fini)
+                0x0000000060200098                _etext_flash = .
+ *(.ARM.extab*)
+                0x00000000602000a0                . = ALIGN (0x20)
+ *fill*         0x0000000060200098        0x8 
+                0x00000000602000a0                __exidx_start = .
+ *(.ARM.exidx*)
+                0x00000000602000a0                __exidx_end = .
+                0x00000000602000a0                . = ALIGN (0x20)
+                0x00000000602000a0                _srodata = .
+ *(.rodata)
+ *(.rodata1)
+ *(.rodata.*)
+ .rodata.main.str1.1
+                0x00000000602000a0       0x2b wifiapp.o
+ *(.gnu.linkonce.r*)
+                0x00000000602000cb                _erodata = .
+                0x00000000602000cb                _eronly = .
+                0x00000000602000e0                . = ALIGN (0x20)
+ *fill*         0x00000000602000cb       0x15 
+                0x00000000602000e0                _sctors = .
+ *(.ctors)
+ *(.init_array)
+                0x00000000602000e0                _ectors = .
+                0x00000000602000e0                . = ALIGN (0x20)
+                0x00000000602000e0                _sdtors = .
+ *(.dtors)
+ *(.fini_array)
+                0x00000000602000e0                _edtors = .
+                0x00000000602000e0                _sdata_app = ABSOLUTE (.)
+
+.vfp11_veneer   0x00000000602000e0        0x0 load address 0x000000000e6aa110
+ .vfp11_veneer  0x00000000602000e0        0x0 linker stubs
+
+.v4_bx          0x00000000602000e0        0x0 load address 0x000000000e6aa110
+ .v4_bx         0x00000000602000e0        0x0 linker stubs
+
+.iplt           0x00000000602000e0        0x0 load address 0x000000000e6aa110
+ .iplt          0x00000000602000e0        0x0 wifiapp.o
+
+.rel.dyn        0x00000000602000e0        0x0 load address 0x000000000e6aa110
+ .rel.iplt      0x00000000602000e0        0x0 wifiapp.o
+
+.data           0x00000000602000e0        0x8 load address 0x000000000e6aa110
+                0x00000000602000e0                _sdata = .
+                0x00000000602000e0        0x4 LONG 0x0
+ *(.curapp)
+ *(.appheaptable)
+ *(.data)
+ .data          0x00000000602000e4        0x0 wifiapp.o
+ .data          0x00000000602000e4        0x0 /root/tizenrt/os/userspace/up_userspace.o
+ *(.data1)
+ *(.data.*)
+ .data.a        0x00000000602000e4        0x4 wifiapp.o
+                0x00000000602000e4                a
+ *(.gnu.linkonce.d*)
+                0x00000000602000e8                _edata = .
+
+.igot.plt       0x00000000602000e8        0x0 load address 0x000000000e6aa118
+ .igot.plt      0x00000000602000e8        0x0 wifiapp.o
+
+.bss            0x00000000602000e8       0x18 load address 0x000000000e6aa118
+                0x00000000602000e8                _sbss = .
+ *(.bss)
+ .bss           0x00000000602000e8        0x0 wifiapp.o
+ .bss           0x00000000602000e8        0x0 /root/tizenrt/os/userspace/up_userspace.o
+ *(.bss.*)
+ *(.sbss)
+ *(.sbss.*)
+ *(.gnu.linkonce.b*)
+ *(COMMON)
+                0x00000000602000e8                _ebss = .
+                0x0000000060200100                . = ALIGN (0x20)
+ *fill*         0x00000000602000e8       0x18 
+                0x0000000060200100                _sapp_heap = ABSOLUTE (.)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x0000000000000000       0x49
+ *(.comment)
+ .comment       0x0000000000000000       0x49 wifiapp.o
+                                         0x4a (size before relaxing)
+ .comment       0x0000000000000049       0x4a /root/tizenrt/os/userspace/up_userspace.o
+
+.ARM.attributes
+                0x0000000000000000       0x39
+ .ARM.attributes
+                0x0000000000000000       0x39 wifiapp.o
+ .ARM.attributes
+                0x0000000000000039       0x39 /root/tizenrt/os/userspace/up_userspace.o
+
+.debug_abbrev   0x0000000000000000      0x265
+ *(.debug_abbrev)
+ .debug_abbrev  0x0000000000000000      0x13d wifiapp.o
+ .debug_abbrev  0x000000000000013d      0x128 /root/tizenrt/os/userspace/up_userspace.o
+
+.debug_info     0x0000000000000000      0x5d1
+ *(.debug_info)
+ .debug_info    0x0000000000000000      0x1ac wifiapp.o
+ .debug_info    0x00000000000001ac      0x425 /root/tizenrt/os/userspace/up_userspace.o
+
+.debug_line     0x0000000000000000      0x21d
+ *(.debug_line)
+ .debug_line    0x0000000000000000       0xe8 wifiapp.o
+ .debug_line    0x00000000000000e8      0x135 /root/tizenrt/os/userspace/up_userspace.o
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_aranges  0x0000000000000000       0x40
+ *(.debug_aranges)
+ .debug_aranges
+                0x0000000000000000       0x28 wifiapp.o
+ .debug_aranges
+                0x0000000000000028       0x18 /root/tizenrt/os/userspace/up_userspace.o
+                0x0000000060700000                _eapp_heap = ABSOLUTE ((ORIGIN (usram) + LENGTH (usram)))
+                0x0000000060200000                _sapp_ram = ABSOLUTE (ORIGIN (usram))
+                0x0000000060700000                _eapp_ram = ABSOLUTE ((ORIGIN (usram) + LENGTH (usram)))
+                0x000000000e755000                _eapp_flash = ABSOLUTE ((ORIGIN (uflash) + LENGTH (uflash)))
+LOAD wifiapp.o
+LOAD /root/tizenrt/os/userspace/up_userspace.o
+START GROUP
+LOAD /bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v8-a+simd/hard/libgcc.a
+LOAD /bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v8-a+simd/hard/libsupc++.a
+END GROUP
+LOAD /root/tizenrt/os/../build/output/bin/common
+OUTPUT(app1 elf32-littlearm)
+LOAD linker stubs
+
+.debug_loc      0x0000000000000000       0x4a
+ .debug_loc     0x0000000000000000       0x4a wifiapp.o
+
+.debug_ranges   0x0000000000000000       0x18
+ .debug_ranges  0x0000000000000000       0x18 wifiapp.o
+
+.debug_str      0x0000000000000000      0x470
+ .debug_str     0x0000000000000000      0x218 wifiapp.o
+                                        0x251 (size before relaxing)
+ .debug_str     0x0000000000000218      0x258 /root/tizenrt/os/userspace/up_userspace.o
+                                        0x43f (size before relaxing)
+
+.debug_frame    0x0000000000000000       0x48
+ .debug_frame   0x0000000000000000       0x48 wifiapp.o

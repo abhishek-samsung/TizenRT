@@ -1,9 +1,9 @@
 SECTIONS
 {
+  . = ORIGIN(uflash);
+  _text_start_flash = ABSOLUTE(.);
 
-  _text_start_flash = ORIGIN(uflash);
-
-  .text :
+  .text ORIGIN(usram) :
     {
       _stext_flash = . ;
       /* Place holder to keep the heap object at the top

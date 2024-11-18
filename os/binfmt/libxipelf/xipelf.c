@@ -103,7 +103,7 @@ static int xipelf_loadbinary(FAR struct binary_s *binp)
 	binp->sections[BIN_TEXT] = (uint32_t)uspace.text_start;
 	binp->flash_region_start = (uint32_t)uspace.text_start - uspace_offset + 4;
 	binp->flash_region_end = (uint32_t)uspace.flash_end;
-	binp->ram_region_start = (uint32_t)uspace.ram_start;
+	binp->ram_region_start = (uint32_t)uspace.text_start;
 	binp->ram_region_end = (uint32_t)uspace.ram_end;
 	binp->sizes[BIN_TEXT] = binp->flash_region_end - binp->flash_region_start;
 
@@ -116,9 +116,13 @@ static int xipelf_loadbinary(FAR struct binary_s *binp)
 	binp->sizes[BIN_BSS] = uspace.bss_end - uspace.bss_start;
 
 	/* copy the data... */
+	lldbg("data start in flash : %x\n", uspace.data_start_in_flash);
+	lldbg("data start in ram : %x\n", uspace.data_start_in_ram);
+	lldbg("data end in ram : %x\n", uspace.data_end_in_ram);
 	uint8_t *orig_data = uspace.data_start_in_flash;
 	for (uint8_t *data = uspace.data_start_in_ram; data < (uint8_t *)uspace.data_end_in_ram; data++) {
 		*data = *orig_data;
+		lldbg("data : %02x\n", *orig_data);
 		orig_data++;
 	}
 	

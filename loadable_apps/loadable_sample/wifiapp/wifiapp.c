@@ -53,6 +53,11 @@ extern int preapp_start(int argc, char **argv);
 extern int smartfs_powercut_main(int argc, char *argv[]);
 #endif
 
+__attribute__ ((__noinline__))
+void * get_pc () { return __builtin_return_address(0); }
+
+int a = 5;
+
 #ifdef CONFIG_APP_BINARY_SEPARATION
 int main(int argc, char **argv)
 #else
@@ -65,10 +70,13 @@ int wifiapp_main(int argc, char **argv)
 #endif
 
 #if defined(CONFIG_SYSTEM_PREAPP_INIT) && defined(CONFIG_APP_BINARY_SEPARATION)
-	preapp_start(argc, argv);
+	//preapp_start(argc, argv);
 #endif
-
-	printf("This is WIFI App\n");
+int b = 6;
+while (true) {
+	sleep(1);
+	printf("This is WIFI App, pc : %p, a : %d, b : %d\n", get_pc(), a, b);
+}
 
 #if defined(CONFIG_BINARY_MANAGER) && !defined(CONFIG_EXAMPLES_MICOM_TIMER_TEST)
 	int ret;
