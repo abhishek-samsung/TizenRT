@@ -70,13 +70,13 @@ int wifiapp_main(int argc, char **argv)
 #endif
 
 #if defined(CONFIG_SYSTEM_PREAPP_INIT) && defined(CONFIG_APP_BINARY_SEPARATION)
-	//preapp_start(argc, argv);
+	preapp_start(argc, argv);
 #endif
 int b = 6;
-while (true) {
-	sleep(1);
-	printf("This is WIFI App, pc : %p, a : %d, b : %d\n", get_pc(), a, b);
-}
+//while (true) {
+//	sleep(1);
+//	printf("This is WIFI App, pc : %p, a : %d, b : %d\n", get_pc(), a, b);
+//}
 
 #if defined(CONFIG_BINARY_MANAGER) && !defined(CONFIG_EXAMPLES_MICOM_TIMER_TEST)
 	int ret;

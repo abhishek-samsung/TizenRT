@@ -3,7 +3,7 @@ SECTIONS
   . = ORIGIN(uflash);
   _text_start_flash = ABSOLUTE(.);
 
-  .text ORIGIN(usram) :
+  .text :
     {
       _stext_flash = . ;
       /* Place holder to keep the heap object at the top
@@ -73,12 +73,16 @@ SECTIONS
       *(.fini_array)  /* New ABI:  Allocated */
       _edtors = . ;
     
+      _sdata_app1 = ABSOLUTE(.);
     } > usram AT > uflash
+   
 
-   _sdata_app = ABSOLUTE(.);
+
+   _sdata_app2 = ABSOLUTE(.);    
 
    .data :
     {
+      _sdata_app = LOADADDR(.data);
       _sdata = . ;
       LONG(0);
       *(.curapp)

@@ -122,7 +122,6 @@ static int xipelf_loadbinary(FAR struct binary_s *binp)
 	uint8_t *orig_data = uspace.data_start_in_flash;
 	for (uint8_t *data = uspace.data_start_in_ram; data < (uint8_t *)uspace.data_end_in_ram; data++) {
 		*data = *orig_data;
-		lldbg("data : %02x\n", *orig_data);
 		orig_data++;
 	}
 	
