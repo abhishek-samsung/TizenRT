@@ -122,6 +122,16 @@ static int xipelf_loadbinary(FAR struct binary_s *binp)
 		orig_data++;
 	}
 	
+	/* copy all text... */
+	uint8_t *orig_text = uspace.text_start_in_flash;
+	lldbg("text start : %x\n", uspace.text_start);
+	lldbg("text end : %x\n", uspace.ectors);
+	for (uint8_t *text = uspace.text_start; text < (uint8_t *)uspace.ectors; text++) {
+		*text = *orig_text;
+		//lldbg("text : %02x\n", *orig_text);
+		orig_text++;
+	}	
+
 	binp->sections[BIN_DATA] = (uint32_t)uspace.data_start_in_ram;
 	binp->sizes[BIN_DATA] = uspace.data_end_in_ram - uspace.data_start_in_ram;
 
