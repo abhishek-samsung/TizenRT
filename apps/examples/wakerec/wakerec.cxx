@@ -21,13 +21,10 @@
 //***************************************************************************
 
 #include <tinyara/config.h>
-
 #include <cstdio>
 #include <debug.h>
-
 #include <tinyara/init.h>
-#include <wifi_manager/wifi_manager.h>
-
+#include <tinyara/pm/pm.h>
 #include <media/MediaPlayer.h>
 #include <media/MediaPlayerObserverInterface.h>
 #include <media/FileInputDataSource.h>
@@ -37,11 +34,11 @@
 #include <media/BufferOutputDataSource.h>
 #include <media/voice/SpeechDetector.h>
 #include <media/voice/SpeechDetectorListenerInterface.h>
-
+#include <media/FocusManager.h>
+#include <media/stream_info.h>
 #include <iostream>
 #include <memory>
-
-#include <tinyara/pm/pm.h>
+#include <functional>
 
 #define CONFIG_SUPPORT_GET_KD 0
 
@@ -50,13 +47,23 @@ using namespace media;
 using namespace media::stream;
 using namespace media::voice;
 
+#ifdef CONFIG_NDP120
+extern "C" {
+#ifdef CONFIG_NDP120_AEC_SUPPORT
+	void ndp120_set_flowset_id(int flowset_id);
+#endif	
+#ifdef CONFIG_SYSTEM_INIFILE
+	void ndp120_utils_stream_file(const char* filename);
+	void ndp120_utils_wifi_setup(void);
+#endif
+
+}
+
+#endif
+
 media::voice::SpeechDetector *sd;
 
-media::MediaPlayer mp;
-media::MediaRecorder mr;
-
 static const char *filePath = "/tmp/record.pcm";
-FILE *fp;
 uint8_t *gBuffer = NULL;
 uint32_t bufferSize = 0;
 
@@ -65,63 +72,21 @@ static bool isRecording = true;
 static void playRecordVoice(void);
 static void startRecord(void);
 
-class _Observer : public media::MediaPlayerObserverInterface, public std::enable_shared_from_this<_Observer>
+class WakeRec : public media::voice::SpeechDetectorListenerInterface,public FocusChangeListener,
+				public media::MediaRecorderObserverInterface, public media::MediaPlayerObserverInterface,
+				public std::enable_shared_from_this<WakeRec>
 {
-	void onPlaybackStarted(media::MediaPlayer &mediaPlayer) override
-	{
-		printf("##################################\n");
-		printf("####    onPlaybackStarted     ####\n");
-		printf("##################################\n");
-	}
-	void onPlaybackFinished(media::MediaPlayer &mediaPlayer) override
-	{
-		printf("##################################\n");
-		printf("####    onPlaybackFinished    ####\n");
-		printf("##################################\n");
+public:
+	WakeRec(bool playbackRecording) {doRecordingPlayback = playbackRecording;};
 
-		mp.unprepare();
-		mp.destroy();
+private:
+	MediaPlayer mp;
+	MediaRecorder mr;
+	shared_ptr<FocusRequest> mFocusRequest;
+	FILE *fp;
 
-		printf("##################################\n");
-		printf("####   Playback done!!        ####\n");
-		printf("##################################\n");
+	bool doRecordingPlayback;
 
-		printf("###################################\n");
-		printf("#### Wait for wakeup triggered ####\n");
-		printf("###################################\n");
-
-		sd->startKeywordDetect();
-		/* Now that we finished playback, we can go to sleep */
-		sleep(3); //for test, add sleep.
-		pm_resume(PM_IDLE_DOMAIN);
-	}
-
-	void onPlaybackError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override
-	{
-		printf("##################################\n");
-		printf("####      onPlaybackError     ####\n");
-		printf("##################################\n");
-	}
-
-	void onStartError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override
-	{
-	}
-
-	void onStopError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override
-	{
-	}
-
-	void onPauseError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override
-	{
-	}
-
-	void onPlaybackPaused(media::MediaPlayer &mediaPlayer) override
-	{
-	}
-};
-
-class BufferReceiver : public media::MediaRecorderObserverInterface, public std::enable_shared_from_this<BufferReceiver>
-{
 	void onRecordStarted(media::MediaRecorder &mediaRecorder) override
 	{
 		printf("##################################\n");
@@ -143,7 +108,23 @@ class BufferReceiver : public media::MediaRecorderObserverInterface, public std:
 		mr.destroy();
 		fclose(fp);
 
-		playRecordVoice();
+#ifdef CONFIG_NDP120
+#ifdef CONFIG_SYSTEM_INIFILE
+		ndp120_utils_stream_file(filePath);
+#endif
+#endif
+
+		if (doRecordingPlayback) {
+			playRecordVoice();
+		} else {
+			printf("###################################\n");
+			printf("#### Wait for wakeup triggered ####\n");
+			printf("###################################\n");
+			/* no playback, so reactivate detection */
+			sd->startKeywordDetect();
+			sleep(3); //for test, add sleep.
+			pm_resume(PM_IDLE_DOMAIN);
+		}
 	}
 	void onRecordStartError(media::MediaRecorder &mediaRecorder, media::recorder_error_t errCode) override
 	{
@@ -173,11 +154,65 @@ class BufferReceiver : public media::MediaRecorderObserverInterface, public std:
 			printf("\n********Size written to file= %d *********\n", sz_written);
 		}
 	}
-};
+	
+	void onPlaybackStarted(media::MediaPlayer &mediaPlayer) override
+	{
+		printf("##################################\n");
+		printf("####    onPlaybackStarted     ####\n");
+		printf("##################################\n");
+	}
+	void onPlaybackFinished(media::MediaPlayer &mediaPlayer) override
+	{
+		printf("##################################\n");
+		printf("####    onPlaybackFinished    ####\n");
+		printf("##################################\n");
 
-class SpeechDetectorListener : public media::voice::SpeechDetectorListenerInterface, public std::enable_shared_from_this<SpeechDetectorListener>
-{
-public:
+		mp.unprepare();
+		mp.destroy();
+		auto &focusManager = FocusManager::getFocusManager();
+		focusManager.abandonFocus(mFocusRequest);
+
+		printf("##################################\n");
+		printf("####   Playback done!!        ####\n");
+		printf("##################################\n");
+
+		printf("###################################\n");
+		printf("#### Wait for wakeup triggered ####\n");
+		printf("###################################\n");
+
+#ifdef CONFIG_NDP120_AEC_SUPPORT
+		//ndp120_set_flowset_id(0);
+#endif	
+
+		sd->startKeywordDetect();
+		/* Now that we finished playback, we can go to sleep */
+		sleep(3); //for test, add sleep.
+		pm_resume(PM_IDLE_DOMAIN);
+	}
+
+	void onPlaybackError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override
+	{
+		printf("##################################\n");
+		printf("####      onPlaybackError     ####\n");
+		printf("##################################\n");
+	}
+
+	void onStartError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override
+	{
+	}
+
+	void onStopError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override
+	{
+	}
+
+	void onPauseError(media::MediaPlayer &mediaPlayer, media::player_error_t error) override
+	{
+	}
+
+	void onPlaybackPaused(media::MediaPlayer &mediaPlayer) override
+	{
+	}
+
 	void onSpeechDetectionListener(media::voice::speech_detect_event_type_e event) override
 	{
 		printf("#### onSpeechDetectionListener\n");
@@ -211,70 +246,113 @@ public:
 			printf("Event not valid\n");
 		}
 	}
+
+	void onFocusChange(int focusChange) override
+	{
+		printf("focusChange : %d\n", focusChange);
+		switch (focusChange) {
+		case FOCUS_GAIN:
+		case FOCUS_GAIN_TRANSIENT: {
+			auto source = std::move(unique_ptr<media::stream::FileInputDataSource>(new media::stream::FileInputDataSource(filePath)));
+			source->setSampleRate(16000);
+			source->setChannels(1);
+			source->setPcmFormat(media::AUDIO_FORMAT_TYPE_S16_LE);
+			mp.setDataSource(std::move(source));
+			mp.prepare();
+			mp.setVolume(10);
+			mp.start();
+		} break;
+		case FOCUS_LOSS: {
+			mp.stop();
+		} break;
+		case FOCUS_LOSS_TRANSIENT: {
+			mp.pause(); //it will be played again
+		} break;
+		default: {
+		} break;
+		}
+	}
+
+	void startRecord(void)
+	{
+		media::recorder_result_t mret = mr.create();
+		if (mret == media::RECORDER_OK) {
+			printf("#### [MR] create succeeded.\n");
+		} else {
+			printf("#### [MR] create failed.\n");
+			return;
+		}
+
+		mret = mr.setDataSource(std::unique_ptr<media::stream::BufferOutputDataSource>(
+			new media::stream::BufferOutputDataSource(1, 16000, media::AUDIO_FORMAT_TYPE_S16_LE)));
+		if (mret == media::RECORDER_OK) {
+			printf("#### [MR] setDataSource succeeded.\n");
+		} else {
+			printf("#### [MR] setDataSource failed.\n");
+			return;
+		}
+
+		mret = mr.setObserver(shared_from_this());
+		if (mret == media::RECORDER_OK) {
+			printf("#### [MR] setObserver succeeded.\n");
+		} else {
+			printf("#### [MR] setObserver failed.\n");
+			return;
+		}
+
+		if (mr.setDuration(7) == RECORDER_ERROR_NONE && mr.prepare() == RECORDER_ERROR_NONE) {
+			printf("#### [MR] prepare succeeded.\n");
+		} else {
+			printf("#### [MR] prepare failed.\n");
+			return;
+		}
+
+		mr.start();
+	}
+
+	void playRecordVoice(void)
+	{
+		mp.create();
+		mp.setObserver(shared_from_this());
+		stream_info_t *info;
+		stream_info_create(STREAM_TYPE_MEDIA, &info);
+		auto deleter = [](stream_info_t *ptr) { stream_info_destroy(ptr); };
+		auto stream_info = std::shared_ptr<stream_info_t>(info, deleter);
+		mFocusRequest = FocusRequest::Builder()
+							.setStreamInfo(stream_info)
+							.setFocusChangeListener(shared_from_this())
+							.build();
+		mp.setStreamInfo(stream_info);
+		auto &focusManager = FocusManager::getFocusManager();
+		printf("mp : %x request focus!!\n", &mp);
+		focusManager.requestFocus(mFocusRequest);
+	}
 };
-
-void startRecord(void)
-{
-	media::recorder_result_t mret = mr.create();
-	if (mret == media::RECORDER_OK) {
-		printf("#### [MR] create succeeded.\n");
-	} else {
-		printf("#### [MR] create failed.\n");
-		return;
-	}
-
-	mret = mr.setDataSource(std::unique_ptr<media::stream::BufferOutputDataSource>(
-		new media::stream::BufferOutputDataSource(1, 16000, media::AUDIO_FORMAT_TYPE_S16_LE)));
-	if (mret == media::RECORDER_OK) {
-		printf("#### [MR] setDataSource succeeded.\n");
-	} else {
-		printf("#### [MR] setDataSource failed.\n");
-		return;
-	}
-
-	mret = mr.setObserver(std::make_shared<BufferReceiver>());
-	if (mret == media::RECORDER_OK) {
-		printf("#### [MR] setObserver succeeded.\n");
-	} else {
-		printf("#### [MR] setObserver failed.\n");
-		return;
-	}
-
-	if (mr.setDuration(7) == RECORDER_ERROR_NONE && mr.prepare() == RECORDER_ERROR_NONE) {
-		printf("#### [MR] prepare succeeded.\n");
-	} else {
-		printf("#### [MR] prepare failed.\n");
-		return;
-	}
-
-	mr.start();
-}
-
-void playRecordVoice(void)
-{
-	mp.create();
-	auto source = std::move(unique_ptr<media::stream::FileInputDataSource>(new media::stream::FileInputDataSource(filePath)));
-	source->setSampleRate(16000);
-	source->setChannels(1);
-	source->setPcmFormat(media::AUDIO_FORMAT_TYPE_S16_LE);
-	mp.setObserver(std::make_shared<_Observer>());
-	mp.setDataSource(std::move(source));
-	mp.prepare();
-	mp.setVolume(9);
-	mp.start();
-}
 
 extern "C" {
 int wakerec_main(int argc, char *argv[])
 {
+	bool playRecording = true;
+
 	printf("wakerec_main Entry\n");
+
+#ifdef CONFIG_NDP120
+#ifdef CONFIG_SYSTEM_INIFILE
+	ndp120_utils_wifi_setup();
+#endif
+#endif
+
+	if (argc > 1 && strcmp(argv[1], "noplayback") == 0) {
+		playRecording = false;
+	}
+
 	sd = media::voice::SpeechDetector::instance();
 	if (!sd->initKeywordDetect(16000, 1)) {
 		printf("#### [SD] init failed.\n");
 		return 0;
 	}
 
-	sd->addListener(std::make_shared<SpeechDetectorListener>());
+	sd->addListener(std::make_shared<WakeRec>(playRecording));
 
 	printf("###################################\n");
 	printf("#### Wait for wakeup triggered ####\n");

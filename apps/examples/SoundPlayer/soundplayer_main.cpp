@@ -43,6 +43,14 @@ using namespace media::stream;
 #define DEFAULT_SAMPLERATE_TYPE AUDIO_SAMPLE_RATE_24000
 #define DEFAULT_FORMAT_TYPE AUDIO_FORMAT_TYPE_S16_LE
 #define DEFAULT_CHANNEL_NUM 1 //mono
+#define DEFAULT_VOLUME 7
+
+
+#ifdef CONFIG_NDP120_AEC_SUPPORT
+extern "C" {
+	void ndp120_set_flowset_id(int flowset_id);
+}
+#endif
 
 //***************************************************************************
 // class : SoundPlayer
@@ -53,8 +61,8 @@ class SoundPlayer : public MediaPlayerObserverInterface,
 					  public enable_shared_from_this<SoundPlayer>
 {
 public:
-	SoundPlayer() : volume(0), mNumContents(0), mPlayIndex(-1), mHasFocus(false), mSampleRate(DEFAULT_SAMPLERATE_TYPE), \
-						mPaused(false), mIsPlaying(false), mStopped(false), mTrackFinished(false) {};
+	SoundPlayer() : mNumContents(0), mPlayIndex(-1), mHasFocus(false), mSampleRate(DEFAULT_SAMPLERATE_TYPE), \
+						mPaused(false), mIsPlaying(false), mStopped(false), mTrackFinished(false), mVolume(DEFAULT_VOLUME) {};
 	~SoundPlayer() {};
 	bool init(char *argv[]);
 	player_result_t startPlayback(void);
@@ -73,7 +81,6 @@ public:
 
 private:
 	MediaPlayer mp;
-	uint8_t volume;
 	shared_ptr<FocusRequest> mFocusRequest;
 	vector<string> mList;
 	unsigned int mNumContents;
@@ -84,6 +91,7 @@ private:
 	bool mIsPlaying;
 	bool mTrackFinished;
 	unsigned int mSampleRate;
+	uint8_t mVolume;
 	void loadContents(const char *path);
 };
 
@@ -103,6 +111,10 @@ void SoundPlayer::onPlaybackFinished(MediaPlayer &mediaPlayer)
 	mIsPlaying = false;
 	mPaused = false;
 	mStopped = true;
+#ifdef CONFIG_NDP120_AEC_SUPPORT
+	//ndp120_set_flowset_id(0); // disable AEC flow rules => switch to DMIC only
+#endif
+
 	if (mPlayIndex == mNumContents) {
 		mTrackFinished = true;
 		printf("All Track played, Destroy Player\n");
@@ -169,6 +181,9 @@ void SoundPlayer::onPlaybackStopped(MediaPlayer &mediaPlayer)
 	mIsPlaying = false;
 	mPaused = false;
 	mp.unprepare();
+#ifdef CONFIG_NDP120_AEC_SUPPORT
+	//ndp120_set_flowset_id(0); // disable AEC flow rules => switch to DMIC only
+#endif
 }
 
 void SoundPlayer::onAsyncPrepared(MediaPlayer &mediaPlayer, player_error_t error)
@@ -251,11 +266,7 @@ bool SoundPlayer::init(char *argv[])
 	}
 	mp.setObserver(shared_from_this());
 
-	volume = atoi(argv[2]);
-	uint8_t cur_vol;
-	mp.getVolume(&cur_vol);
-	printf("Current volume : %d new Volume : %d\n", cur_vol, volume);
-	mp.setVolume(volume);
+	mVolume = atoi(argv[2]);
 	stream_info_t *info;
 	stream_info_create((stream_policy_t)(atoi(argv[4])), &info);
 	auto deleter = [](stream_info_t *ptr) { stream_info_destroy(ptr); };
@@ -296,6 +307,13 @@ player_result_t SoundPlayer::startPlayback(void)
 		printf("prepare failed res : %d\n", res);
 		return res;
 	}
+	uint8_t curVolume = 0;
+	mp.getVolume(&curVolume);
+	printf("Current volume : %d new Volume : %d\n", curVolume, mVolume);
+	if (curVolume != mVolume) {
+		mp.setVolume(mVolume);
+	}
+
 	res = mp.start();
 	if (res != PLAYER_OK) {
 		printf("start failed res : %d\n", res);
@@ -380,6 +398,7 @@ int soundplayer_main(int argc, char *argv[])
 {
 	auto player = std::shared_ptr<SoundPlayer>(new SoundPlayer());
 	printf("cur SoundPlayer : %x\n", &player);
+
 	if (argc != 5) {
 		printf("invalid input\n");
 		return -1;

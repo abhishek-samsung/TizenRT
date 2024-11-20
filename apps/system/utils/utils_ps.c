@@ -190,6 +190,13 @@ int utils_ps(int argc, char **args)
 
 #endif
 
+	if (argc > 1) {
+		int check_mb = 0;
+		extern void ndp120_show_debug(int include_spi, int check_mb);
+		check_mb = atoi(args[1]);
+		ndp120_show_debug(1, check_mb);
+	}
+
 #ifdef CONFIG_SMP
 	int opt;
 	cpu = CONFIG_SMP_NCPUS;
