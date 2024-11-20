@@ -181,7 +181,7 @@ private:
 		printf("###################################\n");
 
 #ifdef CONFIG_NDP120_AEC_SUPPORT
-		ndp120_set_flowset_id(0);
+		//ndp120_set_flowset_id(0);
 #endif	
 
 		sd->startKeywordDetect();

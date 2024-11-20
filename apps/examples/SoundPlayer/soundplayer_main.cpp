@@ -112,7 +112,7 @@ void SoundPlayer::onPlaybackFinished(MediaPlayer &mediaPlayer)
 	mPaused = false;
 	mStopped = true;
 #ifdef CONFIG_NDP120_AEC_SUPPORT
-	ndp120_set_flowset_id(0); // disable AEC flow rules => switch to DMIC only
+	//ndp120_set_flowset_id(0); // disable AEC flow rules => switch to DMIC only
 #endif
 
 	if (mPlayIndex == mNumContents) {
@@ -182,7 +182,7 @@ void SoundPlayer::onPlaybackStopped(MediaPlayer &mediaPlayer)
 	mPaused = false;
 	mp.unprepare();
 #ifdef CONFIG_NDP120_AEC_SUPPORT
-	ndp120_set_flowset_id(0); // disable AEC flow rules => switch to DMIC only
+	//ndp120_set_flowset_id(0); // disable AEC flow rules => switch to DMIC only
 #endif
 }
 

@@ -455,7 +455,7 @@ static int i2s_tx_start(struct amebasmart_i2s_s *priv)
 	}
 
 #ifdef CONFIG_NDP120_AEC_SUPPORT
-	ndp120_audio_buffer_reset();
+//	ndp120_audio_buffer_reset();
 #endif
 
 	flags = enter_critical_section();

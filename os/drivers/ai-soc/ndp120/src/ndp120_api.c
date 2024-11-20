@@ -1310,7 +1310,7 @@ int ndp120_init(struct ndp120_dev_s *dev)
 #ifdef CONFIG_NDP120_AEC_SUPPORT
 	g_ndp120_state = NOT_RECORDING;
 	dev->extclk_inuse = false;
-	ndp120_aec_enable(dev);
+//	ndp120_aec_enable(dev);
 #endif
 
 #ifdef CONFIG_NDP120_ALIVE_CHECK
@@ -1741,13 +1741,23 @@ void ndp120_test_internal_passthrough_switch(struct ndp120_dev_s *dev, int inter
 
 void ndp120_aec_enable(struct ndp120_dev_s *dev)
 {
-	if (g_ndp120_state == NOT_RECORDING && !dev->extclk_inuse) {
-		ndp120_test_internal_passthrough_switch(dev, 0);
-		dev->extclk_inuse = true;
+	if (g_ndp120_state == NOT_RECORDING) {
+		if (!dev->extclk_inuse) {
+			ndp120_test_internal_passthrough_switch(dev, 0);
+			dev->extclk_inuse = true;
+		}
+		/* we are sure that playback starts here, so just enable it if not recording aleady */
+		ndp120_audio_buffer_reset();
 	}
 }
 
 void ndp120_aec_disable(struct ndp120_dev_s *dev)
+{
+	lldbg("finally turn off aec\n");
+	ndp120_set_flowset_id(0);
+}
+
+void ndp120_set_intclk(struct ndp120_dev_s * dev)
 {
 	ndp120_test_internal_passthrough_switch(dev, 1);
 	dev->extclk_inuse = false;
