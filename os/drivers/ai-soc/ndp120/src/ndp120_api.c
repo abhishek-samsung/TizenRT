@@ -270,7 +270,7 @@ static int mbwait(void *d)
 		timer_start(&ts_start);
 
 		do {
-			if (timer_check(&ts_start, 1)) {
+			if (timer_check(&ts_start, 5)) {
 				s = SYNTIANT_NDP_ERROR_TIMEOUT;
 				auddbg("NDP mbwait timeout (polled)\n");
 				break;
@@ -1161,18 +1161,23 @@ check_firmware_aliveness(struct ndp120_dev_s *dev, uint32_t wait_period_ms)
 			state == SYNTIANT_NDP_DSP_FW_ALIVE ?
 				"MCU FW Dead and DSP FW Alive" :
 				"MCU and DSP FW Dead");
+		ndp120_kd_stop(dev);
+		dev->lower->irq_enable(false);
+		dev->lower->reset();
+		ndp120_init(dev);
+		dev->lower->irq_enable(true);
+		return state;
 	}
 
 out:
 	return s;
 }
 
-
 static void *
-ndp120_app_device_health_check(void *d)
+ndp120_app_device_health_check(void)
 {
 	int s;
-	struct ndp120_dev_s *dev = (struct ndp120_dev_s *)d;
+	struct ndp120_dev_s *dev = (struct ndp120_dev_s *)_ndp_debug_handle;
 
 	uint32_t wait_period_ms;
 
@@ -1186,6 +1191,7 @@ ndp120_app_device_health_check(void *d)
 			printf("Error: %d in check_firmware_aliveness\n", s);
 			goto out;
 		}
+
 		pm_sleep(5000);
 	}
 
@@ -1195,8 +1201,11 @@ out:
 }
 #endif
 
+int count = 0;
+
 int ndp120_init(struct ndp120_dev_s *dev)
 {
+	lldbg("entry (%d)\n", count);
 	/* File names */
 	int s;
 
@@ -1239,6 +1248,8 @@ int ndp120_init(struct ndp120_dev_s *dev)
 		auddbg("failed to initialize ndp_cond_notification_sample\n");
 	}
 
+	if (dev->ndp != NULL) free(dev->ndp);
+
 	/* initialize NDP */
 	s = initialize_ndp(dev);
 	if (s) {
@@ -1269,6 +1280,7 @@ int ndp120_init(struct ndp120_dev_s *dev)
 	}
 
 	attach_algo_config_area(dev->ndp, 49, 0);
+	
 	add_dsp_flow_rules(dev->ndp, 0, 1);
 
 	struct syntiant_ndp120_config_tank_s tank_config;
@@ -1292,7 +1304,9 @@ int ndp120_init(struct ndp120_dev_s *dev)
 
 	dev->keyword_bytes = round_down(KEYWORD_BUFFER_LEN, dev->sample_size);
 
-	dev->keyword_buffer = (uint8_t *)kmm_malloc(dev->keyword_bytes);
+	if (dev->keyword_buffer == NULL) {
+		dev->keyword_buffer = (uint8_t *)kmm_malloc(dev->keyword_bytes);
+	}
 
 	if (dev->keyword_buffer == NULL) {
 		auddbg("keyword buffer allocation failed\n");
@@ -1316,14 +1330,17 @@ int ndp120_init(struct ndp120_dev_s *dev)
 
 #ifdef CONFIG_NDP120_ALIVE_CHECK
 	if (1) {
-		pthread_t thread;
-		int result = pthread_create(&thread, NULL, ndp120_app_device_health_check, dev);
-		if (result) {
+		pid_t pid = kernel_thread("NDP_health_check", 100, 8192, ndp120_app_device_health_check, NULL);
+		if (pid < 0) {
 			auddbg("Device health check thread creation failed\n");
+		} else {
+			auddbg("Devce health check thread created\n");
 		}
 	}
 #endif
 errout_ndp120_init:
+	lldbg("exit (%d)\n", count);
+	count++;
 	return s;
 }
 
