@@ -67,6 +67,8 @@ int main(int argc, FAR char *argv[])
 int hello_main(int argc, char *argv[])
 #endif
 {
+	extern void rtl8730e_ndp120_reset();
+	if (argc > 1) rtl8730e_ndp120_reset();
 	printf("Hello, World!!\n");
 	return 0;
 }

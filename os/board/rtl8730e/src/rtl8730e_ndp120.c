@@ -132,7 +132,7 @@ static void rtl8730e_ndp120_set_dmic(bool enable)
 	}
 }
 
-static void rtl8730e_ndp120_reset()
+void rtl8730e_ndp120_reset()
 {
 	gpio_dir(&g_ndp120info.reset, PIN_OUTPUT);
 	gpio_mode(&g_ndp120info.reset, PullDown);
