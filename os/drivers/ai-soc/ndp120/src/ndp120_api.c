@@ -1139,6 +1139,24 @@ void ndp120_audio_buffer_reset(void)
 	ndp_mcu_write(NDP120_DSP_CONFIG_FIFOCTRL, 0x00040000); 
 }
 
+int ndp120_init(struct ndp120_dev_s *dev, bool reset);
+
+static inline void ndp120_takesem(sem_t *sem)
+{
+        int ret;
+
+        do {
+                ret = sem_wait(sem);
+                DEBUGASSERT(ret == 0 || errno == EINTR);
+        } while (ret < 0);
+}
+
+static inline int ndp120_givesem(sem_t *sem)
+{
+        return sem_post(sem);
+}
+
+
 #ifdef CONFIG_NDP120_ALIVE_CHECK
 static int
 check_firmware_aliveness(struct ndp120_dev_s *dev, uint32_t wait_period_ms)
@@ -1147,8 +1165,10 @@ check_firmware_aliveness(struct ndp120_dev_s *dev, uint32_t wait_period_ms)
 	enum syntiant_ndp_fw_state state;
 
 	/* wait 1 ms more */
+	iif_sync(dev);
 	s = syntiant_ndp120_check_fw(dev->ndp, &state,
 		(wait_period_ms + 1) * 1000);
+	iif_unsync(dev);
 	if (s) {
 		auddbg("Error in getting the status of firmware: %d\n", s);
 		goto out;
@@ -1161,11 +1181,23 @@ check_firmware_aliveness(struct ndp120_dev_s *dev, uint32_t wait_period_ms)
 			state == SYNTIANT_NDP_DSP_FW_ALIVE ?
 				"MCU FW Dead and DSP FW Alive" :
 				"MCU and DSP FW Dead");
-		ndp120_kd_stop(dev);
+		/* At this point the device is dead, so lets start recovery
+		 * First, turn off interrupts, as init will need interrupts
+		 * to be off, then wait for devsem. We need not worry about
+		 * interrupts from NDP after this*/
 		dev->lower->irq_enable(false);
+
+		int s = syntiant_ndp_uninit(&dev->ndp, false, SYNTIANT_NDP_INIT_MODE_RESET);
+		auddbg("unint : %d\n", s);
 		dev->lower->reset();
-		ndp120_init(dev);
+		
+		ndp120_init(dev, true);
+		
+		/* re enable interrupts */
 		dev->lower->irq_enable(true);
+		
+		if (dev->recording) ndp120_set_sample_ready_int(dev, 1);
+
 		return state;
 	}
 
@@ -1191,7 +1223,6 @@ ndp120_app_device_health_check(void)
 			printf("Error: %d in check_firmware_aliveness\n", s);
 			goto out;
 		}
-
 		pm_sleep(5000);
 	}
 
@@ -1203,7 +1234,7 @@ out:
 
 int count = 0;
 
-int ndp120_init(struct ndp120_dev_s *dev)
+int ndp120_init(struct ndp120_dev_s *dev, bool reset)
 {
 	lldbg("entry (%d)\n", count);
 	/* File names */
@@ -1222,6 +1253,8 @@ int ndp120_init(struct ndp120_dev_s *dev)
 
 	/* save handle so we can use it from debug routine later, e.g. from other util/shell */
 	_ndp_debug_handle = dev;
+
+	if (!reset) {
 
 	s = pthread_mutex_init(&dev->ndp_mutex_mbsync, NULL);
 	if (s) {
@@ -1248,7 +1281,7 @@ int ndp120_init(struct ndp120_dev_s *dev)
 		auddbg("failed to initialize ndp_cond_notification_sample\n");
 	}
 
-	if (dev->ndp != NULL) free(dev->ndp);
+	}
 
 	/* initialize NDP */
 	s = initialize_ndp(dev);
@@ -1329,7 +1362,7 @@ int ndp120_init(struct ndp120_dev_s *dev)
 #endif
 
 #ifdef CONFIG_NDP120_ALIVE_CHECK
-	if (1) {
+	if (count == 0) {
 		pid_t pid = kernel_thread("NDP_health_check", 100, 8192, ndp120_app_device_health_check, NULL);
 		if (pid < 0) {
 			auddbg("Device health check thread creation failed\n");
