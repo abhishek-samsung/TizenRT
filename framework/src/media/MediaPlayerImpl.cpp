@@ -23,7 +23,6 @@
 
 #include <debug.h>
 #include <errno.h>
-#include <stdarg.h>
 #include "audio/audio_manager.h"
 
 namespace media {
