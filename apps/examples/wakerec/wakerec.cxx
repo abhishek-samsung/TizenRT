@@ -89,7 +89,16 @@ private:
 		mr.unprepare();
 		mr.destroy();
 		fclose(fp);
-		playRecordVoice();
+		//playRecordVoice();
+		printf("###################################\n");
+                printf("#### Wait for wakeup triggered ####\n");
+                printf("###################################\n");
+		sd->startKeywordDetect();
+                /* Now that we finished playback, we can go to sleep */
+                sleep(3); //for test, add sleep.
+
+                pm_resume(PM_IDLE_DOMAIN);
+
 	}
 	void onRecordStartError(media::MediaRecorder &mediaRecorder, media::recorder_error_t errCode) override
 	{
@@ -115,7 +124,16 @@ private:
 			mr.unprepare();
 			mr.destroy();
 			fclose(fp);
-			playRecordVoice();
+			//playRecordVoice();
+			printf("###################################\n");
+                	printf("#### Wait for wakeup triggered ####\n");
+                	printf("###################################\n");
+			
+			sd->startKeywordDetect();
+                	/* Now that we finished playback, we can go to sleep */
+        	        sleep(3); //for test, add sleep.
+
+	                pm_resume(PM_IDLE_DOMAIN);
 		}
 	}
 
