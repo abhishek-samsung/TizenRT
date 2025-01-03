@@ -62,6 +62,7 @@
 #include <stdint.h>
 #include <signal.h>
 #include <pthread.h>
+#include <unwind.h>
 
 #ifdef CONFIG_BUILD_PROTECTED
 
@@ -107,6 +108,9 @@ struct userspace_s {
 	void * ram_start;
 	void * ram_end;
 	main_t entry;
+	void * exidx_start;
+	void * exidx_end;
+	int (*register_exidx)(_Unwind_Ptr start, _Unwind_Ptr end, void * text_start, void * text_end, int bin_idx);
 #endif
 };
 
