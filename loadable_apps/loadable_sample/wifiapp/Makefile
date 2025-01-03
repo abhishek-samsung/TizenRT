@@ -62,6 +62,8 @@ endif
 ifneq ($(filter y,$(CONFIG_EXAMPLES_BINARY_UPDATE_TEST) $(CONFIG_EXAMPLES_UPDATE_AGING_TEST)),)
 SRCS += binary_update.c
 endif
+CXXSRCS = test.cpp
+
 #########################################
 # Case of Loadable separated binary build
 # Make separated ELF type binary

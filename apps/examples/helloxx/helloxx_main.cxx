@@ -148,32 +148,20 @@ extern "C"
 {
 	int helloxx_main(int argc, char *argv[])
 	{
-		// Print the cpp version used
-		printf("c++ version used : %d\n", __cplusplus);
+		try {
+                        throw (5);
+                } catch (int myNum) {
+                        printf("caught %d in common\n", myNum);
+                }
 
-		// Exercise an explictly instantiated C++ object
+		try {
+			void (*fun_ptr)(void) = (void (*)())(void *)argv;
+			fun_ptr();
+		} catch (int myNum) {
+			printf("caught %d thrown in app caught in common\n", myNum);
+		}
 
-		CHelloWorld *pHelloWorld = new CHelloWorld;
-		printf("helloxx_main: Saying hello from the dynamically constructed instance\n");
-		pHelloWorld->HelloWorld();
-
-		// Exercise an C++ object instantiated on the stack
-
-#ifndef CONFIG_EXAMPLES_HELLOXX_NOSTACKCONST
-		CHelloWorld HelloWorld;
-
-		printf("helloxx_main: Saying hello from the instance constructed on the stack\n");
-		HelloWorld.HelloWorld();
-#endif
-
-		// Exercise an statically constructed C++ object
-
-#if defined(CONFIG_HAVE_CXXINITIALIZE) || defined(CONFIG_BINFMT_CONSTRUCTORS)
-		printf("helloxx_main: Saying hello from the statically constructed instance\n");
-		g_HelloWorld.HelloWorld();
-#endif
-
-		delete pHelloWorld;
+		throw(5);
 		return 0;
 	}
 }

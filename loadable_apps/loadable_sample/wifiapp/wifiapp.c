@@ -124,6 +124,9 @@ int wifiapp_main(int argc, char **argv)
 	binary_update_aging_test();
 #endif
 #endif
+	extern int mytest(void);
+		
+	mytest();
 
 	while (1) {
 		sleep(300);
