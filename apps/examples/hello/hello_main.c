@@ -57,9 +57,23 @@
 #include <tinyara/config.h>
 #include <stdio.h>
 
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
+#include <pthread.h>
+
+#include <tinyara/sched.h>
+
 /****************************************************************************
  * hello_main
  ****************************************************************************/
+
+#define CPU_ZERO(s) do { *(s) = 0; } while (0)
+#define CPU_SET(c,s) do { *(s) |= (1 << (c)); } while (0)
+
+char buffer[1024];
+
+void test_thread(void);
 
 #ifdef CONFIG_BUILD_KERNEL
 int main(int argc, FAR char *argv[])
@@ -67,6 +81,44 @@ int main(int argc, FAR char *argv[])
 int hello_main(int argc, char *argv[])
 #endif
 {
-	printf("Hello, World!!\n");
+	pthread_attr_t attr;
+
+	int ret = pthread_attr_init(&attr);
+
+	CPU_ZERO(&attr.affinity);
+        CPU_SET(1, &attr.affinity);
+
+	pid_t thread_id;
+
+	ret = pthread_create(&thread_id, &attr, test_thread, NULL);
+
+	while (true);
+
+}
+
+void test_thread() {
+
+	printf("Hello, World!!, cpu : %d\n", sched_getcpu());
+
+	//sleep(5);
+
+	int try = 0;
+
+	while (true) {
+		int fd = open("/res/product/GUI/main/800x480/image/3241b578f1ec35ec6d90ec.png", O_RDONLY);
+		if (fd < 0) {
+			printf("Error!! open failed\n");
+		}
+		int ret;
+		ret = read(fd, buffer, 1024);
+		if (ret > 0) {
+		//	printf("%d : %s", try, buffer);
+		} else {
+			printf("Error!! read failed\n");
+		}
+		close(fd);
+		try++;
+	}
+
 	return 0;
 }

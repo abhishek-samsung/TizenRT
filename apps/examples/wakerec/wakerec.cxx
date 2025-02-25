@@ -95,7 +95,7 @@ public:
 			return;
 		}
 
-		if (mr.setDuration(7) == RECORDER_ERROR_NONE && mr.prepare() == RECORDER_ERROR_NONE) {
+		if (mr.setDuration(3) == RECORDER_ERROR_NONE && mr.prepare() == RECORDER_ERROR_NONE) {
 			printf("#### [MR] prepare succeeded.\n");
 		} else {
 			printf("#### [MR] prepare failed.\n");
@@ -132,7 +132,8 @@ private:
 		mr.unprepare();
 		mr.destroy();
 		fclose(fp);
-		playRecordVoice();
+		//playRecordVoice();
+		sd->startKeywordDetect();
 	}
 	void onRecordStartError(media::MediaRecorder &mediaRecorder, media::recorder_error_t errCode) override
 	{
@@ -158,7 +159,8 @@ private:
 			mr.unprepare();
 			mr.destroy();
 			fclose(fp);
-			playRecordVoice();
+			//playRecordVoice();
+			sd->startKeywordDetect();
 		}
 	}
 
