@@ -63,6 +63,7 @@
 #include <pthread.h>
 
 #include <tinyara/sched.h>
+#include <tinyara/spi/spi.h>
 
 /****************************************************************************
  * hello_main
@@ -75,12 +76,81 @@ char buffer[1024];
 
 void test_thread(void);
 
+void spi_read() {
+	FAR struct spi_dev_s *spi = up_spiinitialize(0);
+
+                SPI_SETMODE(spi, SPIDEV_MODE0);
+                SPI_SETFREQUENCY(spi, 12000000);
+                SPI_SETBITS(spi, 8);
+
+		SPI_LOCK(spi, 1);
+
+                while (true) {
+                                       uint8_t read_flag = 1 << 7; /* msb for read is 1 and write is 0 */
+
+                       uint8_t data[2];
+                       data[0] = 0x00 | read_flag;
+                       data[1] = 0xFF;
+
+                       uint8_t recv[2];
+                       recv[0] = 0x00;
+                       recv[1] = 0x00;
+
+		       for (int i = 0; i < 24000; i++) {
+			SPI_SELECT(spi, 0, true);
+                       	SPI_EXCHANGE(spi, data, recv, 2);
+                       	SPI_SELECT(spi, 0, false);
+		       }
+
+                       //for (int i = 0; i < 2; i++)
+                       //lldbg("SPI0 read test result sent : %x rec : %x\n", data[1], recv[1]);
+
+		       sleep(1);
+
+                }
+
+		SPI_LOCK(spi, 0);
+
+                return;
+}
+
 #ifdef CONFIG_BUILD_KERNEL
 int main(int argc, FAR char *argv[])
 #else
 int hello_main(int argc, char *argv[])
 #endif
 {
+	if (argc > 1) {
+#if 0
+		FAR struct spi_dev_s *spi = up_spiinitialize(0);
+
+                SPI_SETMODE(spi, SPIDEV_MODE0);
+                SPI_SETFREQUENCY(spi, 12000000);
+                SPI_SETBITS(spi, 8);
+		while (true) {
+		                       uint8_t read_flag = 1 << 7; /* msb for read is 1 and write is 0 */
+
+                       uint8_t data[2];
+                       data[0] = 0x00 | read_flag;
+                       data[1] = 0xFF;
+
+                       uint8_t recv[2];
+                       recv[0] = 0x00;
+                       recv[1] = 0x00;
+
+                       SPI_SELECT(spi, 0, true);
+                       SPI_EXCHANGE(spi, data, recv, 2);
+                       SPI_SELECT(spi, 0, false);
+
+                       for (int i = 0; i < 2; i++)
+                               printf("SPI0 read test result sent : %x rec : %x\n", data[i], recv[i]);
+
+		}
+#endif
+		task_create("spi test", 100, 4096, spi_read, NULL);
+		return 0;
+	}
+
 	pthread_attr_t attr;
 
 	int ret = pthread_attr_init(&attr);
@@ -104,7 +174,30 @@ void test_thread() {
 
 	int try = 0;
 
+	FAR struct spi_dev_s *spi = up_spiinitialize(1);
+
+        SPI_SETMODE(spi, SPIDEV_MODE0);
+        SPI_SETFREQUENCY(spi, 12000000);
+        SPI_SETBITS(spi, 8);
+	
+	SPI_LOCK(spi, 1);
+
 	while (true) {
+		for (int i = 0; i < 20000; i++) {		
+		SPI_SELECT(spi, 0, true);
+		(void)SPI_SEND(spi, 0x9f);
+        	uint32_t manufacturer = SPI_SEND(spi, 0xa5);
+        	uint32_t memory = SPI_SEND(spi, 0xa5);
+		uint32_t capacity = SPI_SEND(spi, 0xa5);
+		//lldbg("manufacturer: %02x memory: %02x capacity: %02x\n", manufacturer, memory, capacity);
+		if (manufacturer != 0xef || memory != 0x40 || capacity != 0x20) {
+			lldbg("manufacturer: %02x memory: %02x capacity: %02x\n", manufacturer, memory, capacity);
+		}
+		SPI_SELECT(spi, 0, false);
+		}
+
+
+#if 0
 		int fd = open("/res/product/GUI/main/800x480/image/3241b578f1ec35ec6d90ec.png", O_RDONLY);
 		if (fd < 0) {
 			printf("Error!! open failed\n");
@@ -118,7 +211,10 @@ void test_thread() {
 		}
 		close(fd);
 		try++;
+#endif
 	}
+
+	SPI_LOCK(spi, 0);
 
 	return 0;
 }
