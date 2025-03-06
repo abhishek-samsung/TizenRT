@@ -61,11 +61,18 @@
 
 #include <errno.h>
 
+#include <tinyara/fs/fs.h>
+#include <tinyara/fs/ioctl.h>
+
+#include <tinyara/fs/mtd.h>
+
 /****************************************************************************
  * hello_main
  ****************************************************************************/
 
 #define EB	(128 * 1024)
+
+uint8_t buffer[2048];
 
 #ifdef CONFIG_BUILD_KERNEL
 int main(int argc, FAR char *argv[])
@@ -74,8 +81,77 @@ int hello_main(int argc, char *argv[])
 #endif
 {
 	printf("Hello, World!!\n");
-	return 0;
 
+	extern struct mtd_dev_s * abhi_mtd;
+
+	int block;
+#if 0
+	block = 0;
+
+	for (int i = 0; i < 256; i++) {
+		
+		int ret;
+	       
+		while (true) {
+			ret = MTD_ISBAD(abhi_mtd, block);
+
+			if (ret != OK) {
+				printf("BAD BLOCK %d\n", block);
+				block++;
+				continue;
+			} else {
+				break;
+			}
+		}
+
+		ret = MTD_ERASE(abhi_mtd, block, 1);
+
+                if (ret != 1) printf("ERASE ERROR %d\n", ret);
+#if 1
+		for (int j = 0; j < 2048; j++) {
+			buffer[j] = i;
+		}
+		
+		/*Write to the first page in the block*/
+		ret = MTD_BWRITE(abhi_mtd, block * 64, 1, buffer);
+		if (ret != 1) printf("write ERROR %d\n", ret);
+		block++;
+#endif
+	}
+#endif
+	block = 0;
+	for (int i = 0; i < 256; i++) {
+		// read first page of every block
+		
+		int ret;
+	       
+		while (true) {
+                        ret = MTD_ISBAD(abhi_mtd, block);
+
+                        if (ret != OK) {
+                                printf("BAD BLOCK %d\n", block);
+                                block++;
+                                continue;
+                        } else {
+                                break;
+                        }
+                }
+
+		ret = MTD_BREAD(abhi_mtd, block * 64, 1, buffer);
+			
+		printf("%u(%d) : ", block, ret);	
+
+		for (int j = 0; j < 2048; j++) {
+			if (buffer[j] != i)
+				printf("%u(%u) ", buffer[j], j);
+		}
+
+		printf("\n");
+		block++;
+	}
+
+	return 0;
+#if 0
 	int read_fd;
 	int write_fd;
 	int ret;
@@ -133,4 +209,5 @@ int hello_main(int argc, char *argv[])
 	close(write_fd);
 
 	return 0;
+#endif
 }

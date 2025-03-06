@@ -321,6 +321,10 @@ void board_gpio_initialize(void)
 #endif
 }
 
+#define FS_PATH_MAX 16
+
+struct mtd_dev_s * abhi_mtd;
+
 void amebasmart_mount_partitions(void)
 {
 	int ret;
@@ -336,7 +340,7 @@ void amebasmart_mount_partitions(void)
 	}
 
 #ifdef CONFIG_AUTOMOUNT
-	automount_fs_partition(&partinfo);
+	//automount_fs_partition(&partinfo);
 #endif
 
 #ifdef CONFIG_SECOND_FLASH_PARTITION
@@ -364,6 +368,17 @@ void amebasmart_mount_partitions(void)
 		lldbg("w25n initialized\n");
 	}
 #endif
+	ftl_initialize(99, mtd);
+	char fs_devname[FS_PATH_MAX];
+	abhi_mtd = mtd;
+	snprintf(fs_devname, FS_PATH_MAX, "/dev/mtdblock%d", 99);
+                ret = mount(fs_devname, "/rom", "romfs", 0, NULL);
+                if (ret != OK) {
+                        printf("ERROR: mounting '%s'(ROMFS) failed, errno %d\n", fs_devname, get_errno());
+                } else {
+                        printf("%s is mounted successfully @ %s \n", fs_devname, "/rom");
+        	}	
+#if 0
 	ret = configure_mtd_partitions(mtd, 1, &partinfo);
 	if (ret != OK) {
 		lldbg("ERROR: configure_mtd_partitions for secondary flash failed\n");
@@ -371,6 +386,7 @@ void amebasmart_mount_partitions(void)
 	}
 #ifdef CONFIG_AUTOMOUNT
 	automount_fs_partition(&partinfo);
+#endif
 #endif
 #endif /* end of CONFIG_SECOND_FLASH_PARTITION */
 

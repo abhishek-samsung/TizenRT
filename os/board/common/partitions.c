@@ -190,6 +190,7 @@ static int type_specific_initialize(int minor, FAR struct mtd_dev_s *mtd_part, c
 	}
 #endif
 
+#if 0
 #if defined(CONFIG_MTD_SMART) && defined(CONFIG_FS_SMARTFS)
 	else if (!strncmp(types, "smartfs,", 8)) {
 		char partref[4];
@@ -199,6 +200,7 @@ static int type_specific_initialize(int minor, FAR struct mtd_dev_s *mtd_part, c
 		partinfo->smartfs_partno = g_partno;
 		mtd_setpartitiontagno(mtd_part, MTD_FS);
 	}
+#endif
 #endif
 
 #ifdef CONFIG_MTD_FTL
