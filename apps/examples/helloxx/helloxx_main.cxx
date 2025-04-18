@@ -144,6 +144,21 @@ static CHelloWorld g_HelloWorld;
  * Name: helloxx_main
  ****************************************************************************/
 
+static void test_exception(void)
+{
+        printf("============ Test Exception =============================\n");
+        try
+        {
+                throw 5;
+        }
+
+        catch (int e)
+        {
+                printf("Catch exception\n");
+        }
+}
+
+
 extern "C"
 {
 	int helloxx_main(int argc, char *argv[])
@@ -172,8 +187,11 @@ extern "C"
 		printf("helloxx_main: Saying hello from the statically constructed instance\n");
 		g_HelloWorld.HelloWorld();
 #endif
-
+		
 		delete pHelloWorld;
+		
+		test_exception();
+
 		return 0;
 	}
 }

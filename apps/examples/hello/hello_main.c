@@ -67,6 +67,7 @@ int main(int argc, FAR char *argv[])
 int hello_main(int argc, char *argv[])
 #endif
 {
-	printf("Hello, World!!\n");
+	int b;
+	printf("Hello, World!! %d\n", __gnu_Unwind_Find_exidx(0, &b));
 	return 0;
 }
